@@ -628,6 +628,26 @@ select {
   --tw-aspect-h: 1;
 }
 
+.aspect-w-3 {
+  position: relative;
+  padding-bottom: calc(var(--tw-aspect-h) / var(--tw-aspect-w) * 100%);
+  --tw-aspect-w: 3;
+}
+
+.aspect-w-3 > * {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.aspect-h-4 {
+  --tw-aspect-h: 4;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -834,6 +854,10 @@ select {
   display: inline-flex;
 }
 
+.table {
+  display: table;
+}
+
 .flow-root {
   display: flow-root;
 }
@@ -858,16 +882,16 @@ select {
   height: 2.5rem;
 }
 
-.h-16 {
-  height: 4rem;
-}
-
-.h-8 {
-  height: 2rem;
+.h-28 {
+  height: 7rem;
 }
 
 .h-full {
   height: 100%;
+}
+
+.h-8 {
+  height: 2rem;
 }
 
 .h-4 {
@@ -878,12 +902,8 @@ select {
   height: 0.5rem;
 }
 
-.h-20 {
-  height: 5rem;
-}
-
-.h-28 {
-  height: 7rem;
+.h-12 {
+  height: 3rem;
 }
 
 .w-full {
@@ -1089,6 +1109,12 @@ select {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
 .divide-x > :not([hidden]) ~ :not([hidden]) {
@@ -1347,6 +1373,10 @@ select {
   padding-right: 1.25rem;
 }
 
+.pb-5 {
+  padding-bottom: 1.25rem;
+}
+
 .pt-px {
   padding-top: 1px;
 }
@@ -1377,10 +1407,6 @@ select {
 
 .pb-16 {
   padding-bottom: 4rem;
-}
-
-.pb-5 {
-  padding-bottom: 1.25rem;
 }
 
 .text-left {
@@ -1430,6 +1456,10 @@ select {
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.italic {
+  font-style: italic;
 }
 
 .tabular-nums {
@@ -1781,6 +1811,21 @@ select {
 
 @media (min-width: 640px) {
 
+  .sm\:aspect-none {
+    position: static;
+    padding-bottom: 0;
+  }
+
+  .sm\:aspect-none > * {
+    position: static;
+    height: auto;
+    width: auto;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+  }
+
   .sm\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -1807,6 +1852,30 @@ select {
 
   .sm\:hidden {
     display: none;
+  }
+
+  .sm\:h-96 {
+    height: 24rem;
+  }
+
+  .sm\:h-full {
+    height: 100%;
+  }
+
+  .sm\:h-60 {
+    height: 15rem;
+  }
+
+  .sm\:h-72 {
+    height: 18rem;
+  }
+
+  .sm\:h-80 {
+    height: 20rem;
+  }
+
+  .sm\:w-full {
+    width: 100%;
   }
 
   .sm\:max-w-md {
