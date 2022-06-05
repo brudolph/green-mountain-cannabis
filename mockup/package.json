@@ -51,6 +51,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "alpinejs": "^3.10.2"
+    "alpinejs": "^3.10.2",
+    "swiper": "^8.1.6"
   }
 }
