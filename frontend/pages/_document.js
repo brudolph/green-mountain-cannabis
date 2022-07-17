@@ -1,36 +1,33 @@
 import Document, { Html, Head, NextScript, Main } from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
+import { extractCritical } from '@emotion/server';
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
-    const sheet = new ServerStyleSheet();
-    const originalRenderPage = ctx.renderPage;
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: (App) => (props) =>
-            sheet.collectStyles(<App {...props} />),
-        });
-      const initialProps = await Document.getInitialProps(ctx);
+    const initialProps = await Document.getInitialProps(ctx);
+    const critical = extractCritical(initialProps.html);
+    initialProps.html = critical.html;
+    initialProps.styles = (
+      <>
+        {initialProps.styles}
+        <style
+          data-emotion-css={critical.ids.join(' ')}
+          dangerouslySetInnerHTML={{ __html: critical.css }}
+        />
+      </>
+    );
 
-      return {
-        ...initialProps,
-        styles: (
-          <>
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-          </>
-        ),
-      };
-    } finally {
-      sheet.seal();
-    }
+    return initialProps;
   }
 
   render() {
     return (
       <Html lang="en-US">
-        <Head />
+        <Head>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Oswald:wght@400;500;600;700&amp;display=swap"
+            rel="stylesheet"
+          />
+        </Head>
         <body>
           <Main />
           <NextScript />
