@@ -1,4 +1,8 @@
 /frontend/node_modules
 /frontend/.next
 /backend/node_modules
+/backend/.keystone
 /mockup/node_modules
+.next
+.keystone
+frontend/.next
