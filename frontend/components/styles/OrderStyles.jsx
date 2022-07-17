@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import tw, { styled, css, theme } from 'twin.macro';
 
 const OrderStyles = styled.div`
   max-width: 1000px;

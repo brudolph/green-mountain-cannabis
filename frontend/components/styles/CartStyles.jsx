@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import tw, { styled, css, theme } from 'twin.macro';
 
 const CartStyles = styled.div`
   padding: 20px;
