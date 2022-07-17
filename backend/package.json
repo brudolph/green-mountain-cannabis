@@ -1,5 +1,5 @@
 {
-  "name": "keystone-app",
+  "name": "green-mountain-cannabis-backend",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,8 @@
     "build": "keystone build",
     "postinstall": "keystone postinstall"
   },
+  "author": "Ben Rudolph",
+  "license": "MIT",
   "dependencies": {
     "@keystone-6/auth": "^3.0.0",
     "@keystone-6/cloudinary": "^3.0.0",
