@@ -34,6 +34,7 @@ export default function DeleteProduct({ id }) {
       type="button"
       disabled={loading}
       onClick={() => {
+        // eslint-disable-next-line no-restricted-globals
         if (confirm(`Are you sure you want to delete ${inputs.name}?`)) {
           // go ahead and delete it
           deleteProduct().catch((err) => alert(err.message));

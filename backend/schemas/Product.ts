@@ -49,9 +49,9 @@ export const Product = list({
     strain: select({
       options: [
         { label: 'Indica', value: 'Indica' },
-        { label: 'Hybrid Indica', value: 'Hybrid Indica' },
+        { label: 'Hybrid Indica', value: 'HybridIndica' },
         { label: 'Sativa', value: 'Sativa' },
-        { label: 'Hybrid Sativa', value: 'Hybrid Sativa' },
+        { label: 'Hybrid Sativa', value: 'HybridSativa' },
         { label: 'Hybrid', value: 'Hybrid' },
       ],
       defaultValue: 'Indica',

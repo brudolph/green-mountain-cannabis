@@ -5,6 +5,8 @@ import { Product } from './schemas/Product';
 import { ProductImage } from './schemas/ProductImage';
 import { Vendor } from './schemas/Vendor';
 import { Pricing } from './schemas/Pricing';
+import { CartItem } from './schemas/CartItem';
+import { extendGraphqlSchema } from './mutations';
 
 const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
 
@@ -29,7 +31,9 @@ export default withAuth(
       ProductImage,
       Vendor,
       Pricing,
+      CartItem
     }),
+    extendGraphqlSchema,
     session,
   })
 );

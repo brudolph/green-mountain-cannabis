@@ -20,8 +20,8 @@ export const Pricing = list({
     }),
     threshold: select({
       options: [
-        { label: 'Less than >', value: '>' },
-        { label: 'Greater than <', value: '<' },
+        { label: 'Less than <', value: '<' },
+        { label: 'Greater than >', value: '>' },
       ],
       defaultValue: '>',
       ui: {
@@ -30,7 +30,7 @@ export const Pricing = list({
     }),
     product: relationship({
       ref: 'Product.price_threshold',
-      many: false,
+      many: true,
       ui: {
         createView: { fieldMode: 'hidden' },
       }
