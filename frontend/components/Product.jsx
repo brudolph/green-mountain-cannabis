@@ -5,6 +5,7 @@ import { PencilIcon } from '@heroicons/react/solid';
 import ProductsStyles from './styles/ProductsStyles';
 import Title from './styles/Title';
 import DeleteProduct from './DeleteProduct';
+import AddToCart from './AddToCart';
 
 const EditButton = forwardRef(({ onClick, href }, ref) => (
   <a href={href} onClick={onClick} ref={ref} tw="flex items-center">
@@ -145,7 +146,10 @@ export default function Product({ product }) {
             </div>
           </div>
           <div>
-            <button tw="w-full bg-primary-light border border-transparent rounded-md shadow-sm py-2 px-4 flex items-center justify-center text-base font-medium text-white hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-dark">
+            <button
+              type="button"
+              tw="w-full bg-primary-light border border-transparent rounded-md shadow-sm py-2 px-4 flex items-center justify-center text-base font-medium text-white hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-dark"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 tw="h-4 w-4"

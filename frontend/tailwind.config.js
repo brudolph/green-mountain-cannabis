@@ -29,7 +29,8 @@ module.exports = {
         secondary: '#85AC59',
         accent: {
           DEFAULT: '#F0982E',
-          dark: '##6a1010',
+          dark: '#ce7b16',
+          light: '#f7af58',
         },
         text: '#272932',
         links: '#2b511b',
@@ -40,5 +41,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { css } from 'twin.macro';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import Router from 'next/router';
+import { Combobox, Transition } from '@headlessui/react';
+import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import useForm from '../lib/useForm';
 import {
   Form,
@@ -16,6 +18,7 @@ import {
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import { ALL_PRODUCTS_QUERY } from './Products';
+import SelectBox from './forms/ListBox';
 
 const CREATE_PRODUCT_MUTATION = gql`
   mutation CREATE_PRODUCT_MUTATION(
@@ -24,7 +27,9 @@ const CREATE_PRODUCT_MUTATION = gql`
     $inventory: Decimal!
     $weight: String!
     $potency: Int!
-    # $strain: String! # $environment: String! # $price: Int! # $amount: Int! # $threshold: String!
+    $strain: String!
+    $environment: String!
+    # $price: Int! # $amount: Int! # $threshold: String!
     $description: String!
     $image: Upload
   ) {
@@ -34,8 +39,8 @@ const CREATE_PRODUCT_MUTATION = gql`
         inventory: $inventory
         weight: $weight
         potency: $potency
-        # strain: $strain
-        # environment: $environment
+        strain: $strain
+        environment: $environment
         description: $description
         # price_threshold: {
         #   create: {
@@ -55,8 +60,8 @@ const CREATE_PRODUCT_MUTATION = gql`
       inventory
       weight
       potency
-      # strain
-      # environment
+      strain
+      environment
       description
       # price_threshold {
       #   name
@@ -70,8 +75,11 @@ const CREATE_PRODUCT_MUTATION = gql`
   }
 `;
 
+const strains = ['Indica', 'HybridIndica', 'Sativa', 'HybridSativa', 'Hybrid'];
+const environments = ['Indoor', 'Outdoor', 'Greenhouse'];
+
 function CreateProduct() {
-  const { inputs, clearForm, resetForm, handleChange } = useForm({
+  const { inputs, clearForm, resetForm, handleChange, setInputs } = useForm({
     image: '',
     name: '',
     inventory: '',
@@ -114,17 +122,6 @@ function CreateProduct() {
           Processing
         </Processing>
         <Label htmlFor="name">
-          Inventory Amount
-          <Input
-            type="text"
-            id="inventory"
-            name="inventory"
-            value={inputs.inventory}
-            onChange={handleChange}
-            required
-          />
-        </Label>
-        <Label htmlFor="name">
           Name
           <Input
             type="text"
@@ -132,6 +129,17 @@ function CreateProduct() {
             name="name"
             placeholder="Name"
             value={inputs.name}
+            onChange={handleChange}
+            required
+          />
+        </Label>
+        <Label htmlFor="name">
+          Inventory Amount
+          <Input
+            type="text"
+            id="inventory"
+            name="inventory"
+            value={inputs.inventory}
             onChange={handleChange}
             required
           />
@@ -153,6 +161,24 @@ function CreateProduct() {
             />
             {inputs.potency}%
           </div>
+        </Label>
+        <Label htmlFor="strain">
+          <SelectBox
+            options={strains}
+            id="strain"
+            name="strain"
+            inputs={inputs}
+            setInputs={setInputs}
+          />
+        </Label>
+        <Label htmlFor="environment">
+          <SelectBox
+            options={environments}
+            id="environment"
+            name="environment"
+            inputs={inputs}
+            setInputs={setInputs}
+          />
         </Label>
         {/* <Label htmlFor="price">
           Price

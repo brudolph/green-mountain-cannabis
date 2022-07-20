@@ -5,6 +5,8 @@ import Nav from './Nav';
 import Logo from '../public/static/gmc-logo.svg';
 import SignIn from './SignIn';
 import { useUser } from './User';
+import Cart from './Cart';
+import Search from './Search';
 
 const HeaderStyles = tw.header`bg-white`;
 
@@ -20,7 +22,13 @@ export default function Header() {
           <img src={Logo} alt="Green Mountain Cannabis" />
         </a>
       </div>
-      {user && <Nav />}
+      {user && (
+        <>
+          <Nav />
+          <Cart />
+        </>
+      )}
+      <Search />
     </HeaderStyles>
   );
 }

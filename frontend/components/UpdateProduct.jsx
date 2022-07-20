@@ -48,7 +48,6 @@ export default function UpdateProduct({ id }) {
       description: '',
     }
   );
-  console.log(inputs);
   if (loading) return <p>loading...</p>;
   // 3. We need the form to handle the updates
   return (
