@@ -1,12 +1,13 @@
 import tw, { styled } from 'twin.macro';
 import { XCircleIcon } from '@heroicons/react/outline';
+import Link from 'next/link';
 import CartStyles from './styles/CartStyles';
-import CloseButton from './styles/CloseButton';
 import formatMoney from '../lib/formatMoney';
 import { useUser } from './User';
 import calcTotalPrice from '../lib/calcTotalPrice';
-import { useCart } from '../lib/cartState';
+import { useCart } from '../context/cartState';
 import RemoveFromCart from './RemoveFromCart';
+import { Checkout } from './Checkout';
 
 const CartItemStyles = styled.li(() => [
   tw`py-4 border-b border-solid border-gray-200 grid grid-cols-[auto 1fr auto] gap-4`,
@@ -17,7 +18,11 @@ function CartItem({ cartItem }) {
   if (!product) return null;
   return (
     <CartItemStyles>
-      <img width="100" src={product.photo.image.publicUrl} alt={product.name} />
+      <img
+        width="100"
+        src={product?.photo[0]?.image?.publicUrl}
+        alt={product.name}
+      />
       <div>
         <h3>{product.name}</h3>
         <p>
@@ -55,7 +60,7 @@ export default function Cart() {
       </ul>
       <footer>
         <p>{formatMoney(calcTotalPrice(user.cart))}</p>
-        {/* <Checkout /> */}
+        <Link href="/checkout">Checkout</Link>
       </footer>
     </CartStyles>
   );
