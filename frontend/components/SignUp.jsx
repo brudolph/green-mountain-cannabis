@@ -4,6 +4,7 @@ import { Form, FormButton, Input, Label, Processing } from './styles/Form';
 import useForm from '../lib/useForm';
 import Error from './ErrorMessage';
 import LoadingIcon from './icons/LoadingIcon';
+import 'twin.macro';
 
 const SIGNUP_MUTATION = gql`
   mutation SIGNUP_MUTATION(
@@ -34,17 +35,14 @@ export default function SignUp() {
 
   async function handleSubmit(e) {
     e.preventDefault(); // stop the form from submitting
-    console.log(inputs);
     const res = await signup().catch(console.error);
-    console.log(res);
-    console.log({ data, loading, error });
     resetForm();
     // Send the email and password to the graphqlAPI
   }
 
   return (
     <Form method="POST" onSubmit={handleSubmit}>
-      <h2>Sign Up For an Account</h2>
+      <h1 tw="text-center">Sign Up For an Account</h1>
       <Error error={error} />
       <fieldset>
         <Processing loading={loading.toString()}>
@@ -90,7 +88,7 @@ export default function SignUp() {
             onChange={handleChange}
           />
         </Label>
-        <FormButton type="submit">Sign In!</FormButton>
+        <FormButton type="submit">Sign Up!</FormButton>
       </fieldset>
     </Form>
   );

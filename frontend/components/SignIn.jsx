@@ -1,10 +1,12 @@
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
+import Link from 'next/link';
 import useForm from '../lib/useForm';
 import DisplayError from './ErrorMessage';
 import LoadingIcon from './icons/LoadingIcon';
 import { Form, FormButton, Input, Label, Processing } from './styles/Form';
 import { CURRENT_USER_QUERY } from './User';
+import 'twin.macro';
 
 const SIGNIN_MUTATION = gql`
   mutation SIGNIN_MUTATION($email: String!, $password: String!) {
@@ -48,14 +50,14 @@ export default function SignIn() {
 
   return (
     <Form method="POST" onSubmit={handleSubmit}>
-      <h2>Sign In</h2>
+      <h1 tw="text-center">Sign In</h1>
       <DisplayError error={error} />
       <fieldset>
         <Processing loading={loading.toString()}>
           <LoadingIcon tw="animate-spin" />
           Processing
         </Processing>
-        <Label>
+        <Label isStacked>
           Email
           <Input
             type="email"
@@ -76,6 +78,11 @@ export default function SignIn() {
         </Label>
         <FormButton type="submit">Login</FormButton>
       </fieldset>
+      <p tw="mt-8 text-center">
+        <Link href="/reset">
+          <a tw="text-sm hover:underline">Forgot password?</a>
+        </Link>
+      </p>
     </Form>
   );
 }
