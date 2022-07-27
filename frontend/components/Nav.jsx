@@ -8,7 +8,7 @@ import SignOut from './SignOut';
 import { useUser } from './User';
 import Cart from './Cart';
 import CloseButton from './styles/CloseButton';
-import { useCart } from '../lib/cartState';
+import { useCart } from '../context/cartState';
 import CartCount from './CartCount';
 
 const MyLink = forwardRef((props, ref) => {
@@ -21,27 +21,6 @@ const MyLink = forwardRef((props, ref) => {
     </Link>
   );
 });
-
-const StyledTransition = styled(Transition)`
-  &.enter {
-    ${tw`transition ease-out duration-100`}
-  }
-  &.enterFrom {
-    ${tw`transform scale-95 opacity-0`}
-  }
-  &.enterTo {
-    ${tw`transform scale-100 opacity-100`}
-  }
-  &.leave {
-    ${tw`transition ease-in duration-75`}
-  }
-  &.leaveFrom {
-    ${tw`transform scale-100 opacity-100`}
-  }
-  &.leaveTo {
-    ${tw`transform scale-95 opacity-0`}
-  }
-`;
 
 export default function Nav() {
   const user = useUser();
@@ -85,7 +64,7 @@ export default function Nav() {
                 <Menu.Items
                   as="ul"
                   static
-                  tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none"
+                  tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10"
                 >
                   <Menu.Item as="li">
                     <MyLink href="/account">Account</MyLink>
@@ -94,14 +73,9 @@ export default function Nav() {
                     <MyLink href="/orders">Orders</MyLink>
                   </Menu.Item>
                   {user && (
-                    <>
-                      <Menu.Item as="li">
-                        <MyLink href="/sell">Sell</MyLink>
-                      </Menu.Item>
-                      <Menu.Item as="li">
-                        <SignOut />
-                      </Menu.Item>
-                    </>
+                    <Menu.Item as="li">
+                      <SignOut />
+                    </Menu.Item>
                   )}
                 </Menu.Items>
               </StyledTransition>
@@ -123,3 +97,24 @@ export default function Nav() {
     </NavStyles>
   );
 }
+
+const StyledTransition = styled(Transition)`
+  &.enter {
+    ${tw`transition ease-out duration-100`}
+  }
+  &.enterFrom {
+    ${tw`transform scale-95 opacity-0`}
+  }
+  &.enterTo {
+    ${tw`transform scale-100 opacity-100`}
+  }
+  &.leave {
+    ${tw`transition ease-in duration-75`}
+  }
+  &.leaveFrom {
+    ${tw`transform scale-100 opacity-100`}
+  }
+  &.leaveTo {
+    ${tw`transform scale-95 opacity-0`}
+  }
+`;

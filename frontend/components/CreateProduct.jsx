@@ -1,11 +1,8 @@
-import React, { Fragment, useState } from 'react';
 import { css } from 'twin.macro';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import Router from 'next/router';
-import { Combobox, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import useForm from '../lib/useForm';
 import {
   Form,
@@ -19,24 +16,29 @@ import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import { ALL_PRODUCTS_QUERY } from './Products';
 import SelectBox from './forms/ListBox';
+import Radios from './forms/RadioGroup';
+import { strains, weights, environments, producttypes } from '../data-config';
+import FileInput from './forms/FileInput';
 
 const CREATE_PRODUCT_MUTATION = gql`
   mutation CREATE_PRODUCT_MUTATION(
     # Which variables are getting passed in? And What types are they
     $name: String!
     $inventory: Decimal!
+    $producttype: String!
     $weight: String!
-    $potency: Int!
+    $potency: String!
     $strain: String!
     $environment: String!
     # $price: Int! # $amount: Int! # $threshold: String!
     $description: String!
-    $image: Upload
+    $image: [ProductImageCreateInput!]
   ) {
     createProduct(
       data: {
         name: $name
         inventory: $inventory
+        producttype: $producttype
         weight: $weight
         potency: $potency
         strain: $strain
@@ -52,11 +54,12 @@ const CREATE_PRODUCT_MUTATION = gql`
         #   }
         # }
         status: "AVAILABLE"
-        photo: { create: { image: $image, altText: $name } }
+        photo: { create: $image }
       }
     ) {
       id
       name
+      producttype
       inventory
       weight
       potency
@@ -75,18 +78,24 @@ const CREATE_PRODUCT_MUTATION = gql`
   }
 `;
 
-const strains = ['Indica', 'HybridIndica', 'Sativa', 'HybridSativa', 'Hybrid'];
-const environments = ['Indoor', 'Outdoor', 'Greenhouse'];
+export const STRAIN_QUERY = gql`
+  query STRAIN_QUERY {
+    products {
+      strain
+    }
+  }
+`;
 
 function CreateProduct() {
   const { inputs, clearForm, resetForm, handleChange, setInputs } = useForm({
-    image: '',
     name: '',
     inventory: '',
-    weight: '',
-    potency: 0,
-    strain: '',
-    environment: '',
+    producttype: 'Recreational',
+    weight: 'pound',
+    image: [],
+    potency: '',
+    strain: 'Indica',
+    environment: 'Indoor',
     price: 0,
     amount: 0,
     threshold: '',
@@ -102,142 +111,130 @@ function CreateProduct() {
   );
 
   return (
-    <Form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        const response = await createProduct();
-        console.log(response);
-        clearForm();
-        // Go to that product's page!
-        Router.push({
-          pathname: `/product/${response.data.createProduct.id}`,
-        });
-      }}
-      tw="max-w-2xl mx-auto"
-    >
-      <DisplayError error={error} />
-      <fieldset tw="my-5" disabled={loading} aria-busy={loading}>
-        <Processing loading={loading.toString()}>
-          <LoadingIcon tw="animate-spin" />
-          Processing
-        </Processing>
-        <Label htmlFor="name">
-          Name
-          <Input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Name"
-            value={inputs.name}
-            onChange={handleChange}
-            required
-          />
-        </Label>
-        <Label htmlFor="name">
-          Inventory Amount
-          <Input
-            type="text"
-            id="inventory"
-            name="inventory"
-            value={inputs.inventory}
-            onChange={handleChange}
-            required
-          />
-        </Label>
-        <Label htmlFor="name">
-          Potency
-          <div tw="flex">
+    <>
+      <h1 tw="mb-12 text-center">Create Product</h1>
+      <Form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const photoItems = Array.from(inputs.image).map((fileItem) => ({
+            image: fileItem,
+            altText: inputs.name,
+          }));
+          inputs.image = photoItems;
+          const response = await createProduct();
+          clearForm();
+          // Go to that product's page!
+          Router.push({
+            pathname: `/product/${response.data.createProduct.id}`,
+          });
+        }}
+        tw="max-w-4xl mx-auto"
+      >
+        <DisplayError error={error} />
+        <fieldset tw="my-12" disabled={loading} aria-busy={loading}>
+          <Processing loading={loading.toString()}>
+            <LoadingIcon tw="animate-spin" />
+            Processing
+          </Processing>
+          <Label htmlFor="name">
+            Name
             <Input
-              type="range"
-              id="potency"
-              name="potency"
-              min="1"
-              max="35"
-              placeholder="Enter Potency based on % of THC"
-              value={inputs.potency}
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Name"
+              value={inputs.name}
               onChange={handleChange}
-              tw="flex-1"
               required
             />
-            {inputs.potency}%
-          </div>
-        </Label>
-        <Label htmlFor="strain">
-          <SelectBox
+          </Label>
+          <Label htmlFor="inventory">
+            Inventory Amount
+            <Input
+              type="text"
+              id="inventory"
+              name="inventory"
+              value={inputs.inventory}
+              onChange={handleChange}
+              required
+            />
+          </Label>
+          <Radios
+            options={weights}
+            id="weight"
+            name="weight"
+            label="Weight"
+            inputs={inputs}
+            setInputs={setInputs}
+          />
+          <Radios
+            options={producttypes}
+            id="producttype"
+            name="producttype"
+            label="Product Type"
+            inputs={inputs}
+            setInputs={setInputs}
+          />
+          <Label htmlFor="potency">
+            Potency
+            <Input
+              type="text"
+              id="potency"
+              name="potency"
+              value={inputs.potency}
+              onChange={handleChange}
+              required
+            />
+          </Label>
+          <Radios
             options={strains}
             id="strain"
             name="strain"
+            label="Strain"
             inputs={inputs}
             setInputs={setInputs}
           />
-        </Label>
-        <Label htmlFor="environment">
-          <SelectBox
+          <Radios
             options={environments}
             id="environment"
             name="environment"
+            label="Environment"
             inputs={inputs}
             setInputs={setInputs}
           />
-        </Label>
-        {/* <Label htmlFor="price">
-          Price
-          <Input
-            type="text"
-            id="price"
-            name="price"
-            placeholder="Price"
-            onChange={handleChange}
-          />
-        </Label> */}
-        <Label htmlFor="weight">
-          Weight
-          <Select
-            id="weight"
-            name="weight"
-            defaultValue="Pound"
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select Weight</option>
-            <option value="pound">Pound</option>
-            <option value="ounce">Ounce</option>
-            <option value="gram">Gram</option>
-          </Select>
-        </Label>
-        <Label htmlFor="image">
-          Image
-          <Input
-            type="file"
+          <FileInput
             id="image"
             name="image"
+            multiple
+            inputs={inputs}
+            setInputs={setInputs}
             onChange={handleChange}
             required
           />
-        </Label>
-        <Label htmlFor="description">
-          Description
-          <textarea
-            id="description"
-            name="description"
-            placeholder="Description"
-            value={inputs.description}
-            onChange={handleChange}
-          />
-        </Label>
-      </fieldset>
-      <div tw="flex justify-between">
-        <FormButton type="submit">+ Add Product</FormButton>
-        <div tw="flex">
-          <FormButton type="button" onClick={resetForm}>
-            Reset
-          </FormButton>
-          <FormButton type="button" onClick={clearForm}>
-            Clear
-          </FormButton>
+          <Label htmlFor="description">
+            Description
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Description"
+              value={inputs.description}
+              onChange={handleChange}
+            />
+          </Label>
+        </fieldset>
+        <div tw="flex justify-between">
+          <FormButton type="submit">+ Add Product</FormButton>
+          <div tw="flex">
+            <FormButton type="button" onClick={resetForm}>
+              Reset
+            </FormButton>
+            <FormButton type="button" onClick={clearForm}>
+              Clear
+            </FormButton>
+          </div>
         </div>
-      </div>
-    </Form>
+      </Form>
+    </>
   );
 }
 

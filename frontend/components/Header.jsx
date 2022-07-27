@@ -28,7 +28,7 @@ export default function Header() {
           <Cart />
         </>
       )}
-      <Search />
+      {/* <Search /> */}
     </HeaderStyles>
   );
 }
