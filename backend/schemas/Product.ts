@@ -1,9 +1,21 @@
-import { decimal, integer, relationship, select, text } from '@keystone-6/core/fields';
+import { checkbox, decimal, integer, relationship, select, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
+import { isSignedIn, rules } from '../access';
 
 export const Product = list({
+  access: {
+    operation: {
+      create: isSignedIn,
+    },
+    filter: {
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
+  },
   fields: {
     name: text({ validation: { isRequired: true } }),
+    hotdeal: checkbox(),
     inventory: decimal({
       defaultValue: '1.0',
       precision: 18,
@@ -23,7 +35,25 @@ export const Product = list({
       ui: {
         displayMode: 'segmented-control',
       },
-      label: 'Product type'
+      label: 'Product Type'
+    }),
+    productcategory: select({
+      options: [
+        { label: 'Flower', value: 'Flower' },
+        { label: 'Pre Rolls', value: 'Pre Rolls' },
+        { label: 'Concentrates', value: 'Concentrates' },
+        { label: 'Trim', value: 'Trim' },
+        { label: 'Fresh Frozen', value: 'Fresh Frozen' },
+        { label: 'Oil', value: 'Oil' },
+        { label: 'CBD Oils and Isolates', value: 'CBD Oils and Isolates' },
+        { label: 'Grow & Lab Equipment', value: 'Grow & Lab Equipment' },
+      ],
+      validation: { isRequired: true },
+      defaultValue: 'Flower',
+      ui: {
+        displayMode: 'segmented-control',
+      },
+      label: 'Product Category'
     }),
     weight: select({
       options: [
@@ -37,11 +67,9 @@ export const Product = list({
         displayMode: 'segmented-control',
       },
     }),
-    potency: integer({
-      defaultValue: 0,
+    potency: text({
+      defaultValue: '1.0',
       validation: {
-        min: 1,
-        max: 35,
         isRequired: true,
       },
       label: 'Potency (%)'
@@ -49,12 +77,15 @@ export const Product = list({
     strain: select({
       options: [
         { label: 'Indica', value: 'Indica' },
-        { label: 'Hybrid Indica', value: 'HybridIndica' },
+        { label: 'Hybrid Indica', value: 'Hybrid Indica' },
         { label: 'Sativa', value: 'Sativa' },
-        { label: 'Hybrid Sativa', value: 'HybridSativa' },
+        { label: 'Hybrid Sativa', value: 'Hybrid Sativa' },
         { label: 'Hybrid', value: 'Hybrid' },
       ],
       defaultValue: 'Indica',
+      validation: {
+        isRequired: true,
+      },
       ui: {
         displayMode: 'segmented-control',
       },
@@ -66,6 +97,9 @@ export const Product = list({
         { label: 'Outdoor', value: 'Outdoor' },
       ],
       defaultValue: 'Indoor',
+      validation: {
+        isRequired: true,
+      },
       ui: {
         displayMode: 'segmented-control',
       },
@@ -75,6 +109,8 @@ export const Product = list({
       many: true,
       ui: {
         createView: { fieldMode: 'edit' },
+        inlineCreate: { fields: ['name', 'price', 'amount', 'weight', 'threshold'] },
+        inlineEdit: { fields: ['name', 'price', 'amount', 'weight', 'threshold'] },
       }
     }),
     description: text({
@@ -84,9 +120,9 @@ export const Product = list({
     }),
     photo: relationship({
       ref: 'ProductImage.product',
+      many: true,
       ui: {
-        displayMode: 'cards',
-        cardFields: ['image', 'altText'],
+        createView: { fieldMode: 'edit' },
         inlineCreate: { fields: ['image', 'altText'] },
         inlineEdit: { fields: ['image', 'altText'] },
       },

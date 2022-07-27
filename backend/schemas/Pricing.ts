@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core';
 export const Pricing = list({
   fields: {
     name: text({ validation: { isRequired: true } }),
-    price: integer({ validation: { isRequired: true }, label: 'Price per (lb, oz, g)' }),
+    price: integer({ validation: { isRequired: true }, label: 'Price per (lb, oz, g. Values stored as cents so 70000 is $700)' }),
     amount: integer({ validation: { isRequired: true }, label: 'Weight threshold' }),
     weight: select({
       options: [
