@@ -1,6 +1,7 @@
 import { createAuth } from '@keystone-6/auth';
 import { statelessSessions } from '@keystone-6/core/session';
 import { sendPasswordResetEmail } from './lib/mail';
+import { permissionsList } from './schemas/fields';
 
 let sessionSecret = process.env.SESSION_SECRET;
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
@@ -18,11 +19,11 @@ if (!sessionSecret) {
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
-  sessionData: 'name',
   secretField: 'password',
   initFirstItem: {
     fields: ['name', 'email', 'password'],
   },
+  sessionData: `id name email role { ${permissionsList.join(' ')} }`,
   passwordResetLink: {
     sendToken: async ({ identity, token }) => {
       console.log(`passwordResetLink ${token}`)
