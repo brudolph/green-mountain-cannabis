@@ -7,3 +7,4 @@
 .keystone
 frontend/.next
 frontend/.next/*
+backend/.env
