@@ -1,8 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
 import { eachDayOfInterval } from 'date-fns';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { styled } from 'twin.macro';
 import DisplayError from './ErrorMessage';
+import PleaseSignIn from './PleaseSignIn';
 
 const ProductStyles = styled.div`
   display: grid;
@@ -29,7 +31,7 @@ const SINGLE_ITEM_QUERY = gql`
       }
       photo {
         image {
-          publicUrlTransformed
+          publicUrl
         }
       }
       description
@@ -45,24 +47,28 @@ export default function SingleProduct({ id }) {
       id,
     },
   });
+  const { query } = useRouter();
+  console.log(query);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <DisplayError error={error} />;
   const { product } = data;
   return (
-    <ProductStyles>
-      <Head>
-        <title>Green Mountain Cannabis | {product.name}</title>
-      </Head>
-      <h2>{product.name}</h2>
-      <p>{product.description}</p>
-      <img src={product?.photo?.image?.publicUrlTransformed} />
-      <ul>
-        <li>{product?.price_threshold[0]?.threshold}</li>
-        <li>{product?.strain}</li>
-        <li>{product?.potency}</li>
-        <li>{product?.environment}</li>
-      </ul>
-    </ProductStyles>
+    <PleaseSignIn>
+      <ProductStyles>
+        <Head>
+          <title>Green Mountain Cannabis | {product.name}</title>
+        </Head>
+        <h2>{product.name}</h2>
+        <p>{product.description}</p>
+        <img src={product?.photo[0]?.image?.publicUrl} />
+        <ul>
+          <li>{product?.price_threshold[0]?.threshold}</li>
+          <li>{product?.strain}</li>
+          <li>{product?.potency}</li>
+          <li>{product?.environment}</li>
+        </ul>
+      </ProductStyles>
+    </PleaseSignIn>
   );
 }

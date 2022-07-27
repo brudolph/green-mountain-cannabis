@@ -6,7 +6,11 @@ import { ProductImage } from './schemas/ProductImage';
 import { Vendor } from './schemas/Vendor';
 import { Pricing } from './schemas/Pricing';
 import { CartItem } from './schemas/CartItem';
+import { OrderItem } from './schemas/OrderItem';
+import { Order } from './schemas/Order';
+import { Role } from './schemas/Role';
 import { extendGraphqlSchema } from './mutations';
+import { addCompatibilityForQueries } from './compat';
 
 const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
 
@@ -22,18 +26,25 @@ export default withAuth(
       provider: 'postgresql',
       url: databaseURL,
     },
-    ui: {
-      isAccessAllowed: (context) => !!context.session?.data,
-    },
     lists: ({
       User,
       Product,
       ProductImage,
       Vendor,
       Pricing,
-      CartItem
+      CartItem,
+      OrderItem,
+      Order,
+      Role
     }),
-    extendGraphqlSchema,
+    extendGraphqlSchema: (schema) =>
+      addCompatibilityForQueries(extendGraphqlSchema(schema)),
+    ui: {
+      // Show the UI only for poeple who pass this test
+      isAccessAllowed: ({ session }) =>
+        // console.log(session);
+        !!session?.data,
+    },
     session,
   })
 );

@@ -1,201 +1,126 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import Link from 'next/link';
-import React, { forwardRef } from 'react';
 import { styled } from 'twin.macro';
-import { PencilIcon } from '@heroicons/react/solid';
-import ProductsStyles from './styles/ProductsStyles';
-import Title from './styles/Title';
-import DeleteProduct from './DeleteProduct';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper';
+import { Fragment, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import ProductsStyles, {
+  TitleStyles,
+  ImageContainerStyles,
+} from './styles/ProductsStyles';
 import AddToCart from './AddToCart';
-
-const EditButton = forwardRef(({ onClick, href }, ref) => (
-  <a href={href} onClick={onClick} ref={ref} tw="flex items-center">
-    Edit <PencilIcon tw="h-5 w-5 text-accent" />
-  </a>
-));
+import formatMoney from '../lib/formatMoney';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Input, Label } from './styles/Form';
+import formatWeight from '../lib/formatWeight';
+import { useDialog } from '../context/dialogState';
 
 export default function Product({ product }) {
+  const [quantity, setQuantity] = useState('0');
+  const { openDialog, closeDialog } = useDialog();
+
+  const urlify = function (a) {
+    return a
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
   return (
     <ProductsStyles>
-      <div
-        className="aspect-video"
-        tw="bg-gray-200 group-hover:opacity-70 rounded-t-lg overflow-hidden"
-      >
-        <img
-          src={product?.photo?.image?.publicUrl}
-          alt={product?.photo?.altText}
-          tw="w-full h-full object-center object-cover sm:w-full sm:h-full"
-        />
-      </div>
-      <div tw="flex-1 p-4 space-y-2 flex flex-col">
-        <Title>
-          <Link href={`/product/${product?.id}`}>{product?.name}</Link>
-        </Title>
-        <ul tw="">
-          <li tw="text-sm text-gray-700">
-            <span tw="font-semibold">Potency:</span> THC {product?.potency}%
+      <ImageContainerStyles>
+        <Swiper
+          modules={[Pagination]}
+          spaceBetween={10}
+          slidesPerView={1}
+          grabCursor
+          pagination={{ clickable: true }}
+          tw="h-56"
+        >
+          {product.photo.map((photo) => (
+            <SwiperSlide key={photo.id}>
+              <img
+                key={photo.id}
+                src={photo?.image?.publicUrl}
+                alt={photo?.altText}
+                tw="w-full h-full object-center object-cover"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </ImageContainerStyles>
+      <div tw="flex-1 p-4 space-y-2">
+        <div tw="flex justify-between items-center border-b border-gray-200 pb-1 mb-3">
+          <TitleStyles>
+            <Link
+              href={{
+                pathname: '/product/[name]',
+                query: { id: product.id },
+              }}
+              as={`/product/${urlify(product.name)}/`}
+            >
+              {product?.name}
+            </Link>
+          </TitleStyles>
+          <p tw="font-semibold">
+            <span tw="sr-only">Pricing</span>{' '}
+            {product.price_threshold.length > 1 ? (
+              <>
+                <span>
+                  {formatMoney(
+                    product.price_threshold[product.price_threshold.length - 1]
+                      .price
+                  )}
+                </span>{' '}
+                - <span>{formatMoney(product.price_threshold[0].price)}</span>
+              </>
+            ) : (
+              <span>{formatMoney(product.price_threshold[0].price)}</span>
+            )}
+            <span tw="italic ml-1">{formatWeight(product.weight)}</span>
+          </p>
+        </div>
+        <ul tw="space-y-2 border-b border-gray-200 pb-2 mb-3">
+          <li tw="flex text-base text-gray-700 font-semibold">
+            <span tw="text-gray-500 mr-2">Potency:</span>
+            {product?.potency}%
           </li>
-          <li tw="text-sm text-gray-700">
-            <span tw="font-semibold">Strain:</span> {product?.strain}
-          </li>
-          <li tw="text-sm text-gray-700">
-            <span tw="font-semibold">
-              Price per {product?.price_threshold[0]?.weight}:
-            </span>{' '}
-            {product?.price_threshold[0]?.price}
-          </li>
-          <li tw="text-sm text-gray-700">
-            <span tw="font-semibold">Strain:</span>{' '}
-            {product?.price_threshold[0]?.amount}
-          </li>
-          <li tw="text-sm text-gray-700">
-            <span tw="font-semibold">Weight:</span>{' '}
-            {product?.price_threshold[0]?.weight}
-          </li>
-          <li tw="text-sm text-gray-700">
-            <span tw="font-semibold">Threshold:</span>{' '}
-            {product?.price_threshold[0]?.threshold}
+          <li tw="flex text-base text-gray-700  font-semibold">
+            <span tw="text-gray-500 mr-2">Class:</span> {product?.strain}
           </li>
         </ul>
         <div tw="flex justify-between items-center">
-          <div tw="relative inline-block text-left">
-            <div>
-              <button
-                type="button"
-                className="group"
-                tw="inline-flex font-headers justify-center items-center text-lg font-semibold text-primary hover:text-primary-light"
-                id="menu-button"
-                aria-expanded="false"
-                aria-haspopup="true"
-              >
-                $8/1g
-                <svg
-                  tw="flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-accent group-hover:text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div
-              tw="origin-top-left absolute left-0 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="menu-button"
-              tabIndex="-1"
-              style={{ display: 'none' }}
-            >
-              <div tw="py-1" role="none">
-                <a
-                  href="#"
-                  tw="font-medium text-gray-900 block px-4 py-2 text-base"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="menu-item-0"
-                >
-                  $16/2g
-                </a>
-
-                <a
-                  href="#"
-                  tw="text-gray-500 block px-4 py-2 text-base"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="menu-item-1"
-                >
-                  $32/3g
-                </a>
-
-                <a
-                  href="#"
-                  tw="text-gray-500 block px-4 py-2 text-base"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="menu-item-2"
-                >
-                  $83/13g
-                </a>
-
-                <a
-                  href="#"
-                  tw="text-gray-500 block px-4 py-2 text-base"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="menu-item-3"
-                >
-                  $100/26g
-                </a>
-
-                <a
-                  href="#"
-                  tw="text-gray-500 block px-4 py-2 text-base"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="menu-item-4"
-                >
-                  $200/55g
-                </a>
-              </div>
-            </div>
-          </div>
           <div>
             <button
               type="button"
-              tw="w-full bg-primary-light border border-transparent rounded-md shadow-sm py-2 px-4 flex items-center justify-center text-base font-medium text-white hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-dark"
+              onClick={openDialog}
+              tw="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                tw="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                tw="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
+              Quick Product View
             </button>
           </div>
-        </div>
-        <div tw="flex justify-between border-t border-gray-200 pt-3">
-          <Link
-            href={{
-              pathname: 'update',
-              query: {
-                id: product.id,
-              },
-            }}
-            passHref
-          >
-            <EditButton />
-          </Link>
-          <DeleteProduct id={product.id} name={product.name}>
-            Delete {product.name}
-          </DeleteProduct>
+          <div tw="flex">
+            <Label>
+              Qty:{' '}
+              <Input
+                type="number"
+                name="quantity"
+                min="0.0"
+                max={product.inventory}
+                step="0.01"
+                hasBorder
+                tw="mx-2 w-20 h-10"
+                onInput={(e) => setQuantity(e.target.value)}
+              />
+            </Label>
+            <AddToCart
+              id={product.id}
+              quantity={quantity}
+              // inventory={product.inventory}
+            />
+          </div>
         </div>
       </div>
     </ProductsStyles>

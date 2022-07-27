@@ -16,39 +16,49 @@ model User {
   id                      String     @id @default(cuid())
   name                    String     @default("")
   email                   String     @unique @default("")
-  password                String?
+  password                String
   cart                    CartItem[] @relation("CartItem_user")
+  orders                  Order[]    @relation("Order_user")
+  role                    Role?      @relation("User_role", fields: [roleId], references: [id])
+  roleId                  String?    @map("role")
   passwordResetToken      String?
   passwordResetIssuedAt   DateTime?
   passwordResetRedeemedAt DateTime?
+
+  @@index([roleId])
 }
 
 model Product {
-  id                    String        @id @default(cuid())
-  name                  String        @default("")
-  inventory             Decimal       @default("1.0") @postgresql.Decimal(18, 2)
-  producttype           String        @default("Recreational")
-  weight                String        @default("Pound")
-  potency               Int           @default(0)
-  strain                String?       @default("Indica")
-  environment           String?       @default("Indoor")
-  price_threshold       Pricing[]     @relation("Pricing_product")
-  description           String        @default("")
-  photo                 ProductImage? @relation("Product_photo", fields: [photoId], references: [id])
-  photoId               String?       @unique @map("photo")
-  status                String?       @default("DRAFT")
-  vendor                Vendor?       @relation("Product_vendor", fields: [vendorId], references: [id])
-  vendorId              String?       @map("vendor")
-  from_CartItem_product CartItem[]    @relation("CartItem_product")
+  id                    String         @id @default(cuid())
+  name                  String         @default("")
+  hotdeal               Boolean        @default(false)
+  inventory             Decimal        @default("1.0") @postgresql.Decimal(18, 2)
+  producttype           String         @default("Recreational")
+  productcategory       String         @default("Flower")
+  weight                String         @default("Pound")
+  potency               String         @default("1.0")
+  strain                String         @default("Indica")
+  environment           String         @default("Indoor")
+  price_threshold       Pricing[]      @relation("Pricing_product")
+  description           String         @default("")
+  photo                 ProductImage[] @relation("ProductImage_product")
+  status                String?        @default("DRAFT")
+  vendor                Vendor?        @relation("Product_vendor", fields: [vendorId], references: [id])
+  vendorId              String?        @map("vendor")
+  from_CartItem_product CartItem[]     @relation("CartItem_product")
 
   @@index([vendorId])
 }
 
 model ProductImage {
-  id      String   @id @default(cuid())
-  image   Json?
-  altText String   @default("")
-  product Product? @relation("Product_photo")
+  id                   String      @id @default(cuid())
+  image                Json?
+  altText              String      @default("")
+  product              Product?    @relation("ProductImage_product", fields: [productId], references: [id])
+  productId            String?     @map("product")
+  from_OrderItem_photo OrderItem[] @relation("OrderItem_photo")
+
+  @@index([productId])
 }
 
 model Vendor {
@@ -72,7 +82,7 @@ model Pricing {
 
 model CartItem {
   id        String   @id @default(cuid())
-  quantity  Int      @default(1)
+  quantity  Decimal  @default("0.01") @postgresql.Decimal(12, 2)
   product   Product? @relation("CartItem_product", fields: [productId], references: [id])
   productId String?  @map("product")
   user      User?    @relation("CartItem_user", fields: [userId], references: [id])
@@ -80,4 +90,41 @@ model CartItem {
 
   @@index([productId])
   @@index([userId])
+}
+
+model OrderItem {
+  id          String        @id @default(cuid())
+  name        String        @default("")
+  description String        @default("")
+  photo       ProductImage? @relation("OrderItem_photo", fields: [photoId], references: [id])
+  photoId     String?       @map("photo")
+  price       Int?
+  quantity    Int?
+  order       Order?        @relation("OrderItem_order", fields: [orderId], references: [id])
+  orderId     String?       @map("order")
+
+  @@index([photoId])
+  @@index([orderId])
+}
+
+model Order {
+  id     String      @id @default(cuid())
+  total  Int?
+  items  OrderItem[] @relation("OrderItem_order")
+  user   User?       @relation("Order_user", fields: [userId], references: [id])
+  userId String?     @map("user")
+
+  @@index([userId])
+}
+
+model Role {
+  id                String  @id @default(cuid())
+  name              String  @default("")
+  canManageProducts Boolean @default(false)
+  canSeeOtherUsers  Boolean @default(false)
+  canManageUsers    Boolean @default(false)
+  canManageRoles    Boolean @default(false)
+  canManageCart     Boolean @default(false)
+  canManageOrders   Boolean @default(false)
+  assignedTo        User[]  @relation("User_role")
 }

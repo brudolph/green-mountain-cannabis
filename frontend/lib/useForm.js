@@ -18,7 +18,8 @@ export default function useForm(initial = {}) {
       value = parseInt(value);
     }
     if (type === 'file') {
-      [value] = e.target.files;
+      value = e.target.files;
+      console.log(value);
     }
     setInputs({
       // copy the existing state
