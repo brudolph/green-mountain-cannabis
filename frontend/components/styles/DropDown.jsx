@@ -2,7 +2,8 @@ import tw, { styled, css, theme } from 'twin.macro';
 
 const DropDown = styled.div(() => [
   css`
-    position: absolute;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     width: 100%;
     z-index: 2;
     border: 1px solid var(--lightGray);

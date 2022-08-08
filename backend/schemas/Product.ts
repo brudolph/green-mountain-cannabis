@@ -15,6 +15,7 @@ export const Product = list({
   },
   fields: {
     name: text({ validation: { isRequired: true } }),
+    slug: text({ label: 'Pretty URL' }),
     hotdeal: checkbox(),
     inventory: decimal({
       defaultValue: '1.0',
@@ -143,5 +144,22 @@ export const Product = list({
       ref: 'Vendor.products',
       many: false,
     }),
+  },
+  hooks: {
+    resolveInput: ({ resolvedData }) => {
+      const { name, slug } = resolvedData;
+      if (name) {
+        return {
+          ...resolvedData,
+          // Ensure the first letter of the title is capitalised
+          slug: name.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '-')
+            .replace(/^-+|-+$/g, '')
+        }
+      }
+      // We always return resolvedData from the resolveInput hook
+      return resolvedData;
+    }
   },
 });

@@ -39,6 +39,9 @@ module.exports = {
         error: '#b81717',
         transparent: 'transparent',
       },
+      aspectRatio: {
+        '1/1': '1',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],

@@ -1,11 +1,13 @@
 import { ApolloProvider } from '@apollo/client';
 import NProgress from 'nprogress';
 import Router from 'next/router';
+import { cache } from '@emotion/css';
+import { CacheProvider } from '@emotion/react';
 import Page from '../components/Page';
 import '../components/styles/nprogress.css';
 import withData from '../lib/withData';
+import GlobalStyles from '../components/styles/GlobalStyles';
 import { CartStateProvider } from '../context/cartState';
-import { DialogStateProvider } from '../context/dialogState';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -14,13 +16,14 @@ Router.events.on('routeChangeError', () => NProgress.done());
 function App({ Component, pageProps, apollo }) {
   return (
     <ApolloProvider client={apollo}>
-      <CartStateProvider>
-        <DialogStateProvider>
+      <CacheProvider value={cache}>
+        <CartStateProvider>
           <Page>
+            <GlobalStyles />
             <Component {...pageProps} />
           </Page>
-        </DialogStateProvider>
-      </CartStateProvider>
+        </CartStateProvider>
+      </CacheProvider>
     </ApolloProvider>
   );
 }

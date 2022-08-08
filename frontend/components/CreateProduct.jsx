@@ -4,18 +4,10 @@ import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/client';
 import Router from 'next/router';
 import useForm from '../lib/useForm';
-import {
-  Form,
-  FormButton,
-  Input,
-  Label,
-  Select,
-  Processing,
-} from './styles/Form';
+import { Form, FormButton, Input, Label, Processing } from './styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import { ALL_PRODUCTS_QUERY } from './Products';
-import SelectBox from './forms/ListBox';
 import Radios from './forms/RadioGroup';
 import { strains, weights, environments, producttypes } from '../data-config';
 import FileInput from './forms/FileInput';

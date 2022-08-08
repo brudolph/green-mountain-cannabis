@@ -55,40 +55,66 @@ export default function SignUp() {
             in!
           </p>
         )}
-        <Label htmlFor="email">
-          Your Name
-          <Input
-            type="text"
-            name="name"
-            placeholder="Your Name"
-            autoComplete="name"
-            value={inputs.name}
-            onChange={handleChange}
-          />
-        </Label>
-        <Label htmlFor="email">
-          Email
-          <Input
-            type="email"
-            name="email"
-            placeholder="Your Email Address"
-            autoComplete="email"
-            value={inputs.email}
-            onChange={handleChange}
-          />
-        </Label>
-        <Label htmlFor="password">
-          Password
-          <Input
-            type="password"
-            name="password"
-            placeholder="Password"
-            autoComplete="password"
-            value={inputs.password}
-            onChange={handleChange}
-          />
-        </Label>
-        <FormButton type="submit">Sign Up!</FormButton>
+        {!data?.createUser && (
+          <>
+            <Label htmlFor="email" isStacked>
+              Your Name
+              <Input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                autoComplete="name"
+                value={inputs.name}
+                onChange={handleChange}
+              />
+            </Label>
+            <Label htmlFor="email" isStacked>
+              Email
+              <Input
+                type="email"
+                name="email"
+                placeholder="Your Email Address"
+                autoComplete="email"
+                value={inputs.email}
+                onChange={handleChange}
+              />
+            </Label>
+            <Label htmlFor="phone" isStacked>
+              Phone
+              <Input
+                type="text"
+                name="phone"
+                placeholder="Your Phone Number"
+                autoComplete="phone"
+                value={inputs.phone}
+                onChange={handleChange}
+              />
+            </Label>
+            <Label htmlFor="password" isStacked>
+              Password
+              <Input
+                type="password"
+                name="password"
+                placeholder="Password"
+                autoComplete="password"
+                value={inputs.password}
+                onChange={handleChange}
+              />
+            </Label>
+            <Label htmlFor="password" isStacked>
+              Password
+              <Input
+                type="password"
+                name="password"
+                placeholder="Password"
+                autoComplete="password"
+                value={inputs.password}
+                onChange={handleChange}
+              />
+            </Label>
+            <FormButton type="submit">Sign Up!</FormButton>
+          </>
+        )}
       </fieldset>
     </Form>
   );

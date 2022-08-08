@@ -205,6 +205,7 @@ input RoleRelateToOneForCreateInput {
 type Product {
   id: ID!
   name: String
+  slug: String
   hotdeal: Boolean
   inventory: Decimal
   producttype: String
@@ -244,6 +245,7 @@ input ProductWhereInput {
   NOT: [ProductWhereInput!]
   id: IDFilter
   name: StringFilter
+  slug: StringFilter
   hotdeal: BooleanFilter
   inventory: DecimalFilter
   producttype: StringFilter
@@ -319,6 +321,7 @@ input NestedStringNullableFilter {
 input ProductOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  slug: OrderDirection
   hotdeal: OrderDirection
   inventory: OrderDirection
   producttype: OrderDirection
@@ -333,6 +336,7 @@ input ProductOrderByInput {
 
 input ProductUpdateInput {
   name: String
+  slug: String
   hotdeal: Boolean
   inventory: Decimal
   producttype: String
@@ -375,6 +379,7 @@ input ProductUpdateArgs {
 
 input ProductCreateInput {
   name: String
+  slug: String
   hotdeal: Boolean
   inventory: Decimal
   producttype: String
@@ -518,6 +523,7 @@ type Vendor {
   email: String
   contact: String
   vendor_ID: String
+  notes: String
   products(
     where: ProductWhereInput! = {}
     orderBy: [ProductOrderByInput!]! = []
@@ -542,6 +548,7 @@ input VendorWhereInput {
   email: StringFilter
   contact: StringFilter
   vendor_ID: StringFilter
+  notes: StringFilter
   products: ProductManyRelationFilter
 }
 
@@ -557,6 +564,7 @@ input VendorOrderByInput {
   email: OrderDirection
   contact: OrderDirection
   vendor_ID: OrderDirection
+  notes: OrderDirection
 }
 
 input VendorUpdateInput {
@@ -564,6 +572,7 @@ input VendorUpdateInput {
   email: String
   contact: String
   vendor_ID: String
+  notes: String
   products: ProductRelateToManyForUpdateInput
 }
 
@@ -584,6 +593,7 @@ input VendorCreateInput {
   email: String
   contact: String
   vendor_ID: String
+  notes: String
   products: ProductRelateToManyForCreateInput
 }
 
@@ -728,7 +738,8 @@ type OrderItem {
   description: String
   photo: ProductImage
   price: Int
-  quantity: Int
+  weight: String
+  quantity: Decimal
   order: Order
 }
 
@@ -745,7 +756,8 @@ input OrderItemWhereInput {
   description: StringFilter
   photo: ProductImageWhereInput
   price: IntNullableFilter
-  quantity: IntNullableFilter
+  weight: StringFilter
+  quantity: DecimalNullableFilter
   order: OrderWhereInput
 }
 
@@ -760,11 +772,23 @@ input IntNullableFilter {
   not: IntNullableFilter
 }
 
+input DecimalNullableFilter {
+  equals: Decimal
+  in: [Decimal!]
+  notIn: [Decimal!]
+  lt: Decimal
+  lte: Decimal
+  gt: Decimal
+  gte: Decimal
+  not: DecimalNullableFilter
+}
+
 input OrderItemOrderByInput {
   id: OrderDirection
   name: OrderDirection
   description: OrderDirection
   price: OrderDirection
+  weight: OrderDirection
   quantity: OrderDirection
 }
 
@@ -773,7 +797,8 @@ input OrderItemUpdateInput {
   description: String
   photo: ProductImageRelateToOneForUpdateInput
   price: Int
-  quantity: Int
+  weight: String
+  quantity: Decimal
   order: OrderRelateToOneForUpdateInput
 }
 
@@ -799,7 +824,8 @@ input OrderItemCreateInput {
   description: String
   photo: ProductImageRelateToOneForCreateInput
   price: Int
-  quantity: Int
+  weight: String
+  quantity: Decimal
   order: OrderRelateToOneForCreateInput
 }
 

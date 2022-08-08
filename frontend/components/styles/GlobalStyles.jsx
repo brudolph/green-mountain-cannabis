@@ -11,10 +11,10 @@ const customStyles = css({
     aspectRatio: '16/9',
   },
   h1: {
-    ...tw`font-headers !font-bold text-primary-dark !text-3xl uppercase tracking-wide mb-6`,
+    ...tw`font-headers !font-bold text-primary-dark text-3xl uppercase tracking-wide mb-6`,
   },
   h2: {
-    ...tw`font-headers !font-bold text-accent-dark !text-xl uppercase`,
+    ...tw`font-headers !font-bold text-accent-dark text-xl uppercase`,
   },
   '.swiper-pagination-bullet': {
     width: '10px',

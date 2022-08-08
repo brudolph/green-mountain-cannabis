@@ -15,7 +15,6 @@ import { StarIcon } from '@heroicons/react/solid';
 import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import PleaseSignIn from './PleaseSignIn';
 import DisplayError from './ErrorMessage';
-import formatWeight from '../lib/formatWeight';
 
 const SINGLE_ITEM_QUERY = gql`
   query SINGLE_ITEM_QUERY($id: ID!) {
@@ -33,14 +32,12 @@ const SINGLE_ITEM_QUERY = gql`
       }
       description
       potency
-      inventory
-      weight
       environment
     }
   }
 `;
 
-export default function SingleProduct({ id }) {
+export default function Vendor({ id }) {
   const { data, loading, error } = useQuery(SINGLE_ITEM_QUERY, {
     variables: {
       id,
@@ -56,9 +53,22 @@ export default function SingleProduct({ id }) {
       <Head>
         <title>`Green Mountain Cannabis | ${product.name}`</title>
       </Head>
-      <div tw="bg-primary/20">
-        <div tw="max-w-2xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
-          <div tw="bg-white rounded-md lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start p-6">
+      <div tw="grid grid-cols-1 lg:grid-cols-12 lg:gap-10">
+        <div tw="col-span-6">
+          <h2>{product.name}</h2>
+          <p>{product.description}</p>
+          <ul>
+            <li>{product?.price_threshold[0]?.threshold}</li>
+            <li>{product?.strain}</li>
+            <li>{product?.potency}</li>
+            <li>{product?.environment}</li>
+          </ul>
+          <p>Available: {product?.inventory}</p>
+        </div>
+      </div>
+      <div tw="bg-white">
+        <div tw="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+          <div tw="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
             {/* Image gallery */}
             <div>
               <Swiper
@@ -67,10 +77,11 @@ export default function SingleProduct({ id }) {
                 slidesPerView={1}
                 grabCursor
                 lazy
+                autoHeight
                 keyboard
                 zoom
                 pagination={{ clickable: true }}
-                tw="rounded-md h-[31.25rem] border border-primary-light/40"
+                tw="rounded-md"
               >
                 {product.photo.map((photo) => (
                   <SwiperSlide key={photo.id}>
@@ -78,7 +89,7 @@ export default function SingleProduct({ id }) {
                       <img
                         src={photo?.image?.publicUrl}
                         alt={photo?.altText}
-                        tw="h-full object-center object-cover"
+                        tw="w-full h-full object-center object-contain"
                       />
                     </div>
                   </SwiperSlide>
@@ -88,29 +99,35 @@ export default function SingleProduct({ id }) {
 
             {/* Product info */}
             <div tw="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-              <h1 tw="text-3xl font-extrabold tracking-tight text-primary">
+              <h1 tw="text-3xl font-extrabold tracking-tight text-gray-900">
                 {product.name}
               </h1>
 
               <div tw="mt-3">
                 <h2 tw="sr-only">Product information</h2>
-                <ul tw="flex space-x-4 border-b border-gray-200 pb-3">
-                  <li tw="flex text-base text-gray-700 font-semibold border border-solid border-accent px-3 py-1 rounded">
-                    <span tw="sr-only">Class:</span> {product?.strain}
-                  </li>
-                  <li tw="flex text-base text-gray-700 font-semibold border border-solid border-accent px-3 py-1 rounded">
-                    <span tw="sr-only">Potency:</span>
-                    {product?.potency}%
-                  </li>
-                  <li tw="flex text-base text-gray-700 font-semibold border border-solid border-accent px-3 py-1 rounded">
-                    {product?.environment}
-                  </li>
-                </ul>
-                <p>
-                  Available: {product?.inventory}
-                  {formatWeight(product.weight)}s
-                </p>
                 <p tw="text-3xl text-gray-900">{product.price}</p>
+              </div>
+
+              {/* Reviews */}
+              <div tw="mt-3">
+                <h3 tw="sr-only">Reviews</h3>
+                <div tw="flex items-center">
+                  <div tw="flex items-center">
+                    {[0, 1, 2, 3, 4].map((rating) => (
+                      <StarIcon
+                        key={rating}
+                        css={[
+                          product.rating > rating
+                            ? tw`text-indigo-500`
+                            : tw`text-gray-300`,
+                          tw`h-5 w-5 flex-shrink-0`,
+                        ]}
+                        aria-hidden="true"
+                      />
+                    ))}
+                  </div>
+                  <p tw="sr-only">{product.rating} out of 5 stars</p>
+                </div>
               </div>
 
               <div tw="mt-6">
@@ -122,8 +139,43 @@ export default function SingleProduct({ id }) {
                 />
               </div>
 
+              <form tw="mt-6">
+                {/* Colors */}
+                <div>
+                  <h3 tw="text-sm text-gray-600">Color</h3>
+
+                  <RadioGroup value={product.name} tw="mt-2">
+                    <RadioGroup.Label tw="sr-only">
+                      Choose a color
+                    </RadioGroup.Label>
+                    <span tw="flex items-center space-x-3">
+                      <RadioGroup.Option value="black">
+                        <RadioGroup.Label as="span" tw="sr-only">
+                          Red
+                        </RadioGroup.Label>
+                        <span
+                          aria-hidden="true"
+                          css={tw`h-8 w-8 border border-black border-opacity-10 rounded-full`}
+                        />
+                      </RadioGroup.Option>
+                    </span>
+                  </RadioGroup>
+                </div>
+
+                <div tw="mt-10 flex sm:flex-1">
+                  <button
+                    type="submit"
+                    tw="max-w-xs flex-1 bg-primary border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full transition-colors duration-300"
+                  >
+                    Add to cart
+                  </button>
+                </div>
+              </form>
+
               <section aria-labelledby="details-heading" tw="mt-12">
-                <h2 id="details-heading">Additional details</h2>
+                <h2 id="details-heading" tw="sr-only">
+                  Additional details
+                </h2>
 
                 <div tw="border-t divide-y divide-gray-200">
                   <Disclosure as="div">
@@ -167,7 +219,6 @@ export default function SingleProduct({ id }) {
               </section>
             </div>
           </div>
-          <div tw="bg-white" />
         </div>
       </div>
     </PleaseSignIn>

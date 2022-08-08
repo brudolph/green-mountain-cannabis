@@ -23,8 +23,13 @@ const USER_ORDERS_QUERY = gql`
         price
         quantity
         photo {
+          id
           image {
-            publicUrlTransformed
+            publicUrl
+          }
+          altText
+          product {
+            name
           }
         }
       }
@@ -50,36 +55,38 @@ export default function OrdersPage() {
   return (
     <PleaseSignIn>
       <Head>
-        <title>Your Orders ({allOrders.length})</title>
+        <title>`Your Orders (${allOrders.length})`</title>
       </Head>
-      <h2>You have {allOrders.length} orders!</h2>
-      <OrderUl>
-        {allOrders.map((order) => (
-          <OrderItemStyles>
-            <Link href={`/order/${order.id}`}>
-              <a>
-                <div className="order-meta">
-                  <p>{countItemsInAnOrder(order)} Items</p>
-                  <p>
-                    {order.items.length} Product
-                    {order.items.length === 1 ? '' : 's'}
-                  </p>
-                  <p>{formatMoney(order.total)}</p>
-                </div>
-                <div className="images">
-                  {order.items.map((item) => (
-                    <img
-                      key={`image-${item.id}`}
-                      src={item.photo?.image?.publicUrlTransformed}
-                      alt={item.name}
-                    />
-                  ))}
-                </div>
-              </a>
-            </Link>
-          </OrderItemStyles>
-        ))}
-      </OrderUl>
+      <div tw="max-w-7xl mx-auto py-16 px-6">
+        <h1>You have {allOrders.length} orders!</h1>
+        <OrderUl>
+          {allOrders.map((order) => (
+            <OrderItemStyles>
+              <Link href={`/order/${order.id}`}>
+                <a>
+                  <div className="order-meta">
+                    <p>Qty. {countItemsInAnOrder(order)}</p>
+                    <p>
+                      {order.items.length} Product
+                      {order.items.length === 1 ? '' : 's'}
+                    </p>
+                    <p>{formatMoney(order.total)}</p>
+                  </div>
+                  <div className="images">
+                    {order.items.map((item) => (
+                      <img
+                        key={`image-${item.id}`}
+                        src={item?.photo?.image?.publicUrl}
+                        alt={item.name}
+                      />
+                    ))}
+                  </div>
+                </a>
+              </Link>
+            </OrderItemStyles>
+          ))}
+        </OrderUl>
+      </div>
     </PleaseSignIn>
   );
 }

@@ -4,27 +4,27 @@ import QuickView from '../components/QuickView';
 const LocalStateContext = createContext();
 const LocalStateProvider = LocalStateContext.Provider;
 
-function DialogStateProvider({ children }) {
+function QuickviewStateProvider({ children }) {
   const [dialogContent, setDialogContent] = useState('Please add content.');
   // Closed dialog by default
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleDialogContent = (dialog) => {
+  function handleDialogContent(dialog) {
     setDialogOpen(true);
     setDialogContent(dialog);
-  };
+  }
 
-  const toggleDialog = () => {
+  function toggleDialog() {
     setDialogOpen(!dialogOpen);
-  };
+  }
 
-  const closeDialog = () => {
+  function closeDialog() {
     setDialogOpen(false);
-  };
+  }
 
-  const openDialog = () => {
+  function openDialog() {
     setDialogOpen(true);
-  };
+  }
 
   return (
     <LocalStateProvider
@@ -50,13 +50,15 @@ function DialogStateProvider({ children }) {
 }
 
 // make a custom hook for accessing the dialog local state
-function useDialog() {
+function useQuickview() {
   // We use a consumer here to access the local state
   const context = useContext(LocalStateContext);
   if (context === undefined) {
-    throw new Error('useDialog must be used within a DialogStateProvider');
+    throw new Error(
+      'useQuickview must be used within a QuickviewStateProvider'
+    );
   }
 
   return context;
 }
-export { DialogStateProvider, useDialog };
+export { QuickviewStateProvider, useQuickview };

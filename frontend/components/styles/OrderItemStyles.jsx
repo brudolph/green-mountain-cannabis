@@ -1,6 +1,7 @@
 import tw, { styled, css, theme } from 'twin.macro';
 
 const OrderItemStyles = styled.li`
+  background-color: white;
   box-shadow: var(--bs);
   list-style: none;
   padding: 2rem;

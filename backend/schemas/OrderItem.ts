@@ -1,4 +1,4 @@
-import { integer, select, text, relationship } from '@keystone-6/core/fields';
+import { integer, select, text, relationship, decimal } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { isSignedIn, rules } from '../access';
 
@@ -30,7 +30,8 @@ export const OrderItem = list({
       },
     }),
     price: integer(),
-    quantity: integer(),
+    weight: text(),
+    quantity: decimal(),
     order: relationship({ ref: 'Order.items' }),
   },
 });

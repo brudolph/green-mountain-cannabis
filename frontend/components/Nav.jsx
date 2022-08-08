@@ -1,36 +1,39 @@
-import { Fragment, forwardRef } from 'react';
+import { Fragment, forwardRef, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import Link from 'next/link';
-import { Menu, Transition } from '@headlessui/react';
-import { ShoppingCartIcon, UserIcon } from '@heroicons/react/outline';
-import NavStyles from './styles/NavStyles';
+import { Dialog, Menu, Transition } from '@headlessui/react';
+import {
+  SearchIcon,
+  ShoppingCartIcon,
+  UserIcon,
+} from '@heroicons/react/outline';
+import { NavStyles } from './styles/NavStyles';
 import SignOut from './SignOut';
 import { useUser } from './User';
 import Cart from './Cart';
 import CloseButton from './styles/CloseButton';
 import { useCart } from '../context/cartState';
 import CartCount from './CartCount';
-
-const MyLink = forwardRef((props, ref) => {
-  const { href, children, ...rest } = props;
-  return (
-    <Link href={href}>
-      <a ref={ref} {...rest}>
-        {children}
-      </a>
-    </Link>
-  );
-});
+import { MyLink } from './MyLink';
+import Search from './Search';
 
 export default function Nav() {
   const user = useUser();
   const { openCart } = useCart();
+  const [openSearch, setOpenSearch] = useState(false);
+  function closeSearchModal() {
+    setOpenSearch(false);
+  }
+
+  function openSearchModal() {
+    setOpenSearch(true);
+  }
   return (
     <NavStyles>
-      <ul tw="flex space-x-8">
+      <ul tw="flex space-x-8 pb-5">
         <li>
           <a
-            href="/"
+            href="/products/recreational"
             tw="uppercase text-xl font-headers font-medium border-b-2 -mb-px border-transparent text-primary hover:text-primary-dark hover:border-primary"
           >
             Recreational
@@ -38,60 +41,55 @@ export default function Nav() {
         </li>
         <li>
           <a
-            href="/"
+            href="/products/medical"
             tw="uppercase text-xl font-headers font-medium border-b-2 -mb-px border-transparent text-primary hover:text-primary-dark hover:border-primary"
           >
             Medical
           </a>
         </li>
       </ul>
-      <div tw="flex items-center">
-        <div tw="relative inline-block text-left">
-          <Menu>
-            <>
-              <Menu.Button tw="inline-flex justify-center">
-                <span tw="sr-only">More user options</span>
-                <UserIcon tw="w-6 h-6 text-accent" />
-              </Menu.Button>
-              <StyledTransition
-                enter="enter"
-                enterFrom="enterFrom"
-                enterTo="enterTo"
-                leave="leave"
-                leaveFrom="leaveFrom"
-                leaveTo="leaveTo"
-              >
-                <Menu.Items
-                  as="ul"
-                  static
-                  tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10"
-                >
-                  <Menu.Item as="li">
-                    <MyLink href="/account">Account</MyLink>
-                  </Menu.Item>
-                  <Menu.Item as="li">
-                    <MyLink href="/orders">Orders</MyLink>
-                  </Menu.Item>
-                  {user && (
-                    <Menu.Item as="li">
-                      <SignOut />
-                    </Menu.Item>
-                  )}
-                </Menu.Items>
-              </StyledTransition>
-            </>
-          </Menu>
-        </div>
+      <div tw="flex items-center pb-5 space-x-8">
+        <MyLink href="/search">
+          <span tw="sr-only">Search</span>
+          <SearchIcon tw="w-6 h-6 text-accent" aria-hidden="true" />
+        </MyLink>
+
+        <Menu>
+          <Menu.Button tw="inline-flex justify-center">
+            <span tw="sr-only">More user options</span>
+            <UserIcon tw="w-6 h-6 text-accent" />
+          </Menu.Button>
+          <StyledTransition
+            enter="enter"
+            enterFrom="enterFrom"
+            enterTo="enterTo"
+            leave="leave"
+            leaveFrom="leaveFrom"
+            leaveTo="leaveTo"
+          >
+            <Menu.Items
+              as="ul"
+              static
+              tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md p-2 shadow-lg outline-none z-50"
+            >
+              <Menu.Item as="li">
+                <MyLink href="/account">Account</MyLink>
+              </Menu.Item>
+              <Menu.Item as="li">
+                <MyLink href="/orders">Orders</MyLink>
+              </Menu.Item>
+              {user && (
+                <Menu.Item as="li">
+                  <SignOut />
+                </Menu.Item>
+              )}
+            </Menu.Items>
+          </StyledTransition>
+        </Menu>
         <button type="button" onClick={openCart} tw="flex items-center">
           <span tw="sr-only">My Cart</span>
           <ShoppingCartIcon tw="w-6 h-6 text-accent" />
-          <CartCount
-            count={user.cart.reduce(
-              (tally, cartItem) =>
-                tally + (cartItem.product ? cartItem.quantity : 0),
-              0
-            )}
-          />
+          <CartCount count={user.cart.length} />
         </button>
       </div>
     </NavStyles>

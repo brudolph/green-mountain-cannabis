@@ -11,11 +11,7 @@ export default function ProductsPage() {
 
   return (
     <PleaseSignIn>
-      <Products
-        recreational="recreational"
-        medical="medical"
-        page={page || 1}
-      />
+      <Products producttype="Recreational" page={page || 1} />
       <Cart />
       <Pagination page={page || 1} />
     </PleaseSignIn>

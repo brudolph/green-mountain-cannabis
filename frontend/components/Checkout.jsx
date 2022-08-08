@@ -12,6 +12,9 @@ import calcTotalPrice from '../lib/calcTotalPrice';
 import RemoveFromCart from './RemoveFromCart';
 
 const CheckoutFormStyles = styled.form`
+  max-width: 80rem;
+  background-color: white;
+  margin: 0 auto;
   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 5px;
@@ -45,7 +48,7 @@ function CartItem({ cartItem }) {
     <CartItemStyles>
       <img
         width="100"
-        src={product?.photo?.image?.publicUrl}
+        src={product?.photo[0]?.image?.publicUrl}
         alt={product.name}
       />
       <div>

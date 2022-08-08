@@ -8,7 +8,14 @@ import { DropDown, DropDownItem, SearchStyles } from './styles/DropDown';
 const SEARCH_PRODUCTS_QUERY = gql`
   query SEARCH_PRODUCTS_QUERY($searchTerm: String!) {
     searchTerms: products(
-      where: { OR: [{ strain: { contains: $searchTerm } }] }
+      where: {
+        OR: [
+          { name: { contains: $searchTerm } }
+          { strain: { contains: $searchTerm } }
+          { potency: { contains: $searchTerm } }
+          { environment: { contains: $searchTerm } }
+        ]
+      }
     ) {
       id
       name
@@ -29,6 +36,19 @@ export default function Search() {
     }
   );
   const items = data?.searchTerms || [];
+  const urlify = function (a) {
+    return a
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+  const rerouteSearch = (selectedItem) => {
+    router.push({
+      pathname: `/product/${urlify(selectedItem.name)}`,
+      query: { id: selectedItem.id },
+    });
+  };
   const findItemsButChill = debounce(findItems, 350);
   resetIdCounter();
   const {
@@ -49,9 +69,7 @@ export default function Search() {
       });
     },
     onSelectedItemChange({ selectedItem }) {
-      router.push({
-        pathname: `/product/${selectedItem.id}`,
-      });
+      rerouteSearch(selectedItem);
     },
     itemToString: (item) => item?.name || '',
   });
@@ -76,7 +94,7 @@ export default function Search() {
               highlighted={index === highlightedIndex}
             >
               <img
-                src={item.photo.image.publicUrlTransformed}
+                src={item.photo[0].image.publicUrl}
                 alt={item.name}
                 width="50"
               />

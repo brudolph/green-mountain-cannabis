@@ -9,6 +9,7 @@ export const Vendor = list({
     email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     contact: text({ isIndexed: 'unique' }),
     vendor_ID: text(),
+    notes: text(),
     products: relationship({ ref: 'Product.vendor', many: true, }),
   },
 });

@@ -1,13 +1,13 @@
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import tw, { css, styled } from 'twin.macro';
 
-const Dot = tw.div`bg-accent text-white p-2 ml-2 tabular-nums rounded-full`;
+const Dot = tw.div`flex items-center justify-center bg-accent text-white text-xs ml-2 rounded-full w-5 h-5`;
 
 const AnimationStyles = styled.span(() => [
   css`
     position: relative;
     .count {
-      display: block;
+      display: flex;
       position: relative;
       transition: transform 0.4s;
       backface-visibility: hidden;
