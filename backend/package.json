@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "keystone dev",
-    "start": "keystone start",
-    "build": "keystone build",
-    "postinstall": "keystone postinstall"
+    "postinstall": "cross-env STAGE=postinstall keystone postinstall",
+    "build": "cross-env STAGE=build keystone build && cross-env STAGE=migrate keystone prisma migrate deploy && cross-env STAGE=build",
+    "start": "cross-env STAGE=run keystone start"
   },
   "author": "Ben Rudolph",
   "license": "MIT",
@@ -26,6 +26,7 @@
     "node": "^14.15 || ^16.13"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.1",
     "eslint": "^8.18.0",
     "eslint-config-airbnb": "^19.0.4",

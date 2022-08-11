@@ -24,7 +24,7 @@ export default withAuth(
     },
     db: {
       provider: 'postgresql',
-      url: databaseURL,
+      url: process.env.STAGE === 'migrate' ? process.env.DATABASE_URL_MIGRATE : process.env.DATABASE_URL_POOL,
       enableLogging: true,
       useMigrations: true,
     },
