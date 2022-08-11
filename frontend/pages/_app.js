@@ -39,7 +39,7 @@ App.getInitialProps = async function ({ Component, ctx }) {
 };
 
 App.propTypes = {
-  Component: PropTypes.node,
+  Component: PropTypes.any,
   apollo: PropTypes.any,
   pageProps: PropTypes.any,
 };

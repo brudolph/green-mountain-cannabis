@@ -186,7 +186,7 @@ function Filters({ loading, products, setFilteredData }) {
 }
 
 Filters.propTypes = {
-  loading: PropTypes.string,
+  loading: PropTypes.bool,
   products: PropTypes.shape({
     products: PropTypes.shape({
       filter: PropTypes.func,

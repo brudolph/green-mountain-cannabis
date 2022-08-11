@@ -67,7 +67,7 @@ export default function Cart() {
 }
 CartItem.propTypes = {
   cartItem: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     product: PropTypes.shape({
       name: PropTypes.string,
       photo: PropTypes.any,
