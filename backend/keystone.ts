@@ -25,6 +25,8 @@ export default withAuth(
     db: {
       provider: 'postgresql',
       url: databaseURL,
+      enableLogging: true,
+      useMigrations: true,
     },
     lists: ({
       User,
