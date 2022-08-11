@@ -1,6 +1,7 @@
-import tw, { css } from 'twin.macro';
+import PropTypes from 'prop-types';
+import tw from 'twin.macro';
 
-export default function CartIcon({ variant }) {
+function CartIcon({ variant }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,3 +24,9 @@ export default function CartIcon({ variant }) {
     </svg>
   );
 }
+
+CartIcon.propTypes = {
+  variant: PropTypes.string,
+};
+
+export default CartIcon;

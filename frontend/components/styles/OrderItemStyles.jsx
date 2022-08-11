@@ -1,4 +1,4 @@
-import tw, { styled, css, theme } from 'twin.macro';
+import { styled } from 'twin.macro';
 
 const OrderItemStyles = styled.li`
   background-color: white;

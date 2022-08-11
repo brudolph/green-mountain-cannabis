@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { Form, FormButton, Input, Label, Processing } from './styles/Form';
@@ -36,6 +37,8 @@ export default function SignUp() {
   async function handleSubmit(e) {
     e.preventDefault(); // stop the form from submitting
     const res = await signup().catch(console.error);
+    console.log(res);
+    console.log({ data, loading, error });
     resetForm();
     // Send the email and password to the graphqlAPI
   }

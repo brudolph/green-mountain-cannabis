@@ -1,13 +1,9 @@
-import Link from 'next/link';
-import tw, { styled } from 'twin.macro';
-import { forwardRef } from 'react';
+import 'twin.macro';
 import Announcement from './Announcement';
 import Nav from './Nav';
 import Logo from '../public/static/gmc-logo.svg';
-import SignIn from './SignIn';
 import { useUser } from './User';
 import Cart from './Cart';
-import Search from './Search';
 import { HeaderStyles } from './styles/HeaderStyles';
 import { MyLink } from './MyLink';
 

@@ -1,18 +1,18 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable import/no-unresolved */
+import PropTypes from 'prop-types';
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Lazy } from 'swiper';
+import { Pagination } from 'swiper';
 import tw, { styled } from 'twin.macro';
-import PropTypes from 'prop-types';
 import { XCircleIcon } from '@heroicons/react/outline';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/lazy';
-import { VariablesInAllowedPositionRule } from 'graphql';
 import gql from 'graphql-tag';
-import { useLazyQuery, useQuery } from '@apollo/client';
-import { PricingStyles } from './styles/ProductStyles';
-import formatMoney from '../lib/formatMoney';
+import { useLazyQuery } from '@apollo/client';
 import formatWeight from '../lib/formatWeight';
 
 const ALL_PRODUCTS_QUERY = gql`
@@ -38,26 +38,18 @@ const ALL_PRODUCTS_QUERY = gql`
   }
 `;
 
-export default function QuickView({
-  content,
-  dialogOpen = false,
-  closeDialog,
-}) {
+function QuickView({ content, dialogOpen = false, closeDialog }) {
   let id = '';
+  id = content.vendor.id;
 
-  const [getVendor, { data, error, loading }] = useLazyQuery(
-    ALL_PRODUCTS_QUERY,
-    {
-      variables: {
-        id,
-      },
-    }
-  );
+  const [getVendor, { data }] = useLazyQuery(ALL_PRODUCTS_QUERY, {
+    variables: {
+      id,
+    },
+  });
 
   useEffect(() => {
     if (dialogOpen) {
-      id = content.vendor.id;
-      console.log(id);
       getVendor({ variables: id });
     }
   }, [dialogOpen]);
@@ -191,6 +183,25 @@ export default function QuickView({
   );
 }
 
+QuickView.propTypes = {
+  closeDialog: PropTypes.any,
+  content: PropTypes.shape({
+    environment: PropTypes.string,
+    inventory: PropTypes.any,
+    name: PropTypes.string,
+    photo: PropTypes.shape({
+      map: PropTypes.func,
+    }),
+    potency: PropTypes.string,
+    strain: PropTypes.string,
+    vendor: PropTypes.shape({
+      id: PropTypes.any,
+    }),
+    weight: PropTypes.string,
+  }),
+  dialogOpen: PropTypes.bool,
+};
+
 const StyledTransitionChildOuter = styled(Transition.Child)`
   &.enter {
     ${tw`ease-out duration-300`}
@@ -231,3 +242,5 @@ const StyledTransitionChildInner = styled(Transition.Child)`
     ${tw`opacity-0 scale-95`}
   }
 `;
+
+export default QuickView;

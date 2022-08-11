@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import useForm from '../lib/useForm';
@@ -31,18 +32,16 @@ const UPDATE_PRODUCT_MUTATION = gql`
   }
 `;
 
-export default function UpdateProduct({ id }) {
+function UpdateProduct({ id }) {
   // 1. We need to get the existing product
   const { data, error, loading } = useQuery(SINGLE_PRODUCT_QUERY, {
     variables: { id },
   });
   // 2. We need to get the mutation to update the product
-  const [
-    updateProduct,
-    { data: updateData, error: updateError, loading: updateLoading },
-  ] = useMutation(UPDATE_PRODUCT_MUTATION);
+  const [updateProduct, { error: updateError, loading: updateLoading }] =
+    useMutation(UPDATE_PRODUCT_MUTATION);
   // 2.5 Create some state for the form inputs:
-  const { inputs, handleChange, clearForm, resetForm } = useForm(
+  const { inputs, handleChange } = useForm(
     data?.product || {
       name: '',
       description: '',
@@ -102,3 +101,9 @@ export default function UpdateProduct({ id }) {
     </Form>
   );
 }
+
+UpdateProduct.propTypes = {
+  id: PropTypes.string,
+};
+
+export default UpdateProduct;

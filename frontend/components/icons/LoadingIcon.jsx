@@ -1,6 +1,6 @@
 import tw from 'twin.macro';
 
-export default function LoadingIcon({}) {
+export default function LoadingIcon() {
   return (
     <svg
       css={[tw`-ml-1 mr-3 h-5 w-5 text-white animate-spin`]}

@@ -1,4 +1,4 @@
-import tw, { styled, css } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 export const Form = styled.form(({ hasBorder }) => [
   tw`max-w-lg mx-auto`,
@@ -15,7 +15,7 @@ export const Label = styled.label(({ isStacked }) => [
 ]);
 
 export const Input = styled.input(({ type }) => [
-  tw`px-2 py-2 border-gray-300 rounded shadow-sm focus:ring-accent focus:border-accent-dark sm:text-sm`,
+  tw`px-2 py-2 border-gray-300 rounded shadow-sm focus:ring-accent focus:border-accent-dark text-primary sm:text-sm`,
   type !== 'checkbox' ? tw`w-full self-start` : null,
 ]);
 

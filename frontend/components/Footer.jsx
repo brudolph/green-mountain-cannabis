@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import tw, { styled } from 'twin.macro';
+import 'twin.macro';
 import { useUser } from './User';
 import { FooterStyles } from './styles/FooterStyles';
 
@@ -18,49 +17,49 @@ export default function Footer() {
                 <div tw="grid grid-cols-1 gap-y-12 sm:col-span-2 sm:grid-cols-2 sm:gap-x-8">
                   <div>
                     <h3 tw="text-sm font-medium text-gray-900">Products</h3>
-                    <ul role="list" tw="mt-6 space-y-6">
+                    <ul tw="mt-6 space-y-6">
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Flower
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Pre Rolls
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Concentrates
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Trim
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Fresh Frozen
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Oil
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           CBD oils and isolates
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Grow &amp; Lab Equipment
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Licenses For Sale
                         </a>
                       </li>
@@ -68,34 +67,34 @@ export default function Footer() {
                   </div>
                   <div>
                     <h3 tw="text-sm font-medium text-gray-900">Company</h3>
-                    <ul role="list" tw="mt-6 space-y-6">
+                    <ul tw="mt-6 space-y-6">
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Who we are
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Sustainability
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Press
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Careers
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Terms &amp; Conditions
                         </a>
                       </li>
                       <li tw="text-sm">
-                        <a href="#" tw="text-gray-500 hover:text-gray-600">
+                        <a href="/" tw="text-gray-500 hover:text-gray-600">
                           Privacy
                         </a>
                       </li>
@@ -106,29 +105,29 @@ export default function Footer() {
                   <h3 tw="text-sm font-medium text-gray-900">
                     Customer Service
                   </h3>
-                  <ul role="list" tw="mt-6 space-y-6">
+                  <ul tw="mt-6 space-y-6">
                     <li tw="text-sm">
-                      <a href="#" tw="text-gray-500 hover:text-gray-600">
+                      <a href="/" tw="text-gray-500 hover:text-gray-600">
                         Contact
                       </a>
                     </li>
                     <li tw="text-sm">
-                      <a href="#" tw="text-gray-500 hover:text-gray-600">
+                      <a href="/" tw="text-gray-500 hover:text-gray-600">
                         Shipping
                       </a>
                     </li>
                     <li tw="text-sm">
-                      <a href="#" tw="text-gray-500 hover:text-gray-600">
+                      <a href="/" tw="text-gray-500 hover:text-gray-600">
                         Returns
                       </a>
                     </li>
                     <li tw="text-sm">
-                      <a href="#" tw="text-gray-500 hover:text-gray-600">
+                      <a href="/" tw="text-gray-500 hover:text-gray-600">
                         Warranty
                       </a>
                     </li>
                     <li tw="text-sm">
-                      <a href="#" tw="text-gray-500 hover:text-gray-600">
+                      <a href="/" tw="text-gray-500 hover:text-gray-600">
                         FAQ
                       </a>
                     </li>

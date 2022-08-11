@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import tw, { styled } from 'twin.macro';
 import { XCircleIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
@@ -7,7 +8,6 @@ import { useUser } from './User';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import { useCart } from '../context/cartState';
 import RemoveFromCart from './RemoveFromCart';
-import { Checkout } from './Checkout';
 
 const CartItemStyles = styled.li(() => [
   tw`py-4 border-b border-solid border-gray-200 grid grid-cols-[auto 1fr auto] gap-4`,
@@ -26,7 +26,7 @@ function CartItem({ cartItem }) {
       <div>
         <h3>{product.name}</h3>
         <p>
-          {formatMoney(product?.price_threshold[0]?.price * cartItem.quantity)}
+          {formatMoney(product.price_threshold[0].price * cartItem.quantity)}
           <br />
           <em>
             {cartItem.quantity} &times;{' '}
@@ -65,3 +65,15 @@ export default function Cart() {
     </CartStyles>
   );
 }
+CartItem.propTypes = {
+  cartItem: PropTypes.shape({
+    id: PropTypes.number,
+    product: PropTypes.shape({
+      name: PropTypes.string,
+      photo: PropTypes.any,
+      price_threshold: PropTypes.any,
+      weight: PropTypes.string,
+    }),
+    quantity: PropTypes.number,
+  }),
+};

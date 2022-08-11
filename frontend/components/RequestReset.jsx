@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { Form, FormButton, Input, Label } from './styles/Form';

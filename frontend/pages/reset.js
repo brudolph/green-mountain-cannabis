@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import RequestReset from '../components/RequestReset';
 import Reset from '../components/Reset';
 
-export default function ResetPage({ query }) {
+function ResetPage({ query }) {
   if (!query?.token) {
     return (
       <div>
@@ -17,3 +18,11 @@ export default function ResetPage({ query }) {
     </div>
   );
 }
+
+ResetPage.propTypes = {
+  query: PropTypes.shape({
+    token: PropTypes.string,
+  }),
+};
+
+export default ResetPage;

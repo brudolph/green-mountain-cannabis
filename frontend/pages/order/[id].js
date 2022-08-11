@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import Head from 'next/head';
 import ErrorMessage from '../../components/ErrorMessage';
@@ -29,7 +30,8 @@ const SINGLE_ORDER_QUERY = gql`
     }
   }
 `;
-export default function SingleOrderPage({ query }) {
+function SingleOrderPage({ query }) {
+  console.log(typeof query);
   const { data, error, loading } = useQuery(SINGLE_ORDER_QUERY, {
     variables: { id: query.id },
   });
@@ -72,3 +74,11 @@ export default function SingleOrderPage({ query }) {
     </OrderStyles>
   );
 }
+
+SingleOrderPage.propTypes = {
+  query: PropTypes.shape({
+    id: PropTypes.any,
+  }),
+};
+
+export default SingleOrderPage;

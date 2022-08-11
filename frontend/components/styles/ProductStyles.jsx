@@ -1,6 +1,6 @@
 import tw, { styled } from 'twin.macro';
 
-const ProductStyles = styled.div(({ isSale }) => [
+const ProductStyles = styled.div(() => [
   tw`relative bg-white border border-gray-300 rounded-lg flex flex-col justify-between shadow-md`,
 ]);
 
