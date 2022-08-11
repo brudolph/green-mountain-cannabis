@@ -1,7 +1,7 @@
-import { useMutation, useQuery, gql } from '@apollo/client';
+import PropTypes from 'prop-types';
+import { useMutation, gql } from '@apollo/client';
 import 'twin.macro';
 import { ShoppingCartIcon } from '@heroicons/react/outline';
-import { useEffect } from 'react';
 import { CURRENT_USER_QUERY } from './User';
 import { AddToCartStyles } from './styles/AddToCartStyles';
 
@@ -14,7 +14,7 @@ const ADD_TO_CART_MUTATION = gql`
   }
 `;
 
-export default function AddToCart({ id, quantity }) {
+function AddToCart({ id, quantity }) {
   const [addToCart, { loading }] = useMutation(ADD_TO_CART_MUTATION, {
     variables: { id, quantity },
     refetchQueries: [{ query: CURRENT_USER_QUERY }],
@@ -31,3 +31,10 @@ export default function AddToCart({ id, quantity }) {
     </AddToCartStyles>
   );
 }
+
+AddToCart.propTypes = {
+  id: PropTypes.number,
+  quantity: PropTypes.string,
+};
+
+export default AddToCart;

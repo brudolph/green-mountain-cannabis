@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/client';
 import { TrashIcon } from '@heroicons/react/solid';
 import 'twin.macro';
@@ -18,17 +19,14 @@ function update(cache, payload) {
   console.log(payload.data.deleteProduct.id);
 }
 
-export default function DeleteProduct({ id }) {
+function DeleteProduct({ id }) {
   const { inputs } = useForm({
     name: '',
   });
-  const [deleteProduct, { loading, error }] = useMutation(
-    DELETE_PRODUCT_MUTATION,
-    {
-      variables: { id },
-      update,
-    }
-  );
+  const [deleteProduct, { loading }] = useMutation(DELETE_PRODUCT_MUTATION, {
+    variables: { id },
+    update,
+  });
   return (
     <button
       type="button"
@@ -46,3 +44,9 @@ export default function DeleteProduct({ id }) {
     </button>
   );
 }
+
+DeleteProduct.propTypes = {
+  id: PropTypes.number,
+};
+
+export default DeleteProduct;

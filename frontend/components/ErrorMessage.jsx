@@ -1,4 +1,4 @@
-import tw, { styled, css, theme } from 'twin.macro';
+import { styled } from 'twin.macro';
 import React from 'react';
 
 import PropTypes from 'prop-types';
@@ -35,10 +35,6 @@ const DisplayError = ({ error }) => {
       </p>
     </ErrorStyles>
   );
-};
-
-DisplayError.defaultProps = {
-  error: {},
 };
 
 DisplayError.propTypes = {

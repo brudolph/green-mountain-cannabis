@@ -1,15 +1,18 @@
-import { css } from 'twin.macro';
-import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Router from 'next/router';
 import useForm from '../lib/useForm';
 import { Form, FormButton, Input, Label, Processing } from './styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
-import { ALL_PRODUCTS_QUERY } from './Products';
+import { ALL_PRODUCTS_FILTERED_QUERY } from './Products';
 import Radios from './forms/RadioGroup';
-import { strains, weights, environments, producttypes } from '../data-config';
+import {
+  strainList,
+  weights,
+  environmentList,
+  producttypes,
+} from './config/filters';
 import FileInput from './forms/FileInput';
 
 const CREATE_PRODUCT_MUTATION = gql`
@@ -94,11 +97,11 @@ function CreateProduct() {
     description: '',
   });
 
-  const [createProduct, { loading, error, data }] = useMutation(
+  const [createProduct, { loading, error }] = useMutation(
     CREATE_PRODUCT_MUTATION,
     {
       variables: inputs,
-      refetchQueries: [{ query: ALL_PRODUCTS_QUERY }],
+      refetchQueries: [{ query: ALL_PRODUCTS_FILTERED_QUERY }],
     }
   );
 
@@ -179,7 +182,7 @@ function CreateProduct() {
             />
           </Label>
           <Radios
-            options={strains}
+            options={strainList}
             id="strain"
             name="strain"
             label="Strain"
@@ -187,7 +190,7 @@ function CreateProduct() {
             setInputs={setInputs}
           />
           <Radios
-            options={environments}
+            options={environmentList}
             id="environment"
             name="environment"
             label="Environment"

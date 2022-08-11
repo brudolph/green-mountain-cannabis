@@ -1,15 +1,16 @@
+/* eslint-disable react/jsx-no-bind */
+import PropTypes from 'prop-types';
 import tw, { styled } from 'twin.macro';
 import { useId, useState } from 'react';
 import nProgress from 'nprogress';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
-import { Router, useRouter } from 'next/dist/client/router';
-import Link from 'next/link';
-import { useCart } from '../context/cartState';
+import { useRouter } from 'next/dist/client/router';
 import { CURRENT_USER_QUERY, useUser } from './User';
 import formatMoney from '../lib/formatMoney';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import RemoveFromCart from './RemoveFromCart';
+import PleaseSignIn from './PleaseSignIn';
 
 const CheckoutFormStyles = styled.form`
   max-width: 80rem;
@@ -54,7 +55,7 @@ function CartItem({ cartItem }) {
       <div>
         <h3>{product.name}</h3>
         <p>
-          {formatMoney(product?.price_threshold[0]?.price * cartItem.quantity)}
+          {formatMoney(product.price_threshold[0].price * cartItem.quantity)}
           <br />
           <em>
             {cartItem.quantity} &times;{' '}
@@ -68,17 +69,25 @@ function CartItem({ cartItem }) {
   );
 }
 
+CartItem.propTypes = {
+  cartItem: PropTypes.shape({
+    id: PropTypes.number,
+    product: PropTypes.shape({
+      name: PropTypes.string,
+      photo: PropTypes.object,
+      price_threshold: PropTypes.string,
+      weight: PropTypes.string,
+    }),
+    quantity: PropTypes.number,
+  }),
+};
+
 function CheckoutForm() {
   const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
-  // const stripe = useStripe();
-  // const elements = useElements();
+  const [setLoading] = useState(false);
   const router = useRouter();
   const checkoutid = useId();
-  const { closeCart } = useCart();
   const user = useUser();
-  if (!user) return null;
-
   const [checkout, { error: graphQLError }] = useMutation(
     CREATE_ORDER_MUTATION,
     {
@@ -121,22 +130,24 @@ function CheckoutForm() {
   }
 
   return (
-    <CheckoutFormStyles onSubmit={handleSubmit}>
-      <header>
-        <div>{user.name}'s Cart</div>
-      </header>
-      <ul>
-        {user.cart.map((cartItem) => (
-          <CartItem key={cartItem.id} cartItem={cartItem} />
-        ))}
-      </ul>
-      <footer>
-        <p>{formatMoney(calcTotalPrice(user.cart))}</p>
-      </footer>
-      {error && <p style={{ fontSize: 12 }}>{error.message}</p>}
-      {graphQLError && <p style={{ fontSize: 12 }}>{graphQLError.message}</p>}
-      <button>Check Out Now</button>
-    </CheckoutFormStyles>
+    <PleaseSignIn>
+      <CheckoutFormStyles onSubmit={handleSubmit}>
+        <header>
+          <div>{user.name}'s Cart</div>
+        </header>
+        <ul>
+          {user.cart.map((cartItem) => (
+            <CartItem key={cartItem.id} cartItem={cartItem} />
+          ))}
+        </ul>
+        <footer>
+          <p>{formatMoney(calcTotalPrice(user.cart))}</p>
+        </footer>
+        {error && <p style={{ fontSize: 12 }}>{error.message}</p>}
+        {graphQLError && <p style={{ fontSize: 12 }}>{graphQLError.message}</p>}
+        <button type="button">Check Out Now</button>
+      </CheckoutFormStyles>
+    </PleaseSignIn>
   );
 }
 

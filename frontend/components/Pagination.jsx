@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Head from 'next/head';
@@ -12,7 +13,7 @@ export const PAGINATION_QUERY = gql`
   }
 `;
 
-export default function Pagination({ page }) {
+function Pagination({ page }) {
   const { error, loading, data } = useQuery(PAGINATION_QUERY);
   if (loading) return 'Loading...';
   if (error) return <DisplayError error={error} />;
@@ -38,3 +39,9 @@ export default function Pagination({ page }) {
     </PaginationStyles>
   );
 }
+
+Pagination.propTypes = {
+  page: PropTypes.number,
+};
+
+export default Pagination;

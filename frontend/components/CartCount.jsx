@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import tw, { css, styled } from 'twin.macro';
 
@@ -29,7 +30,7 @@ const AnimationStyles = styled.span(() => [
   `,
 ]);
 
-export default function CartCount({ count }) {
+function CartCount({ count }) {
   return (
     <AnimationStyles>
       <TransitionGroup>
@@ -46,3 +47,9 @@ export default function CartCount({ count }) {
     </AnimationStyles>
   );
 }
+
+CartCount.propTypes = {
+  count: PropTypes.number,
+};
+
+export default CartCount;

@@ -1,7 +1,4 @@
-import { Popover } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/dist/client/router';
-import { useState } from 'react';
 import 'twin.macro';
 import Cart from '../../components/Cart';
 import Pagination from '../../components/Pagination';

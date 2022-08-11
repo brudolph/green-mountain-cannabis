@@ -1,11 +1,8 @@
+import PropTypes from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
-import tw, { css, styled } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 const StyledTransition = styled(Transition)`
   &.enter {
@@ -28,19 +25,20 @@ const StyledTransition = styled(Transition)`
   }
 `;
 
-export default function Selectbox({ options, name, setInputs, inputs }) {
-  const [selected, setSelected] = useState(options[0]);
+function Selectbox({ options, name, setInputs, inputs }) {
+  const [selectedItem, setSelectedItem] = useState(options[0]);
 
   useEffect(() => {
     setInputs({
       // copy the existing state
       ...inputs,
-      [name]: selected,
+      [name]: selectedItem,
     });
-  }, [selected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItem]);
 
   return (
-    <Listbox value={selected} onChange={setSelected} name={name}>
+    <Listbox value={selectedItem} onChange={setSelectedItem} name={name}>
       {({ open }) => (
         <>
           <Listbox.Label tw="block font-medium text-gray-700">
@@ -49,7 +47,7 @@ export default function Selectbox({ options, name, setInputs, inputs }) {
           <div tw="mt-1 relative">
             <Listbox.Button tw="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
               <span tw="block truncate">
-                {selected.replace(/([A-Z][a-z]+)([A-Z][a-z]+)/g, '$1 $2')}
+                {selectedItem.replace(/([A-Z][a-z]+)([A-Z][a-z]+)/g, '$1 $2')}
               </span>
               <span tw="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <SelectorIcon tw="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -112,3 +110,16 @@ export default function Selectbox({ options, name, setInputs, inputs }) {
     </Listbox>
   );
 }
+
+Selectbox.propTypes = {
+  inputs: PropTypes.object,
+  name: PropTypes.shape({
+    slice: PropTypes.func,
+  }),
+  options: PropTypes.shape({
+    map: PropTypes.func,
+  }),
+  setInputs: PropTypes.func,
+};
+
+export default Selectbox;

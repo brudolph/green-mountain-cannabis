@@ -1,18 +1,19 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import PropTypes from 'prop-types';
+import { gql, useQuery } from '@apollo/client';
 import Head from 'next/head';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy, Keyboard, Zoom } from 'swiper';
-import { useRouter } from 'next/router';
-import tw, { css } from 'twin.macro';
+import tw from 'twin.macro';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/lazy';
 import 'swiper/css/keyboard';
 import 'swiper/css/zoom';
-import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
+import { Disclosure, RadioGroup } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
-import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import PleaseSignIn from './PleaseSignIn';
 import DisplayError from './ErrorMessage';
 
@@ -37,7 +38,7 @@ const SINGLE_ITEM_QUERY = gql`
   }
 `;
 
-export default function Vendor({ id }) {
+function Vendor({ id }) {
   const { data, loading, error } = useQuery(SINGLE_ITEM_QUERY, {
     variables: {
       id,
@@ -135,6 +136,7 @@ export default function Vendor({ id }) {
 
                 <div
                   tw="text-base text-gray-700 space-y-6"
+                  // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{ __html: product.description }}
                 />
               </div>
@@ -210,7 +212,7 @@ export default function Vendor({ id }) {
                           </Disclosure.Button>
                         </h3>
                         <Disclosure.Panel as="div" tw="pb-6">
-                          <ul role="list" />
+                          <ul />
                         </Disclosure.Panel>
                       </>
                     )}
@@ -224,3 +226,9 @@ export default function Vendor({ id }) {
     </PleaseSignIn>
   );
 }
+
+Vendor.propTypes = {
+  id: PropTypes.string,
+};
+
+export default Vendor;

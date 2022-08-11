@@ -1,8 +1,9 @@
-import { Fragment, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
-import tw, { css } from 'twin.macro';
+import tw from 'twin.macro';
 
-export default function Radios({ options, name, setInputs, inputs, label }) {
+function Radios({ options, name, setInputs, inputs, label }) {
   const [selected, setSelected] = useState(options[0]);
 
   useEffect(() => {
@@ -11,6 +12,7 @@ export default function Radios({ options, name, setInputs, inputs, label }) {
       ...inputs,
       [name]: selected,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
   return (
@@ -40,3 +42,15 @@ export default function Radios({ options, name, setInputs, inputs, label }) {
     </div>
   );
 }
+
+Radios.propTypes = {
+  inputs: PropTypes.object,
+  label: PropTypes.string,
+  name: PropTypes.string,
+  options: PropTypes.shape({
+    map: PropTypes.func,
+  }),
+  setInputs: PropTypes.func,
+};
+
+export default Radios;

@@ -1,4 +1,4 @@
-import tw, { styled, css, theme } from 'twin.macro';
+import { styled } from 'twin.macro';
 
 const PriceTag = styled.span`
   background: var(--red);

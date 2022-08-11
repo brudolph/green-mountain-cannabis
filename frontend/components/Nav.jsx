@@ -1,7 +1,7 @@
-import { Fragment, forwardRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
 import Link from 'next/link';
-import { Dialog, Menu, Transition } from '@headlessui/react';
+import { Menu, Transition } from '@headlessui/react';
 import {
   SearchIcon,
   ShoppingCartIcon,
@@ -10,43 +10,33 @@ import {
 import { NavStyles } from './styles/NavStyles';
 import SignOut from './SignOut';
 import { useUser } from './User';
-import Cart from './Cart';
-import CloseButton from './styles/CloseButton';
 import { useCart } from '../context/cartState';
 import CartCount from './CartCount';
 import { MyLink } from './MyLink';
-import Search from './Search';
+import { mainNav } from './config/mainNav';
 
 export default function Nav() {
   const user = useUser();
   const { openCart } = useCart();
-  const [openSearch, setOpenSearch] = useState(false);
-  function closeSearchModal() {
-    setOpenSearch(false);
-  }
+  const router = useRouter();
 
-  function openSearchModal() {
-    setOpenSearch(true);
-  }
   return (
     <NavStyles>
       <ul tw="flex space-x-8 pb-5">
-        <li>
-          <a
-            href="/products/recreational"
-            tw="uppercase text-xl font-headers font-medium border-b-2 -mb-px border-transparent text-primary hover:text-primary-dark hover:border-primary"
-          >
-            Recreational
-          </a>
-        </li>
-        <li>
-          <a
-            href="/products/medical"
-            tw="uppercase text-xl font-headers font-medium border-b-2 -mb-px border-transparent text-primary hover:text-primary-dark hover:border-primary"
-          >
-            Medical
-          </a>
-        </li>
+        {mainNav.map((link) => (
+          <li key={link.path}>
+            <Link href={link.path} passHref>
+              <a
+                css={[
+                  tw`uppercase text-xl font-headers font-medium border-b-2 -mb-px border-transparent text-primary hover:text-primary-dark hover:border-primary`,
+                  router.pathname === link.path && tw`border-primary`,
+                ]}
+              >
+                {link.title}
+              </a>
+            </Link>
+          </li>
+        ))}
       </ul>
       <div tw="flex items-center pb-5 space-x-8">
         <MyLink href="/search">

@@ -3,6 +3,7 @@ import { PAGINATION_QUERY } from '../components/Pagination';
 export default function paginationField() {
   return {
     keyArgs: false, // tells apollo we will take care of everything
+    // eslint-disable-next-line default-param-last
     read(existing = [], { args, cache }) {
       // console.log({ existing, args, cache });
       const { skip, first } = args;
@@ -42,11 +43,11 @@ export default function paginationField() {
       // The other thing we can do is to return false from here, (network request)
     },
     merge(existing, incoming, { args }) {
-      const { skip, first } = args;
+      const { skip } = args;
       // This runs when the Apollo client comes back from the network with our product
       // console.log(`MErging items from the network ${incoming.length}`);
       const merged = existing ? existing.slice(0) : [];
-      for (let i = skip; i < skip + incoming.length; ++i) {
+      for (let i = skip; i < skip + incoming.length; i += 1) {
         merged[i] = incoming[i - skip];
       }
       // console.log(merged);

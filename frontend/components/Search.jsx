@@ -29,12 +29,9 @@ const SEARCH_PRODUCTS_QUERY = gql`
 `;
 export default function Search() {
   const router = useRouter();
-  const [findItems, { loading, data, error }] = useLazyQuery(
-    SEARCH_PRODUCTS_QUERY,
-    {
-      fetchPolicy: 'no-cache',
-    }
-  );
+  const [findItems, { loading, data }] = useLazyQuery(SEARCH_PRODUCTS_QUERY, {
+    fetchPolicy: 'no-cache',
+  });
   const items = data?.searchTerms || [];
   const urlify = function (a) {
     return a

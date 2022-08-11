@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/client';
 import { TrashIcon } from '@heroicons/react/outline';
 import gql from 'graphql-tag';
-import tw, { styled, css } from 'twin.macro';
+import { styled, css } from 'twin.macro';
 
 const DeleteButton = styled.button(() => [
   css`
@@ -27,7 +28,7 @@ function update(cache, payload) {
   cache.evict(cache.identify(payload.data.deleteCartItem));
 }
 
-export default function RemoveFromCart({ id }) {
+function RemoveFromCart({ id }) {
   const [removeFromCart, { loading }] = useMutation(REMOVE_FROM_CART_MUTATION, {
     variables: { id },
     update,
@@ -49,3 +50,9 @@ export default function RemoveFromCart({ id }) {
     </DeleteButton>
   );
 }
+
+RemoveFromCart.propTypes = {
+  id: PropTypes.string,
+};
+
+export default RemoveFromCart;

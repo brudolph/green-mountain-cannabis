@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import 'twin.macro';
 
-export default function FileInput({ id, name, setInputs, inputs }) {
+function FileInput({ id, name, setInputs, inputs }) {
   const [files, setFiles] = useState();
 
   useEffect(() => {
@@ -10,6 +11,7 @@ export default function FileInput({ id, name, setInputs, inputs }) {
       ...inputs,
       [name]: files,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
   return (
@@ -50,3 +52,12 @@ export default function FileInput({ id, name, setInputs, inputs }) {
     </div>
   );
 }
+
+FileInput.propTypes = {
+  id: PropTypes.number,
+  inputs: PropTypes.object,
+  name: PropTypes.string,
+  setInputs: PropTypes.func,
+};
+
+export default FileInput;

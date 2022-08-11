@@ -1,6 +1,7 @@
-import tw, { css } from 'twin.macro';
+import PropTypes from 'prop-types';
+import tw from 'twin.macro';
 
-export default function UserIcon({ variant }) {
+function UserIcon({ variant }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,3 +23,9 @@ export default function UserIcon({ variant }) {
     </svg>
   );
 }
+
+UserIcon.propTypes = {
+  variant: PropTypes.string,
+};
+
+export default UserIcon;

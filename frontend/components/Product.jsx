@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Lazy } from 'swiper';
+import { Pagination } from 'swiper';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import ProductStyles, {
@@ -12,8 +12,11 @@ import ProductStyles, {
 } from './styles/ProductStyles';
 import AddToCart from './AddToCart';
 import formatMoney from '../lib/formatMoney';
+// eslint-disable-next-line import/no-unresolved
 import 'swiper/css';
+// eslint-disable-next-line import/no-unresolved
 import 'swiper/css/pagination';
+// eslint-disable-next-line import/no-unresolved
 import 'swiper/css/lazy';
 import { Input, Label } from './styles/Form';
 import formatWeight from '../lib/formatWeight';
@@ -21,14 +24,6 @@ import 'twin.macro';
 
 export default function Product({ product }) {
   const [quantity, setQuantity] = useState('0');
-
-  const urlify = function (a) {
-    return a
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '-')
-      .replace(/^-+|-+$/g, '');
-  };
 
   return (
     <ProductStyles>

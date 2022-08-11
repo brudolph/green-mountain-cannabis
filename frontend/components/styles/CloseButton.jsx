@@ -1,4 +1,4 @@
-import tw, { styled, css, theme } from 'twin.macro';
+import { styled } from 'twin.macro';
 
 const CloseButton = styled.button`
   background: black;

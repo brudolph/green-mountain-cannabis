@@ -1,17 +1,32 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import 'twin.macro';
 import { Input, Label } from '../styles/Form';
 
-export default function Checkbox({ isChecked, label, checkHandler, index }) {
+function Checkbox({ name, label, checkHandler, index, value, isChecked }) {
   return (
     <Label htmlFor={`checkbox-${index}`}>
-      {label}
       <Input
         type="checkbox"
         id={`checkbox-${index}`}
         checked={isChecked}
         onChange={checkHandler}
-        tw="w-2 h-2"
+        name={name}
+        value={value}
+        tw="w-2 h-2 mr-2"
       />
+      {label}
     </Label>
   );
 }
+
+Checkbox.propTypes = {
+  checkHandler: PropTypes.func,
+  index: PropTypes.number,
+  isChecked: PropTypes.bool,
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.string,
+};
+
+export default Checkbox;

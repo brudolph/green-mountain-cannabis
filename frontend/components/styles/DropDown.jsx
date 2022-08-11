@@ -1,4 +1,4 @@
-import tw, { styled, css, theme } from 'twin.macro';
+import { styled, css, theme } from 'twin.macro';
 
 const DropDown = styled.div(() => [
   css`

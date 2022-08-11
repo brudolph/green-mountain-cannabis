@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import Link from 'next/link';

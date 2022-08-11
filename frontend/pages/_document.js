@@ -11,6 +11,7 @@ export default class MyDocument extends Document {
         {initialProps.styles}
         <style
           data-emotion-css={critical.ids.join(' ')}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: critical.css }}
         />
       </>
