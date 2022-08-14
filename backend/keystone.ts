@@ -48,6 +48,6 @@ export default withAuth(
         !!session?.data,
     },
     session,
-    playground: process.env.NODE_ENV !== 'production'
+    playground: process.env.NODE_ENV === 'production' ? false : true
   })
 );
