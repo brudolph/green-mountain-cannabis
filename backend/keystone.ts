@@ -12,7 +12,7 @@ import { Role } from './schemas/Role';
 import { extendGraphqlSchema } from './mutations';
 import { addCompatibilityForQueries } from './compat';
 
-const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
+// const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
 
 export default withAuth(
   config({
@@ -24,7 +24,7 @@ export default withAuth(
     },
     db: {
       provider: 'postgresql',
-      url: process.env.STAGE === 'migrate' ? process.env.DATABASE_URL_MIGRATE : process.env.DATABASE_URL_POOL,
+      url: process.env.DATABASE_URL_POOL,
       enableLogging: true,
       useMigrations: true,
     },
@@ -48,5 +48,6 @@ export default withAuth(
         !!session?.data,
     },
     session,
+    playground: process.env.NODE_ENV !== 'production'
   })
 );

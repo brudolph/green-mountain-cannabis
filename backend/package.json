@@ -6,7 +6,7 @@
     "dev": "keystone dev",
     "postinstall": "cross-env STAGE=postinstall keystone postinstall",
     "build": "cross-env STAGE=build keystone build && cross-env STAGE=migrate keystone prisma migrate deploy && cross-env STAGE=build",
-    "start": "cross-env STAGE=run keystone start"
+    "start": "cross-env NODE_ENV=production keystone start"
   },
   "author": "Ben Rudolph",
   "license": "MIT",
