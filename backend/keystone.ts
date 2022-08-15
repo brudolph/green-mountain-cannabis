@@ -24,7 +24,7 @@ export default withAuth(
     },
     db: {
       provider: 'postgresql',
-      url: process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL_POOL : databaseURL,
+      url: process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL : databaseURL,
       enableLogging: true,
       useMigrations: true,
     },
@@ -48,6 +48,8 @@ export default withAuth(
         !!session?.data,
     },
     session,
-    graphql: { playground: process.env.NODE_ENV === 'production' ? false : true }
+    graphql: {
+      playground: process.env.NODE_ENV === 'production' ? false : true
+    }
   })
 );
