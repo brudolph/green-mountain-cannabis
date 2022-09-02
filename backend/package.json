@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "keystone dev",
-    "postinstall": "cross-env STAGE=postinstall keystone postinstall",
-    "build": "cross-env NODE_ENV=production keystone build",
-    "start": "cross-env NODE_ENV=production keystone start"
+    "postinstall": "keystone postinstall",
+    "build": "keystone build",
+    "start": "keystone start"
   },
   "author": "Ben Rudolph",
   "license": "MIT",
