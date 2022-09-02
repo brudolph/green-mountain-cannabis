@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export default function useFilters(initial = {}) {
-  const [filters, setFilters] = useState(initial);
+  const [checkboxfilters, setCheckboxFilters] = useState(initial);
 
   const initialValues = Object.values(initial).join('');
 
   useEffect(() => {
-    setFilters(initial);
+    setCheckboxFilters(initial);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues]);
 
@@ -27,7 +27,7 @@ export default function useFilters(initial = {}) {
   // }
 
   return {
-    filters,
-    setFilters,
+    checkboxfilters,
+    setCheckboxFilters,
   };
 }
