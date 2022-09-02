@@ -1,13 +1,18 @@
 import PropTypes from 'prop-types';
+import PleaseSignIn from '../../components/PleaseSignIn';
 import SingleProduct from '../../components/SingleProduct';
 
 function SingleProductPage({ query }) {
-  return <SingleProduct id={query.id} />;
+  return (
+    <PleaseSignIn>
+      <SingleProduct slug={query.slug} />
+    </PleaseSignIn>
+  );
 }
 
 SingleProductPage.propTypes = {
   query: PropTypes.shape({
-    id: PropTypes.any,
+    slug: PropTypes.string,
   }),
 };
 

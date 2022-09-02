@@ -43,7 +43,6 @@ export default function Search() {
   const rerouteSearch = (selectedItem) => {
     router.push({
       pathname: `/product/${urlify(selectedItem.name)}`,
-      query: { id: selectedItem.id },
     });
   };
   const findItemsButChill = debounce(findItems, 350);

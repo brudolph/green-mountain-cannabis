@@ -23,7 +23,7 @@ function Pagination({ page }) {
     <PaginationStyles>
       <Head>
         <title>
-          Page {page} of {pageCount} - Green Mountain Cannabis
+          Green Mountain Cannabis | Page {page} of {pageCount}
         </title>
       </Head>
       <Link href={`/products/${page - 1}`}>

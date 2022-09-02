@@ -21,12 +21,25 @@ import 'swiper/css/lazy';
 import { Input, Label } from './styles/Form';
 import formatWeight from '../lib/formatWeight';
 import 'twin.macro';
+import { useUser } from './User';
 
 export default function Product({ product }) {
-  const [quantity, setQuantity] = useState('0');
+  const [quantity, setQuantity] = useState('');
+  const user = useUser();
+  if (!user) return null;
+
+  const handleQtyChange = (event, min, max) => {
+    const value = Math.max(min, Math.min(max, Number(event.target.value)));
+    setQuantity(value.toString());
+  };
 
   return (
     <ProductStyles>
+      {product.status === 'DRAFT' && (
+        <div tw="absolute inset-x-0 top-4 left-[63%] w-1/2 p-3 rotate-45 bg-accent text-center shadow-md z-10">
+          <p tw="font-bold text-2xl">Draft</p>
+        </div>
+      )}
       <ImageContainerStyles>
         <Swiper
           modules={[Pagination]}
@@ -52,15 +65,7 @@ export default function Product({ product }) {
       <div tw="flex-1 p-4 space-y-2 relative">
         <div tw=" flex justify-between items-center border-b border-gray-200 pb-2 mb-3">
           <TitleStyles>
-            <Link
-              href={{
-                pathname: '/product/[name]',
-                query: { id: product.id },
-              }}
-              as={`/product/${product.slug}`}
-            >
-              {product?.name}
-            </Link>
+            <Link href={`/product/${product.slug}/`}>{product?.name}</Link>
           </TitleStyles>
           <PricingStyles>
             <span tw="sr-only">Pricing</span>{' '}
@@ -98,28 +103,31 @@ export default function Product({ product }) {
             </span>
           </p>
         </div>
-        <ButtonTrayStyles>
-          <Label tw="mb-0">
-            Qty:{' '}
-            <Input
-              type="number"
-              name="quantity"
-              min="0.0"
-              max={product.inventory}
-              step="0.01"
-              hasBorder
-              tw="mx-2 w-[4.375rem]"
-              onInput={(e) => setQuantity(e.target.value)}
-              required
+        {user.__typename !== 'NeedsApproved' && (
+          <ButtonTrayStyles>
+            <Label tw="mb-0">
+              Qty:{' '}
+              <Input
+                type="number"
+                name="quantity"
+                min="0.0"
+                max={product.inventory}
+                step="0.01"
+                hasBorder
+                tw="mx-2 w-[4.375rem]"
+                onInput={(e) => handleQtyChange(e, 0, product.inventory)}
+                value={quantity}
+                required
+              />
+              <span>{formatWeight(product.weight)}s</span>
+            </Label>
+            <AddToCart
+              id={product.id}
+              quantity={quantity}
+              inventory={product.inventory}
             />
-            <span>{formatWeight(product.weight)}s</span>
-          </Label>
-          <AddToCart
-            id={product.id}
-            quantity={quantity}
-            inventory={product.inventory}
-          />
-        </ButtonTrayStyles>
+          </ButtonTrayStyles>
+        )}
       </div>
     </ProductStyles>
   );

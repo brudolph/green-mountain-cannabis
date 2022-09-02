@@ -1,7 +1,7 @@
 import tw, { styled } from 'twin.macro';
 
 const ProductStyles = styled.div(() => [
-  tw`relative bg-white border border-gray-300 rounded-lg flex flex-col justify-between shadow-md`,
+  tw`relative bg-white border border-gray-300 rounded-lg flex flex-col justify-between shadow-md overflow-hidden`,
 ]);
 
 export const TitleStyles = styled.h3(() => [

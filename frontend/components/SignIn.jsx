@@ -8,6 +8,8 @@ import LoadingIcon from './icons/LoadingIcon';
 import { Form, FormButton, Input, Label, Processing } from './styles/Form';
 import { CURRENT_USER_QUERY } from './User';
 import 'twin.macro';
+import Router from 'next/router';
+import { MyLink } from './MyLink';
 
 const SIGNIN_MUTATION = gql`
   mutation SIGNIN_MUTATION($email: String!, $password: String!) {
@@ -41,6 +43,9 @@ export default function SignIn() {
     event.preventDefault();
     await signin();
     resetForm();
+    Router.push({
+      pathname: `/`,
+    });
   }
 
   const error =
@@ -81,9 +86,9 @@ export default function SignIn() {
           <FormButton type="submit">Login</FormButton>
         </fieldset>
         <p tw="mt-8 text-center">
-          <Link href="/reset">
-            <a tw="text-sm hover:underline">Forgot password?</a>
-          </Link>
+          <MyLink href="/reset">
+            <span tw="text-sm hover:underline">Forgot password?</span>
+          </MyLink>
         </p>
       </Form>
       <div tw="space-y-4 text-sm text-gray-900 sm:flex sm:items-center sm:justify-center sm:space-y-0 sm:space-x-4 pt-6">

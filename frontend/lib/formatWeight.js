@@ -1,6 +1,6 @@
-export default function formatWeight(weight) {
-  // check if its a clean dollar amount
-  if (weight === 'pound') {
-    return 'lb';
+export default function formatWeight(weight, qty) {
+  if (weight === 'pound' && qty > 1) {
+    return 'lbs';
   }
+  return 'lb';
 }

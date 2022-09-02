@@ -4,7 +4,7 @@
   "description": "Source for Green Mountain Cannabis B2B site",
   "main": "index.js",
   "scripts": {
-    "dev": "next start -p 4201",
+    "dev": "next -p 4201",
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
     "test": "NODE_ENV=test jest --watch",
