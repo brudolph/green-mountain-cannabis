@@ -44,7 +44,7 @@ export default function Nav() {
           <SearchIcon tw="w-6 h-6 text-accent" aria-hidden="true" />
         </MyLink>
 
-        <Menu>
+        <Menu as="div" tw="relative z-[100]">
           <Menu.Button tw="inline-flex justify-center">
             <span tw="sr-only">More user options</span>
             <UserIcon tw="w-6 h-6 text-accent" />
@@ -60,7 +60,7 @@ export default function Nav() {
             <Menu.Items
               as="ul"
               static
-              tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md p-2 shadow-lg outline-none z-50"
+              tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md p-2 shadow-lg outline-none z-[99]"
             >
               <Menu.Item as="li">
                 <MyLink href="/account">Account</MyLink>

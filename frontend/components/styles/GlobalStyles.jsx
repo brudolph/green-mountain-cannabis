@@ -16,20 +16,15 @@ const customStyles = css({
   h2: {
     ...tw`font-headers !font-bold text-accent-dark text-xl uppercase`,
   },
+  h3: {
+    ...tw`font-headers !font-bold text-text text-xl`,
+  },
   '.swiper-pagination-bullet': {
-    width: '10px',
-    height: '10px',
-    textAlign: 'center',
-    lineHeight: '20px',
-    fontSize: '12px',
-    color: '#000',
-    opacity: '1',
-    background: 'rgba(255, 255, 255, 0.6)',
-    ...tw`shadow-lg`,
+    ...tw`bg-white/60 w-5 h-5 pt-[1px]  text-xs text-black opacity-100 border border-gray-200`,
   },
   '.swiper-pagination-bullet-active': {
-    color: '#fff',
     background: theme`colors.accent`,
+    ...tw`font-bold border-accent`,
   },
 });
 

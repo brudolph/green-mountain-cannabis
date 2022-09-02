@@ -8,6 +8,7 @@ import { useUser } from './User';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import { useCart } from '../context/cartState';
 import RemoveFromCart from './RemoveFromCart';
+import formatWeight from '../lib/formatWeight';
 
 const CartItemStyles = styled.li(() => [
   tw`py-4 border-b border-solid border-gray-200 grid grid-cols-[auto 1fr auto] gap-4`,
@@ -26,11 +27,14 @@ function CartItem({ cartItem }) {
       <div>
         <h3>{product.name}</h3>
         <p>
-          {formatMoney(product.price_threshold[0].price * cartItem.quantity)}
-          <br />
           <em>
-            {cartItem.quantity} &times;{' '}
-            {formatMoney(product?.price_threshold[1]?.price)} per{' '}
+            {cartItem.quantity}{' '}
+            {formatWeight(product.weight, cartItem.quantity)}
+            <br />
+            {formatMoney(
+              product.price_threshold[product.price_threshold.length - 1].price
+            )}{' '}
+            - {formatMoney(product.price_threshold[0].price)} per{' '}
             {product.weight}
           </em>
         </p>
@@ -74,6 +78,6 @@ CartItem.propTypes = {
       price_threshold: PropTypes.any,
       weight: PropTypes.string,
     }),
-    quantity: PropTypes.number,
+    quantity: PropTypes.string,
   }),
 };

@@ -33,7 +33,7 @@ function AddToCart({ id, quantity }) {
 }
 
 AddToCart.propTypes = {
-  id: PropTypes.number,
+  id: PropTypes.string,
   quantity: PropTypes.string,
 };
 

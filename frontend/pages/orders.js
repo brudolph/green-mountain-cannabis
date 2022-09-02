@@ -7,10 +7,11 @@ import ErrorMessage from '../components/ErrorMessage';
 import formatMoney from '../lib/formatMoney';
 import OrderItemStyles from '../components/styles/OrderItemStyles';
 import PleaseSignIn from '../components/PleaseSignIn';
+import { useUser } from '../components/User';
 
 const USER_ORDERS_QUERY = gql`
-  query USER_ORDERS_QUERY {
-    allOrders {
+  query USER_ORDERS_QUERY($userid: ID) {
+    allOrders(where: { user: { id: { equals: $userid } } }) {
       id
       total
       user {
@@ -48,7 +49,17 @@ function countItemsInAnOrder(order) {
 }
 
 export default function OrdersPage() {
-  const { data, error, loading } = useQuery(USER_ORDERS_QUERY);
+  const user = useUser();
+  if (!user) return null;
+
+  const userid = user.id;
+
+  const { data, error, loading } = useQuery(USER_ORDERS_QUERY, {
+    variables: {
+      userid,
+    },
+    fetchPolicy: 'cache-and-network',
+  });
   if (loading) return <p>Loading...</p>;
   if (error) return <ErrorMessage error={error} />;
   const { allOrders } = data;

@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types';
 import { gql, useQuery } from '@apollo/client';
 import Head from 'next/head';
+import { css } from 'twin.macro';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy, Keyboard, Zoom } from 'swiper';
 import 'swiper/css';
@@ -15,12 +16,15 @@ import { MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import PleaseSignIn from './PleaseSignIn';
 import DisplayError from './ErrorMessage';
 import formatWeight from '../lib/formatWeight';
+import { Processing } from './styles/Form';
+import LoadingIcon from './icons/LoadingIcon';
 
 const SINGLE_ITEM_QUERY = gql`
-  query SINGLE_ITEM_QUERY($id: ID!) {
-    product(where: { id: $id }) {
+  query SINGLE_ITEM_QUERY($slug: String) {
+    product(where: { slug: $slug }) {
       name
       strain
+      slug
       price_threshold {
         weight
         threshold
@@ -39,21 +43,39 @@ const SINGLE_ITEM_QUERY = gql`
   }
 `;
 
-function SingleProduct({ id }) {
+function SingleProduct({ slug }) {
   const { data, loading, error } = useQuery(SINGLE_ITEM_QUERY, {
     variables: {
-      id,
+      slug,
     },
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <Processing loading={loading.toString()}>
+        <LoadingIcon tw="animate-spin" />
+        Loading
+      </Processing>
+    );
   if (error) return <DisplayError error={error} />;
   const { product } = data;
+
+  const pagination = {
+    clickable: true,
+    renderBullet(index, className) {
+      return `<span class="${className}">${index + 1}</span>`;
+    },
+  };
+
   return (
     <PleaseSignIn>
       <DisplayError error={error} />
+      <Processing loading={loading.toString()}>
+        <LoadingIcon tw="animate-spin" />
+        Loading
+      </Processing>
       <Head>
-        <title>`Green Mountain Cannabis | ${product.name}`</title>
+        <title>Green Mountain Cannabis | ${product.name}</title>
       </Head>
       <div tw="bg-primary/20">
         <div tw="max-w-2xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -68,7 +90,7 @@ function SingleProduct({ id }) {
                 lazy
                 keyboard
                 zoom
-                pagination={{ clickable: true }}
+                pagination={pagination}
                 tw="rounded-md h-[31.25rem] border border-primary-light/40"
               >
                 {product.photo.map((photo) => (
@@ -99,10 +121,10 @@ function SingleProduct({ id }) {
                   </li>
                   <li tw="flex text-base text-gray-700 font-semibold border border-solid border-accent px-3 py-1 rounded">
                     <span tw="sr-only">Potency:</span>
-                    {product?.potency}%
+                    {product?.potency}% THC
                   </li>
                   <li tw="flex text-base text-gray-700 font-semibold border border-solid border-accent px-3 py-1 rounded">
-                    {product?.environment}
+                    Grown {product?.environment}
                   </li>
                 </ul>
                 <p>
@@ -175,7 +197,7 @@ function SingleProduct({ id }) {
 }
 
 SingleProduct.propTypes = {
-  id: PropTypes.string,
+  slug: PropTypes.string,
 };
 
 export default SingleProduct;

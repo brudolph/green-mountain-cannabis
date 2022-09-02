@@ -22,6 +22,7 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
     ) {
       id
       name
+      slug
       hotdeal
       inventory
       producttype
@@ -29,6 +30,7 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
       weight
       potency
       strain
+      status
       price_threshold {
         name
         price
@@ -56,7 +58,7 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
   }
 `;
 
-function Products({ page, producttype }) {
+function ProductCategory({ page, producttype }) {
   const [filteredData, setFilteredData] = useState();
 
   const { data, error, loading } = useQuery(ALL_PRODUCTS_FILTERED_QUERY, {
@@ -70,7 +72,7 @@ function Products({ page, producttype }) {
 
   useEffect(() => {
     if (!loading) {
-      setFilteredData(data.products);
+      setFilteredData(data?.products);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
@@ -90,11 +92,13 @@ function Products({ page, producttype }) {
         <LoadingIcon tw="animate-spin" />
         Loading
       </Processing>
-      <Filters
-        loading={loading}
-        products={data}
-        setFilteredData={setFilteredData}
-      />
+      {data && (
+        <Filters
+          loading={loading}
+          products={data.products}
+          setFilteredData={setFilteredData}
+        />
+      )}
       <ProductGrid>
         {/* {data &&
           data?.products.map((product) => (
@@ -109,11 +113,11 @@ function Products({ page, producttype }) {
   );
 }
 
-Products.propTypes = {
+ProductCategory.propTypes = {
   page: PropTypes.number,
   producttype: PropTypes.string,
 };
 
 const ProductGrid = tw.div`grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:gap-x-8 max-w-7xl mx-auto px-5 py-6`;
 
-export default Products;
+export default ProductCategory;
