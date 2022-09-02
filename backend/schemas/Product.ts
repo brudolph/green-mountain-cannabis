@@ -15,8 +15,8 @@ export const Product = list({
   },
   fields: {
     name: text({ validation: { isRequired: true } }),
-    slug: text({ label: 'Pretty URL' }),
-    hotdeal: checkbox(),
+    slug: text({ isIndexed: 'unique', label: 'Pretty URL (Leave blank. This will be automatically filled once saved)' }),
+    hotdeal: checkbox({ label: 'Hot Deal?' }),
     inventory: decimal({
       defaultValue: '1.0',
       precision: 18,
@@ -25,36 +25,6 @@ export const Product = list({
         isRequired: true,
       },
       label: 'Inventory (by weight)'
-    }),
-    producttype: select({
-      options: [
-        { label: 'Recreational', value: 'Recreational' },
-        { label: 'Medical', value: 'Medical' },
-      ],
-      validation: { isRequired: true },
-      defaultValue: 'Recreational',
-      ui: {
-        displayMode: 'segmented-control',
-      },
-      label: 'Product Type'
-    }),
-    productcategory: select({
-      options: [
-        { label: 'Flower', value: 'Flower' },
-        { label: 'Pre Rolls', value: 'Pre Rolls' },
-        { label: 'Concentrates', value: 'Concentrates' },
-        { label: 'Trim', value: 'Trim' },
-        { label: 'Fresh Frozen', value: 'Fresh Frozen' },
-        { label: 'Oil', value: 'Oil' },
-        { label: 'CBD Oils and Isolates', value: 'CBD Oils and Isolates' },
-        { label: 'Grow & Lab Equipment', value: 'Grow & Lab Equipment' },
-      ],
-      validation: { isRequired: true },
-      defaultValue: 'Flower',
-      ui: {
-        displayMode: 'segmented-control',
-      },
-      label: 'Product Category'
     }),
     weight: select({
       options: [
@@ -91,6 +61,36 @@ export const Product = list({
         displayMode: 'segmented-control',
       },
     }),
+    producttype: select({
+      options: [
+        { label: 'Recreational', value: 'recreational' },
+        { label: 'Medical', value: 'medical' },
+      ],
+      validation: { isRequired: true },
+      defaultValue: 'recreational',
+      ui: {
+        displayMode: 'segmented-control',
+      },
+      label: 'Product Type'
+    }),
+    productcategory: select({
+      options: [
+        { label: 'Flower', value: 'Flower' },
+        { label: 'Pre Rolls', value: 'Pre Rolls' },
+        { label: 'Concentrates', value: 'Concentrates' },
+        { label: 'Trim', value: 'Trim' },
+        { label: 'Fresh Frozen', value: 'Fresh Frozen' },
+        { label: 'Oil', value: 'Oil' },
+        { label: 'CBD Oils and Isolates', value: 'CBD Oils and Isolates' },
+        { label: 'Grow & Lab Equipment', value: 'Grow & Lab Equipment' },
+      ],
+      validation: { isRequired: true },
+      defaultValue: 'Flower',
+      ui: {
+        displayMode: 'segmented-control',
+      },
+      label: 'Product Category'
+    }),
     environment: select({
       options: [
         { label: 'Indoor', value: 'Indoor' },
@@ -123,7 +123,8 @@ export const Product = list({
       ref: 'ProductImage.product',
       many: true,
       ui: {
-        createView: { fieldMode: 'edit' },
+        displayMode: 'cards',
+        cardFields: ['image', 'altText'],
         inlineCreate: { fields: ['image', 'altText'] },
         inlineEdit: { fields: ['image', 'altText'] },
       },

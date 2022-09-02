@@ -208,11 +208,11 @@ type Product {
   slug: String
   hotdeal: Boolean
   inventory: Decimal
-  producttype: String
-  productcategory: String
   weight: String
   potency: String
   strain: String
+  producttype: String
+  productcategory: String
   environment: String
   price_threshold(
     where: PricingWhereInput! = {}
@@ -237,6 +237,7 @@ scalar Decimal
 
 input ProductWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 input ProductWhereInput {
@@ -248,11 +249,11 @@ input ProductWhereInput {
   slug: StringFilter
   hotdeal: BooleanFilter
   inventory: DecimalFilter
-  producttype: StringFilter
-  productcategory: StringFilter
   weight: StringFilter
   potency: StringFilter
   strain: StringFilter
+  producttype: StringFilter
+  productcategory: StringFilter
   environment: StringFilter
   price_threshold: PricingManyRelationFilter
   description: StringFilter
@@ -324,11 +325,11 @@ input ProductOrderByInput {
   slug: OrderDirection
   hotdeal: OrderDirection
   inventory: OrderDirection
-  producttype: OrderDirection
-  productcategory: OrderDirection
   weight: OrderDirection
   potency: OrderDirection
   strain: OrderDirection
+  producttype: OrderDirection
+  productcategory: OrderDirection
   environment: OrderDirection
   description: OrderDirection
   status: OrderDirection
@@ -339,11 +340,11 @@ input ProductUpdateInput {
   slug: String
   hotdeal: Boolean
   inventory: Decimal
-  producttype: String
-  productcategory: String
   weight: String
   potency: String
   strain: String
+  producttype: String
+  productcategory: String
   environment: String
   price_threshold: PricingRelateToManyForUpdateInput
   description: String
@@ -382,11 +383,11 @@ input ProductCreateInput {
   slug: String
   hotdeal: Boolean
   inventory: Decimal
-  producttype: String
-  productcategory: String
   weight: String
   potency: String
   strain: String
+  producttype: String
+  productcategory: String
   environment: String
   price_threshold: PricingRelateToManyForCreateInput
   description: String
@@ -535,8 +536,6 @@ type Vendor {
 
 input VendorWhereUniqueInput {
   id: ID
-  email: String
-  contact: String
 }
 
 input VendorWhereInput {

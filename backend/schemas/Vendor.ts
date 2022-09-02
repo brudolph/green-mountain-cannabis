@@ -6,10 +6,10 @@ export const Vendor = list({
   // ui
   fields: {
     name: text({ validation: { isRequired: true } }),
-    email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-    contact: text({ isIndexed: 'unique' }),
+    email: text(),
+    contact: text(),
     vendor_ID: text(),
-    notes: text(),
+    notes: text({ ui: { displayMode: 'textarea' } }),
     products: relationship({ ref: 'Product.vendor', many: true, }),
   },
 });

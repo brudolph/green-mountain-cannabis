@@ -24,9 +24,9 @@ export default withAuth(
     },
     db: {
       provider: 'postgresql',
-      url: process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL : databaseURL,
-      enableLogging: true,
-      useMigrations: true,
+      url: databaseURL,
+      // enableLogging: false,
+      // useMigrations: true,
     },
     lists: ({
       User,
