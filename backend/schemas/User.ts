@@ -47,4 +47,11 @@ export const User = list({
       },
     })
   },
+  hooks: {
+    afterOperation: ({ operation, item }) => {
+      if (operation === 'create') {
+        
+      }
+    }
+  },
 });

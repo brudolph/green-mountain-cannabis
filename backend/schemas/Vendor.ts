@@ -7,9 +7,16 @@ export const Vendor = list({
   fields: {
     name: text({ validation: { isRequired: true } }),
     email: text(),
-    contact: text(),
+    contact_name: text(),
+    phone: text(),
+    mobile: text(),
     vendor_ID: text(),
     notes: text({ ui: { displayMode: 'textarea' } }),
-    products: relationship({ ref: 'Product.vendor', many: true, }),
+    product: relationship({ ref: 'Product.vendor', many: true })
+  },
+  ui: {
+    listView: {
+      initialColumns: ['name', 'phone', 'mobile', 'contact_name'],
+    },
   },
 });

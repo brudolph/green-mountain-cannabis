@@ -206,31 +206,34 @@ type Product {
   id: ID!
   name: String
   slug: String
-  hotdeal: Boolean
   inventory: Decimal
-  weight: String
-  potency: String
-  strain: String
-  producttype: String
-  productcategory: String
-  environment: String
-  price_threshold(
+  price: Decimal
+  priceThreshold(
     where: PricingWhereInput! = {}
     orderBy: [PricingOrderByInput!]! = []
     take: Int
     skip: Int! = 0
   ): [Pricing!]
-  price_thresholdCount(where: PricingWhereInput! = {}): Int
-  description: String
-  photo(
+  priceThresholdCount(where: PricingWhereInput! = {}): Int
+  recreational: Boolean
+  medical: Boolean
+  hotDeal: Boolean
+  category: Category
+  photos(
     where: ProductImageWhereInput! = {}
     orderBy: [ProductImageOrderByInput!]! = []
     take: Int
     skip: Int! = 0
   ): [ProductImage!]
-  photoCount(where: ProductImageWhereInput! = {}): Int
-  status: String
+  photosCount(where: ProductImageWhereInput! = {}): Int
+  description: String
+  flower: FlowerTrimFreshFrozen
+  oil: Oil
+  concentrate: Concentrate
+  preRoll: PreRoll
+  machine: Machine
   vendor: Vendor
+  status: String
 }
 
 scalar Decimal
@@ -247,27 +250,25 @@ input ProductWhereInput {
   id: IDFilter
   name: StringFilter
   slug: StringFilter
-  hotdeal: BooleanFilter
-  inventory: DecimalFilter
-  weight: StringFilter
-  potency: StringFilter
-  strain: StringFilter
-  producttype: StringFilter
-  productcategory: StringFilter
-  environment: StringFilter
-  price_threshold: PricingManyRelationFilter
+  inventory: DecimalNullableFilter
+  price: DecimalNullableFilter
+  priceThreshold: PricingManyRelationFilter
+  recreational: BooleanFilter
+  medical: BooleanFilter
+  hotDeal: BooleanFilter
+  category: CategoryWhereInput
+  photos: ProductImageManyRelationFilter
   description: StringFilter
-  photo: ProductImageManyRelationFilter
-  status: StringNullableFilter
+  flower: FlowerTrimFreshFrozenWhereInput
+  oil: OilWhereInput
+  concentrate: ConcentrateWhereInput
+  preRoll: PreRollWhereInput
+  machine: MachineWhereInput
   vendor: VendorWhereInput
+  status: StringNullableFilter
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
-input DecimalFilter {
+input DecimalNullableFilter {
   equals: Decimal
   in: [Decimal!]
   notIn: [Decimal!]
@@ -275,13 +276,18 @@ input DecimalFilter {
   lte: Decimal
   gt: Decimal
   gte: Decimal
-  not: DecimalFilter
+  not: DecimalNullableFilter
 }
 
 input PricingManyRelationFilter {
   every: PricingWhereInput
   some: PricingWhereInput
   none: PricingWhereInput
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
 }
 
 input ProductImageManyRelationFilter {
@@ -323,14 +329,11 @@ input ProductOrderByInput {
   id: OrderDirection
   name: OrderDirection
   slug: OrderDirection
-  hotdeal: OrderDirection
   inventory: OrderDirection
-  weight: OrderDirection
-  potency: OrderDirection
-  strain: OrderDirection
-  producttype: OrderDirection
-  productcategory: OrderDirection
-  environment: OrderDirection
+  price: OrderDirection
+  recreational: OrderDirection
+  medical: OrderDirection
+  hotDeal: OrderDirection
   description: OrderDirection
   status: OrderDirection
 }
@@ -338,19 +341,22 @@ input ProductOrderByInput {
 input ProductUpdateInput {
   name: String
   slug: String
-  hotdeal: Boolean
   inventory: Decimal
-  weight: String
-  potency: String
-  strain: String
-  producttype: String
-  productcategory: String
-  environment: String
-  price_threshold: PricingRelateToManyForUpdateInput
+  price: Decimal
+  priceThreshold: PricingRelateToManyForUpdateInput
+  recreational: Boolean
+  medical: Boolean
+  hotDeal: Boolean
+  category: CategoryRelateToOneForUpdateInput
+  photos: ProductImageRelateToManyForUpdateInput
   description: String
-  photo: ProductImageRelateToManyForUpdateInput
-  status: String
+  flower: FlowerTrimFreshFrozenRelateToOneForUpdateInput
+  oil: OilRelateToOneForUpdateInput
+  concentrate: ConcentrateRelateToOneForUpdateInput
+  preRoll: PreRollRelateToOneForUpdateInput
+  machine: MachineRelateToOneForUpdateInput
   vendor: VendorRelateToOneForUpdateInput
+  status: String
 }
 
 input PricingRelateToManyForUpdateInput {
@@ -360,11 +366,47 @@ input PricingRelateToManyForUpdateInput {
   connect: [PricingWhereUniqueInput!]
 }
 
+input CategoryRelateToOneForUpdateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
+  disconnect: Boolean
+}
+
 input ProductImageRelateToManyForUpdateInput {
   disconnect: [ProductImageWhereUniqueInput!]
   set: [ProductImageWhereUniqueInput!]
   create: [ProductImageCreateInput!]
   connect: [ProductImageWhereUniqueInput!]
+}
+
+input FlowerTrimFreshFrozenRelateToOneForUpdateInput {
+  create: FlowerTrimFreshFrozenCreateInput
+  connect: FlowerTrimFreshFrozenWhereUniqueInput
+  disconnect: Boolean
+}
+
+input OilRelateToOneForUpdateInput {
+  create: OilCreateInput
+  connect: OilWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ConcentrateRelateToOneForUpdateInput {
+  create: ConcentrateCreateInput
+  connect: ConcentrateWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PreRollRelateToOneForUpdateInput {
+  create: PreRollCreateInput
+  connect: PreRollWhereUniqueInput
+  disconnect: Boolean
+}
+
+input MachineRelateToOneForUpdateInput {
+  create: MachineCreateInput
+  connect: MachineWhereUniqueInput
+  disconnect: Boolean
 }
 
 input VendorRelateToOneForUpdateInput {
@@ -381,19 +423,22 @@ input ProductUpdateArgs {
 input ProductCreateInput {
   name: String
   slug: String
-  hotdeal: Boolean
   inventory: Decimal
-  weight: String
-  potency: String
-  strain: String
-  producttype: String
-  productcategory: String
-  environment: String
-  price_threshold: PricingRelateToManyForCreateInput
+  price: Decimal
+  priceThreshold: PricingRelateToManyForCreateInput
+  recreational: Boolean
+  medical: Boolean
+  hotDeal: Boolean
+  category: CategoryRelateToOneForCreateInput
+  photos: ProductImageRelateToManyForCreateInput
   description: String
-  photo: ProductImageRelateToManyForCreateInput
-  status: String
+  flower: FlowerTrimFreshFrozenRelateToOneForCreateInput
+  oil: OilRelateToOneForCreateInput
+  concentrate: ConcentrateRelateToOneForCreateInput
+  preRoll: PreRollRelateToOneForCreateInput
+  machine: MachineRelateToOneForCreateInput
   vendor: VendorRelateToOneForCreateInput
+  status: String
 }
 
 input PricingRelateToManyForCreateInput {
@@ -401,14 +446,340 @@ input PricingRelateToManyForCreateInput {
   connect: [PricingWhereUniqueInput!]
 }
 
+input CategoryRelateToOneForCreateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
+}
+
 input ProductImageRelateToManyForCreateInput {
   create: [ProductImageCreateInput!]
   connect: [ProductImageWhereUniqueInput!]
 }
 
+input FlowerTrimFreshFrozenRelateToOneForCreateInput {
+  create: FlowerTrimFreshFrozenCreateInput
+  connect: FlowerTrimFreshFrozenWhereUniqueInput
+}
+
+input OilRelateToOneForCreateInput {
+  create: OilCreateInput
+  connect: OilWhereUniqueInput
+}
+
+input ConcentrateRelateToOneForCreateInput {
+  create: ConcentrateCreateInput
+  connect: ConcentrateWhereUniqueInput
+}
+
+input PreRollRelateToOneForCreateInput {
+  create: PreRollCreateInput
+  connect: PreRollWhereUniqueInput
+}
+
+input MachineRelateToOneForCreateInput {
+  create: MachineCreateInput
+  connect: MachineWhereUniqueInput
+}
+
 input VendorRelateToOneForCreateInput {
   create: VendorCreateInput
   connect: VendorWhereUniqueInput
+}
+
+type Oil {
+  id: ID!
+  label: String
+  product: Product
+  weight: String
+  potency: String
+  cbd: Boolean
+  oilType: String
+  solventUsed: String
+}
+
+input OilWhereUniqueInput {
+  id: ID
+}
+
+input OilWhereInput {
+  AND: [OilWhereInput!]
+  OR: [OilWhereInput!]
+  NOT: [OilWhereInput!]
+  id: IDFilter
+  product: ProductWhereInput
+  weight: StringNullableFilter
+  potency: StringFilter
+  cbd: BooleanFilter
+  oilType: StringNullableFilter
+  solventUsed: StringNullableFilter
+}
+
+input OilOrderByInput {
+  id: OrderDirection
+  weight: OrderDirection
+  potency: OrderDirection
+  cbd: OrderDirection
+  oilType: OrderDirection
+  solventUsed: OrderDirection
+}
+
+input OilUpdateInput {
+  product: ProductRelateToOneForUpdateInput
+  weight: String
+  potency: String
+  cbd: Boolean
+  oilType: String
+  solventUsed: String
+}
+
+input ProductRelateToOneForUpdateInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
+  disconnect: Boolean
+}
+
+input OilUpdateArgs {
+  where: OilWhereUniqueInput!
+  data: OilUpdateInput!
+}
+
+input OilCreateInput {
+  product: ProductRelateToOneForCreateInput
+  weight: String
+  potency: String
+  cbd: Boolean
+  oilType: String
+  solventUsed: String
+}
+
+input ProductRelateToOneForCreateInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
+}
+
+type FlowerTrimFreshFrozen {
+  id: ID!
+  label: String
+  product: Product
+  weight: String
+  potency: String
+  strain: String
+  trimMethod: String
+  environment: String
+}
+
+input FlowerTrimFreshFrozenWhereUniqueInput {
+  id: ID
+}
+
+input FlowerTrimFreshFrozenWhereInput {
+  AND: [FlowerTrimFreshFrozenWhereInput!]
+  OR: [FlowerTrimFreshFrozenWhereInput!]
+  NOT: [FlowerTrimFreshFrozenWhereInput!]
+  id: IDFilter
+  product: ProductWhereInput
+  weight: StringNullableFilter
+  potency: StringFilter
+  strain: StringNullableFilter
+  trimMethod: StringNullableFilter
+  environment: StringNullableFilter
+}
+
+input FlowerTrimFreshFrozenOrderByInput {
+  id: OrderDirection
+  weight: OrderDirection
+  potency: OrderDirection
+  strain: OrderDirection
+  trimMethod: OrderDirection
+  environment: OrderDirection
+}
+
+input FlowerTrimFreshFrozenUpdateInput {
+  product: ProductRelateToOneForUpdateInput
+  weight: String
+  potency: String
+  strain: String
+  trimMethod: String
+  environment: String
+}
+
+input FlowerTrimFreshFrozenUpdateArgs {
+  where: FlowerTrimFreshFrozenWhereUniqueInput!
+  data: FlowerTrimFreshFrozenUpdateInput!
+}
+
+input FlowerTrimFreshFrozenCreateInput {
+  product: ProductRelateToOneForCreateInput
+  weight: String
+  potency: String
+  strain: String
+  trimMethod: String
+  environment: String
+}
+
+type Concentrate {
+  id: ID!
+  label: String
+  product: Product
+  weight: String
+  potency: String
+  strain: String
+  type: String
+}
+
+input ConcentrateWhereUniqueInput {
+  id: ID
+}
+
+input ConcentrateWhereInput {
+  AND: [ConcentrateWhereInput!]
+  OR: [ConcentrateWhereInput!]
+  NOT: [ConcentrateWhereInput!]
+  id: IDFilter
+  product: ProductWhereInput
+  weight: StringNullableFilter
+  potency: StringFilter
+  strain: StringNullableFilter
+  type: StringNullableFilter
+}
+
+input ConcentrateOrderByInput {
+  id: OrderDirection
+  weight: OrderDirection
+  potency: OrderDirection
+  strain: OrderDirection
+  type: OrderDirection
+}
+
+input ConcentrateUpdateInput {
+  product: ProductRelateToOneForUpdateInput
+  weight: String
+  potency: String
+  strain: String
+  type: String
+}
+
+input ConcentrateUpdateArgs {
+  where: ConcentrateWhereUniqueInput!
+  data: ConcentrateUpdateInput!
+}
+
+input ConcentrateCreateInput {
+  product: ProductRelateToOneForCreateInput
+  weight: String
+  potency: String
+  strain: String
+  type: String
+}
+
+type PreRoll {
+  id: ID!
+  label: String
+  product: Product
+  size: String
+  potency: String
+  strain: String
+  type: String
+  tube: String
+}
+
+input PreRollWhereUniqueInput {
+  id: ID
+}
+
+input PreRollWhereInput {
+  AND: [PreRollWhereInput!]
+  OR: [PreRollWhereInput!]
+  NOT: [PreRollWhereInput!]
+  id: IDFilter
+  product: ProductWhereInput
+  size: StringNullableFilter
+  potency: StringFilter
+  strain: StringNullableFilter
+  type: StringNullableFilter
+  tube: StringNullableFilter
+}
+
+input PreRollOrderByInput {
+  id: OrderDirection
+  size: OrderDirection
+  potency: OrderDirection
+  strain: OrderDirection
+  type: OrderDirection
+  tube: OrderDirection
+}
+
+input PreRollUpdateInput {
+  product: ProductRelateToOneForUpdateInput
+  size: String
+  potency: String
+  strain: String
+  type: String
+  tube: String
+}
+
+input PreRollUpdateArgs {
+  where: PreRollWhereUniqueInput!
+  data: PreRollUpdateInput!
+}
+
+input PreRollCreateInput {
+  product: ProductRelateToOneForCreateInput
+  size: String
+  potency: String
+  strain: String
+  type: String
+  tube: String
+}
+
+type Machine {
+  id: ID!
+  label: String
+  product: Product
+  model: String
+  modelYear: String
+  condition: String
+}
+
+input MachineWhereUniqueInput {
+  id: ID
+}
+
+input MachineWhereInput {
+  AND: [MachineWhereInput!]
+  OR: [MachineWhereInput!]
+  NOT: [MachineWhereInput!]
+  id: IDFilter
+  product: ProductWhereInput
+  model: StringFilter
+  modelYear: StringFilter
+  condition: StringNullableFilter
+}
+
+input MachineOrderByInput {
+  id: OrderDirection
+  model: OrderDirection
+  modelYear: OrderDirection
+  condition: OrderDirection
+}
+
+input MachineUpdateInput {
+  product: ProductRelateToOneForUpdateInput
+  model: String
+  modelYear: String
+  condition: String
+}
+
+input MachineUpdateArgs {
+  where: MachineWhereUniqueInput!
+  data: MachineUpdateInput!
+}
+
+input MachineCreateInput {
+  product: ProductRelateToOneForCreateInput
+  model: String
+  modelYear: String
+  condition: String
 }
 
 type ProductImage {
@@ -496,12 +867,6 @@ The `Upload` scalar type represents a file upload.
 """
 scalar Upload
 
-input ProductRelateToOneForUpdateInput {
-  create: ProductCreateInput
-  connect: ProductWhereUniqueInput
-  disconnect: Boolean
-}
-
 input ProductImageUpdateArgs {
   where: ProductImageWhereUniqueInput!
   data: ProductImageUpdateInput!
@@ -513,25 +878,91 @@ input ProductImageCreateInput {
   product: ProductRelateToOneForCreateInput
 }
 
-input ProductRelateToOneForCreateInput {
-  create: ProductCreateInput
-  connect: ProductWhereUniqueInput
+type Category {
+  id: ID!
+  name: String
+  slug: String
+  product(
+    where: ProductWhereInput! = {}
+    orderBy: [ProductOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Product!]
+  productCount(where: ProductWhereInput! = {}): Int
+}
+
+input CategoryWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input CategoryWhereInput {
+  AND: [CategoryWhereInput!]
+  OR: [CategoryWhereInput!]
+  NOT: [CategoryWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  slug: StringFilter
+  product: ProductManyRelationFilter
+}
+
+input ProductManyRelationFilter {
+  every: ProductWhereInput
+  some: ProductWhereInput
+  none: ProductWhereInput
+}
+
+input CategoryOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  slug: OrderDirection
+}
+
+input CategoryUpdateInput {
+  name: String
+  slug: String
+  product: ProductRelateToManyForUpdateInput
+}
+
+input ProductRelateToManyForUpdateInput {
+  disconnect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
+}
+
+input CategoryUpdateArgs {
+  where: CategoryWhereUniqueInput!
+  data: CategoryUpdateInput!
+}
+
+input CategoryCreateInput {
+  name: String
+  slug: String
+  product: ProductRelateToManyForCreateInput
+}
+
+input ProductRelateToManyForCreateInput {
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 type Vendor {
   id: ID!
   name: String
   email: String
-  contact: String
+  contact_name: String
+  phone: String
+  mobile: String
   vendor_ID: String
   notes: String
-  products(
+  product(
     where: ProductWhereInput! = {}
     orderBy: [ProductOrderByInput!]! = []
     take: Int
     skip: Int! = 0
   ): [Product!]
-  productsCount(where: ProductWhereInput! = {}): Int
+  productCount(where: ProductWhereInput! = {}): Int
 }
 
 input VendorWhereUniqueInput {
@@ -545,23 +976,21 @@ input VendorWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
-  contact: StringFilter
+  contact_name: StringFilter
+  phone: StringFilter
+  mobile: StringFilter
   vendor_ID: StringFilter
   notes: StringFilter
-  products: ProductManyRelationFilter
-}
-
-input ProductManyRelationFilter {
-  every: ProductWhereInput
-  some: ProductWhereInput
-  none: ProductWhereInput
+  product: ProductManyRelationFilter
 }
 
 input VendorOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
-  contact: OrderDirection
+  contact_name: OrderDirection
+  phone: OrderDirection
+  mobile: OrderDirection
   vendor_ID: OrderDirection
   notes: OrderDirection
 }
@@ -569,17 +998,12 @@ input VendorOrderByInput {
 input VendorUpdateInput {
   name: String
   email: String
-  contact: String
+  contact_name: String
+  phone: String
+  mobile: String
   vendor_ID: String
   notes: String
-  products: ProductRelateToManyForUpdateInput
-}
-
-input ProductRelateToManyForUpdateInput {
-  disconnect: [ProductWhereUniqueInput!]
-  set: [ProductWhereUniqueInput!]
-  create: [ProductCreateInput!]
-  connect: [ProductWhereUniqueInput!]
+  product: ProductRelateToManyForUpdateInput
 }
 
 input VendorUpdateArgs {
@@ -590,31 +1014,19 @@ input VendorUpdateArgs {
 input VendorCreateInput {
   name: String
   email: String
-  contact: String
+  contact_name: String
+  phone: String
+  mobile: String
   vendor_ID: String
   notes: String
-  products: ProductRelateToManyForCreateInput
-}
-
-input ProductRelateToManyForCreateInput {
-  create: [ProductCreateInput!]
-  connect: [ProductWhereUniqueInput!]
+  product: ProductRelateToManyForCreateInput
 }
 
 type Pricing {
   id: ID!
   name: String
-  price: Int
+  price: Decimal
   amount: Int
-  weight: String
-  threshold: String
-  product(
-    where: ProductWhereInput! = {}
-    orderBy: [ProductOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Product!]
-  productCount(where: ProductWhereInput! = {}): Int
 }
 
 input PricingWhereUniqueInput {
@@ -627,11 +1039,19 @@ input PricingWhereInput {
   NOT: [PricingWhereInput!]
   id: IDFilter
   name: StringFilter
-  price: IntFilter
+  price: DecimalFilter
   amount: IntFilter
-  weight: StringFilter
-  threshold: StringNullableFilter
-  product: ProductManyRelationFilter
+}
+
+input DecimalFilter {
+  equals: Decimal
+  in: [Decimal!]
+  notIn: [Decimal!]
+  lt: Decimal
+  lte: Decimal
+  gt: Decimal
+  gte: Decimal
+  not: DecimalFilter
 }
 
 input IntFilter {
@@ -650,17 +1070,12 @@ input PricingOrderByInput {
   name: OrderDirection
   price: OrderDirection
   amount: OrderDirection
-  weight: OrderDirection
-  threshold: OrderDirection
 }
 
 input PricingUpdateInput {
   name: String
-  price: Int
+  price: Decimal
   amount: Int
-  weight: String
-  threshold: String
-  product: ProductRelateToManyForUpdateInput
 }
 
 input PricingUpdateArgs {
@@ -670,11 +1085,8 @@ input PricingUpdateArgs {
 
 input PricingCreateInput {
   name: String
-  price: Int
+  price: Decimal
   amount: Int
-  weight: String
-  threshold: String
-  product: ProductRelateToManyForCreateInput
 }
 
 type CartItem {
@@ -737,7 +1149,6 @@ type OrderItem {
   description: String
   photo: ProductImage
   price: Int
-  weight: String
   quantity: Decimal
   order: Order
 }
@@ -755,7 +1166,6 @@ input OrderItemWhereInput {
   description: StringFilter
   photo: ProductImageWhereInput
   price: IntNullableFilter
-  weight: StringFilter
   quantity: DecimalNullableFilter
   order: OrderWhereInput
 }
@@ -771,23 +1181,11 @@ input IntNullableFilter {
   not: IntNullableFilter
 }
 
-input DecimalNullableFilter {
-  equals: Decimal
-  in: [Decimal!]
-  notIn: [Decimal!]
-  lt: Decimal
-  lte: Decimal
-  gt: Decimal
-  gte: Decimal
-  not: DecimalNullableFilter
-}
-
 input OrderItemOrderByInput {
   id: OrderDirection
   name: OrderDirection
   description: OrderDirection
   price: OrderDirection
-  weight: OrderDirection
   quantity: OrderDirection
 }
 
@@ -796,7 +1194,6 @@ input OrderItemUpdateInput {
   description: String
   photo: ProductImageRelateToOneForUpdateInput
   price: Int
-  weight: String
   quantity: Decimal
   order: OrderRelateToOneForUpdateInput
 }
@@ -823,7 +1220,6 @@ input OrderItemCreateInput {
   description: String
   photo: ProductImageRelateToOneForCreateInput
   price: Int
-  weight: String
   quantity: Decimal
   order: OrderRelateToOneForCreateInput
 }
@@ -1023,6 +1419,58 @@ type Mutation {
   updateProducts(data: [ProductUpdateArgs!]!): [Product]
   deleteProduct(id: ID, where: ProductWhereUniqueInput): Product
   deleteProducts(where: [ProductWhereUniqueInput!]!): [Product]
+  createOil(data: OilCreateInput!): Oil
+  createOils(data: [OilCreateInput!]!): [Oil]
+  updateOil(where: OilWhereUniqueInput!, data: OilUpdateInput!): Oil
+  updateOils(data: [OilUpdateArgs!]!): [Oil]
+  deleteOil(where: OilWhereUniqueInput!): Oil
+  deleteOils(where: [OilWhereUniqueInput!]!): [Oil]
+  createFlowerTrimFreshFrozen(
+    data: FlowerTrimFreshFrozenCreateInput!
+  ): FlowerTrimFreshFrozen
+  createFlowerTrimFreshFrozens(
+    data: [FlowerTrimFreshFrozenCreateInput!]!
+  ): [FlowerTrimFreshFrozen]
+  updateFlowerTrimFreshFrozen(
+    where: FlowerTrimFreshFrozenWhereUniqueInput!
+    data: FlowerTrimFreshFrozenUpdateInput!
+  ): FlowerTrimFreshFrozen
+  updateFlowerTrimFreshFrozens(
+    data: [FlowerTrimFreshFrozenUpdateArgs!]!
+  ): [FlowerTrimFreshFrozen]
+  deleteFlowerTrimFreshFrozen(
+    where: FlowerTrimFreshFrozenWhereUniqueInput!
+  ): FlowerTrimFreshFrozen
+  deleteFlowerTrimFreshFrozens(
+    where: [FlowerTrimFreshFrozenWhereUniqueInput!]!
+  ): [FlowerTrimFreshFrozen]
+  createConcentrate(data: ConcentrateCreateInput!): Concentrate
+  createConcentrates(data: [ConcentrateCreateInput!]!): [Concentrate]
+  updateConcentrate(
+    where: ConcentrateWhereUniqueInput!
+    data: ConcentrateUpdateInput!
+  ): Concentrate
+  updateConcentrates(data: [ConcentrateUpdateArgs!]!): [Concentrate]
+  deleteConcentrate(where: ConcentrateWhereUniqueInput!): Concentrate
+  deleteConcentrates(where: [ConcentrateWhereUniqueInput!]!): [Concentrate]
+  createPreRoll(data: PreRollCreateInput!): PreRoll
+  createPreRolls(data: [PreRollCreateInput!]!): [PreRoll]
+  updatePreRoll(
+    where: PreRollWhereUniqueInput!
+    data: PreRollUpdateInput!
+  ): PreRoll
+  updatePreRolls(data: [PreRollUpdateArgs!]!): [PreRoll]
+  deletePreRoll(where: PreRollWhereUniqueInput!): PreRoll
+  deletePreRolls(where: [PreRollWhereUniqueInput!]!): [PreRoll]
+  createMachine(data: MachineCreateInput!): Machine
+  createMachines(data: [MachineCreateInput!]!): [Machine]
+  updateMachine(
+    where: MachineWhereUniqueInput!
+    data: MachineUpdateInput!
+  ): Machine
+  updateMachines(data: [MachineUpdateArgs!]!): [Machine]
+  deleteMachine(where: MachineWhereUniqueInput!): Machine
+  deleteMachines(where: [MachineWhereUniqueInput!]!): [Machine]
   createProductImage(data: ProductImageCreateInput!): ProductImage
   createProductImages(data: [ProductImageCreateInput!]!): [ProductImage]
   updateProductImage(
@@ -1032,6 +1480,15 @@ type Mutation {
   updateProductImages(data: [ProductImageUpdateArgs!]!): [ProductImage]
   deleteProductImage(where: ProductImageWhereUniqueInput!): ProductImage
   deleteProductImages(where: [ProductImageWhereUniqueInput!]!): [ProductImage]
+  createCategory(data: CategoryCreateInput!): Category
+  createCategories(data: [CategoryCreateInput!]!): [Category]
+  updateCategory(
+    where: CategoryWhereUniqueInput!
+    data: CategoryUpdateInput!
+  ): Category
+  updateCategories(data: [CategoryUpdateArgs!]!): [Category]
+  deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deleteCategories(where: [CategoryWhereUniqueInput!]!): [Category]
   createVendor(data: VendorCreateInput!): Vendor
   createVendors(data: [VendorCreateInput!]!): [Vendor]
   updateVendor(where: VendorWhereUniqueInput!, data: VendorUpdateInput!): Vendor
@@ -1142,6 +1599,48 @@ type Query {
   ): [Product!]
   product(where: ProductWhereUniqueInput!): Product
   productsCount(where: ProductWhereInput! = {}): Int
+  oils(
+    where: OilWhereInput! = {}
+    orderBy: [OilOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Oil!]
+  oil(where: OilWhereUniqueInput!): Oil
+  oilsCount(where: OilWhereInput! = {}): Int
+  flowerTrimFreshFrozens(
+    where: FlowerTrimFreshFrozenWhereInput! = {}
+    orderBy: [FlowerTrimFreshFrozenOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [FlowerTrimFreshFrozen!]
+  flowerTrimFreshFrozen(
+    where: FlowerTrimFreshFrozenWhereUniqueInput!
+  ): FlowerTrimFreshFrozen
+  flowerTrimFreshFrozensCount(where: FlowerTrimFreshFrozenWhereInput! = {}): Int
+  concentrates(
+    where: ConcentrateWhereInput! = {}
+    orderBy: [ConcentrateOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Concentrate!]
+  concentrate(where: ConcentrateWhereUniqueInput!): Concentrate
+  concentratesCount(where: ConcentrateWhereInput! = {}): Int
+  preRolls(
+    where: PreRollWhereInput! = {}
+    orderBy: [PreRollOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PreRoll!]
+  preRoll(where: PreRollWhereUniqueInput!): PreRoll
+  preRollsCount(where: PreRollWhereInput! = {}): Int
+  machines(
+    where: MachineWhereInput! = {}
+    orderBy: [MachineOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Machine!]
+  machine(where: MachineWhereUniqueInput!): Machine
+  machinesCount(where: MachineWhereInput! = {}): Int
   productImages(
     where: ProductImageWhereInput! = {}
     orderBy: [ProductImageOrderByInput!]! = []
@@ -1150,6 +1649,14 @@ type Query {
   ): [ProductImage!]
   productImage(where: ProductImageWhereUniqueInput!): ProductImage
   productImagesCount(where: ProductImageWhereInput! = {}): Int
+  categories(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Category!]
+  category(where: CategoryWhereUniqueInput!): Category
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   vendors(
     where: VendorWhereInput! = {}
     orderBy: [VendorOrderByInput!]! = []

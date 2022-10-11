@@ -20,18 +20,14 @@ async function addToCart(
 
   const [existingCartItem] = allCartItems;
   if (existingCartItem) {
-    console.log(existingCartItem);
-    console.log(
-      `There are already ${existingCartItem.quantity}, increment by 1!`
-    );
-    // 3. See if the current item is in their cart
-    // if it is, increment by 1
+    // See if the current item is in their cart
+    // if it is, update quantity
     return context.db.CartItem.updateOne({
       where: { id: existingCartItem.id },
       data: { quantity: quantity },
     });
   }
-  // 4. if it isnt, create a new cart item!
+  // if it isnt, create a new cart item!
   return context.db.CartItem.createOne({
     data: {
       product: { connect: { id: productId } },

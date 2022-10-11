@@ -1,125 +1,53 @@
-import { checkbox, decimal, integer, relationship, select, text } from '@keystone-6/core/fields';
+import { checkbox, decimal, relationship, select, multiselect, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { isSignedIn, rules } from '../access';
+import { permissions } from '../access';
 
 export const Product = list({
   access: {
     operation: {
-      create: isSignedIn,
+      create: permissions.canManageProducts,
     },
     filter: {
-      query: rules.canReadProducts,
-      update: rules.canManageProducts,
-      delete: rules.canManageProducts,
-    },
+      query: permissions.canReadProducts,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
+    }
   },
   fields: {
     name: text({ validation: { isRequired: true } }),
     slug: text({ isIndexed: 'unique', label: 'Pretty URL (Leave blank. This will be automatically filled once saved)' }),
-    hotdeal: checkbox({ label: 'Hot Deal?' }),
     inventory: decimal({
       defaultValue: '1.0',
       precision: 18,
       scale: 2,
-      validation: {
-        isRequired: true,
-      },
-      label: 'Inventory (by weight)'
+      label: 'Inventory'
     }),
-    weight: select({
-      options: [
-        { label: 'Gram', value: 'gram' },
-        { label: 'Ounce', value: 'ounce' },
-        { label: 'Pound', value: 'pound' },
-      ],
-      validation: { isRequired: true },
-      defaultValue: 'Pound',
-      ui: {
-        displayMode: 'segmented-control',
-      },
+    price: decimal({
+      defaultValue: '0.00',
+      precision: 18,
+      scale: 2,
     }),
-    potency: text({
-      defaultValue: '1.0',
-      validation: {
-        isRequired: true,
-      },
-      label: 'Potency (%)'
-    }),
-    strain: select({
-      options: [
-        { label: 'Indica', value: 'Indica' },
-        { label: 'Hybrid Indica', value: 'Hybrid Indica' },
-        { label: 'Sativa', value: 'Sativa' },
-        { label: 'Hybrid Sativa', value: 'Hybrid Sativa' },
-        { label: 'Hybrid', value: 'Hybrid' },
-      ],
-      defaultValue: 'Indica',
-      validation: {
-        isRequired: true,
-      },
-      ui: {
-        displayMode: 'segmented-control',
-      },
-    }),
-    producttype: select({
-      options: [
-        { label: 'Recreational', value: 'recreational' },
-        { label: 'Medical', value: 'medical' },
-      ],
-      validation: { isRequired: true },
-      defaultValue: 'recreational',
-      ui: {
-        displayMode: 'segmented-control',
-      },
-      label: 'Product Type'
-    }),
-    productcategory: select({
-      options: [
-        { label: 'Flower', value: 'Flower' },
-        { label: 'Pre Rolls', value: 'Pre Rolls' },
-        { label: 'Concentrates', value: 'Concentrates' },
-        { label: 'Trim', value: 'Trim' },
-        { label: 'Fresh Frozen', value: 'Fresh Frozen' },
-        { label: 'Oil', value: 'Oil' },
-        { label: 'CBD Oils and Isolates', value: 'CBD Oils and Isolates' },
-        { label: 'Grow & Lab Equipment', value: 'Grow & Lab Equipment' },
-      ],
-      validation: { isRequired: true },
-      defaultValue: 'Flower',
-      ui: {
-        displayMode: 'segmented-control',
-      },
-      label: 'Product Category'
-    }),
-    environment: select({
-      options: [
-        { label: 'Indoor', value: 'Indoor' },
-        { label: 'Greenhouse', value: 'Greenhouse' },
-        { label: 'Outdoor', value: 'Outdoor' },
-      ],
-      defaultValue: 'Indoor',
-      validation: {
-        isRequired: true,
-      },
-      ui: {
-        displayMode: 'segmented-control',
-      },
-    }),
-    price_threshold: relationship({
-      ref: 'Pricing.product',
+    priceThreshold: relationship({
+      ref: 'Pricing',
       many: true,
       ui: {
         createView: { fieldMode: 'edit' },
         inlineCreate: { fields: ['name', 'price', 'amount', 'weight', 'threshold'] },
         inlineEdit: { fields: ['name', 'price', 'amount', 'weight', 'threshold'] },
-      }
-    }),
-    description: text({
-      ui: {
-        displayMode: 'textarea',
       },
+      label: 'Quantity Discount'
     }),
-    photo: relationship({
+    recreational: checkbox({
+      label: 'Recreational Product?'
+    }),
+    medical: checkbox({
+      label: 'Medical Product?'
+    }),
+    hotDeal: checkbox({ label: 'Hot Deal?' }),
+    category: relationship({
+      ref: 'Category.product',
+    }),
+    photos: relationship({
       ref: 'ProductImage.product',
       many: true,
       ui: {
@@ -128,6 +56,35 @@ export const Product = list({
         inlineCreate: { fields: ['image', 'altText'] },
         inlineEdit: { fields: ['image', 'altText'] },
       },
+    }),
+    description: text({
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
+    flower: relationship({
+      ref: 'FlowerTrimFreshFrozen',
+      label: 'Flower/Trim/Fresh Frozen - select or create new'
+    }),
+    oil: relationship({
+      ref: 'Oil',
+      label: 'Oil - select or create new'
+    }),
+    concentrate: relationship({
+      ref: 'Concentrate',
+      label: 'Concentrate - select or create new'
+    }),
+    preRoll: relationship({
+      ref: 'PreRoll',
+      label: 'Pre-roll - select or create new'
+    }),
+    machine: relationship({
+      ref: 'Machine',
+      label: 'Equipment - select or create new'
+    }),
+    vendor: relationship({
+      ref: 'Vendor.product',
+      many: false,
     }),
     status: select({
       options: [
@@ -141,10 +98,11 @@ export const Product = list({
         createView: { fieldMode: 'hidden' },
       },
     }),
-    vendor: relationship({
-      ref: 'Vendor.products',
-      many: false,
-    }),
+  },
+  ui: {
+    listView: {
+      initialColumns: ['name', 'hotDeal', 'category', 'status', 'inventory'],
+    },
   },
   hooks: {
     resolveInput: ({ resolvedData }) => {
@@ -152,7 +110,6 @@ export const Product = list({
       if (name) {
         return {
           ...resolvedData,
-          // Ensure the first letter of the title is capitalised
           slug: name.toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '-')

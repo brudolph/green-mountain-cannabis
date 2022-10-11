@@ -25,12 +25,14 @@ export const Order = list({
       field: graphql.field({
         type: graphql.String,
         resolve(item) {
-          return `${formatMoney(item.total)}`;
+          return `${item.id}`;
         },
       }),
+      label: 'Order Id'
     }),
     total: integer(),
     items: relationship({ ref: 'OrderItem.order', many: true }),
     user: relationship({ ref: 'User.orders' }),
   },
+  description: 'User orders',
 });

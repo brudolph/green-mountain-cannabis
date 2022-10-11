@@ -15,7 +15,7 @@ export const permissionFields = {
   }),
   canManageRoles: checkbox({
     defaultValue: false,
-    label: 'User can CRUD roles',
+    label: 'User can Create/Read/Update/Delete roles',
   }),
   canManageCart: checkbox({
     defaultValue: false,

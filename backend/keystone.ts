@@ -9,6 +9,12 @@ import { CartItem } from './schemas/CartItem';
 import { OrderItem } from './schemas/OrderItem';
 import { Order } from './schemas/Order';
 import { Role } from './schemas/Role';
+import { Oil } from './schemas/Oil';
+import { Concentrate } from './schemas/Concentrate';
+import { PreRoll } from './schemas/PreRoll';
+import { Machine } from './schemas/Equipment';
+import { FlowerTrimFreshFrozen } from './schemas/FlowerTrimFreshFrozen';
+import { Category } from './schemas/Category';
 import { extendGraphqlSchema } from './mutations';
 import { addCompatibilityForQueries } from './compat';
 
@@ -31,13 +37,19 @@ export default withAuth(
     lists: ({
       User,
       Product,
+      Oil,
+      FlowerTrimFreshFrozen,
+      Concentrate,
+      PreRoll,
+      Machine,
       ProductImage,
+      Category,
       Vendor,
       Pricing,
       CartItem,
       OrderItem,
       Order,
-      Role
+      Role,
     }),
     extendGraphqlSchema: (schema) =>
       addCompatibilityForQueries(extendGraphqlSchema(schema)),

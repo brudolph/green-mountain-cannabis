@@ -29,26 +29,113 @@ model User {
 }
 
 model Product {
-  id                    String         @id @default(cuid())
-  name                  String         @default("")
-  slug                  String         @unique @default("")
-  hotdeal               Boolean        @default(false)
-  inventory             Decimal        @default("1.0") @postgresql.Decimal(18, 2)
-  weight                String         @default("Pound")
-  potency               String         @default("1.0")
-  strain                String         @default("Indica")
-  producttype           String         @default("recreational")
-  productcategory       String         @default("Flower")
-  environment           String         @default("Indoor")
-  price_threshold       Pricing[]      @relation("Pricing_product")
-  description           String         @default("")
-  photo                 ProductImage[] @relation("ProductImage_product")
-  status                String?        @default("DRAFT")
-  vendor                Vendor?        @relation("Product_vendor", fields: [vendorId], references: [id])
-  vendorId              String?        @map("vendor")
-  from_CartItem_product CartItem[]     @relation("CartItem_product")
+  id                                 String                  @id @default(cuid())
+  name                               String                  @default("")
+  slug                               String                  @unique @default("")
+  inventory                          Decimal?                @default("1.0") @postgresql.Decimal(18, 2)
+  price                              Decimal?                @default("0.00") @postgresql.Decimal(18, 2)
+  priceThreshold                     Pricing[]               @relation("Product_priceThreshold")
+  recreational                       Boolean                 @default(false)
+  medical                            Boolean                 @default(false)
+  hotDeal                            Boolean                 @default(false)
+  category                           Category?               @relation("Product_category", fields: [categoryId], references: [id])
+  categoryId                         String?                 @map("category")
+  photos                             ProductImage[]          @relation("ProductImage_product")
+  description                        String                  @default("")
+  flower                             FlowerTrimFreshFrozen?  @relation("Product_flower", fields: [flowerId], references: [id])
+  flowerId                           String?                 @map("flower")
+  oil                                Oil?                    @relation("Product_oil", fields: [oilId], references: [id])
+  oilId                              String?                 @map("oil")
+  concentrate                        Concentrate?            @relation("Product_concentrate", fields: [concentrateId], references: [id])
+  concentrateId                      String?                 @map("concentrate")
+  preRoll                            PreRoll?                @relation("Product_preRoll", fields: [preRollId], references: [id])
+  preRollId                          String?                 @map("preRoll")
+  machine                            Machine?                @relation("Product_machine", fields: [machineId], references: [id])
+  machineId                          String?                 @map("machine")
+  vendor                             Vendor?                 @relation("Product_vendor", fields: [vendorId], references: [id])
+  vendorId                           String?                 @map("vendor")
+  status                             String?                 @default("DRAFT")
+  from_Oil_product                   Oil[]                   @relation("Oil_product")
+  from_FlowerTrimFreshFrozen_product FlowerTrimFreshFrozen[] @relation("FlowerTrimFreshFrozen_product")
+  from_Concentrate_product           Concentrate[]           @relation("Concentrate_product")
+  from_PreRoll_product               PreRoll[]               @relation("PreRoll_product")
+  from_Machine_product               Machine[]               @relation("Machine_product")
+  from_CartItem_product              CartItem[]              @relation("CartItem_product")
 
+  @@index([categoryId])
+  @@index([flowerId])
+  @@index([oilId])
+  @@index([concentrateId])
+  @@index([preRollId])
+  @@index([machineId])
   @@index([vendorId])
+}
+
+model Oil {
+  id               String    @id @default(cuid())
+  product          Product?  @relation("Oil_product", fields: [productId], references: [id])
+  productId        String?   @map("product")
+  weight           String?   @default("pound")
+  potency          String    @default("1.0")
+  cbd              Boolean   @default(false)
+  oilType          String?
+  solventUsed      String?
+  from_Product_oil Product[] @relation("Product_oil")
+
+  @@index([productId])
+}
+
+model FlowerTrimFreshFrozen {
+  id                  String    @id @default(cuid())
+  product             Product?  @relation("FlowerTrimFreshFrozen_product", fields: [productId], references: [id])
+  productId           String?   @map("product")
+  weight              String?
+  potency             String    @default("1.0")
+  strain              String?
+  trimMethod          String?
+  environment         String?
+  from_Product_flower Product[] @relation("Product_flower")
+
+  @@index([productId])
+}
+
+model Concentrate {
+  id                       String    @id @default(cuid())
+  product                  Product?  @relation("Concentrate_product", fields: [productId], references: [id])
+  productId                String?   @map("product")
+  weight                   String?   @default("pound")
+  potency                  String    @default("1.0")
+  strain                   String?
+  type                     String?
+  from_Product_concentrate Product[] @relation("Product_concentrate")
+
+  @@index([productId])
+}
+
+model PreRoll {
+  id                   String    @id @default(cuid())
+  product              Product?  @relation("PreRoll_product", fields: [productId], references: [id])
+  productId            String?   @map("product")
+  size                 String?
+  potency              String    @default("1.0")
+  strain               String?
+  type                 String?
+  tube                 String?
+  from_Product_preRoll Product[] @relation("Product_preRoll")
+
+  @@index([productId])
+}
+
+model Machine {
+  id                   String    @id @default(cuid())
+  product              Product?  @relation("Machine_product", fields: [productId], references: [id])
+  productId            String?   @map("product")
+  model                String    @default("")
+  modelYear            String    @default("")
+  condition            String?
+  from_Product_machine Product[] @relation("Product_machine")
+
+  @@index([productId])
 }
 
 model ProductImage {
@@ -62,24 +149,31 @@ model ProductImage {
   @@index([productId])
 }
 
+model Category {
+  id      String    @id @default(cuid())
+  name    String    @default("")
+  slug    String    @unique @default("")
+  product Product[] @relation("Product_category")
+}
+
 model Vendor {
-  id        String    @id @default(cuid())
-  name      String    @default("")
-  email     String    @default("")
-  contact   String    @default("")
-  vendor_ID String    @default("")
-  notes     String    @default("")
-  products  Product[] @relation("Product_vendor")
+  id           String    @id @default(cuid())
+  name         String    @default("")
+  email        String    @default("")
+  contact_name String    @default("")
+  phone        String    @default("")
+  mobile       String    @default("")
+  vendor_ID    String    @default("")
+  notes        String    @default("")
+  product      Product[] @relation("Product_vendor")
 }
 
 model Pricing {
-  id        String    @id @default(cuid())
-  name      String    @default("")
-  price     Int
-  amount    Int
-  weight    String    @default("Pound")
-  threshold String?   @default(">")
-  product   Product[] @relation("Pricing_product")
+  id                          String    @id @default(cuid())
+  name                        String    @default("")
+  price                       Decimal   @default("0.00") @postgresql.Decimal(18, 2)
+  amount                      Int
+  from_Product_priceThreshold Product[] @relation("Product_priceThreshold")
 }
 
 model CartItem {
@@ -101,7 +195,6 @@ model OrderItem {
   photo       ProductImage? @relation("OrderItem_photo", fields: [photoId], references: [id])
   photoId     String?       @map("photo")
   price       Int?
-  weight      String        @default("")
   quantity    Decimal?      @postgresql.Decimal(18, 4)
   order       Order?        @relation("OrderItem_order", fields: [orderId], references: [id])
   orderId     String?       @map("order")

@@ -14,7 +14,7 @@ export const OrderItem = list({
     },
   },
   fields: {
-    name: text({ isRequired: true }),
+    name: text({ validation: { isRequired: true } }),
     description: text({
       ui: {
         displayMode: 'textarea',
@@ -30,7 +30,7 @@ export const OrderItem = list({
       },
     }),
     price: integer(),
-    weight: text(),
+    // weight: text(),
     quantity: decimal(),
     order: relationship({ ref: 'Order.items' }),
   },

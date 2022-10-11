@@ -58,7 +58,7 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
       description: cartItem.product.description,
       price: cartItem.product.price,
       quantity: cartItem.quantity,
-      weight: cartItem.weight,
+      // weight: cartItem.weight,
       // photo: { connect: { id: cartItem.product.photo.id } },
     };
     return orderItem;
