@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import 'twin.macro';
-import GlobalStyles from './styles/GlobalStyles';
+import GlobalStyles from '../styles/GlobalStyles';
 import Header from './Header';
 import Footer from './Footer';
 

@@ -17,19 +17,15 @@ const CURRENT_USER_QUERY = gql`
           product {
             id
             name
+            slug
             inventory
-            weight
-            potency
-            strain
-            price_threshold {
-              price
+            price
+            priceThreshold {
               amount
-              weight
-              threshold
+              price
+              name
             }
-            environment
-            description
-            photo {
+            photos {
               id
               image {
                 publicUrl
@@ -39,9 +35,10 @@ const CURRENT_USER_QUERY = gql`
                 name
               }
             }
+            status
             vendor {
+              id
               name
-              vendor_ID
             }
           }
         }

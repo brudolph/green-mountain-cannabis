@@ -3,7 +3,7 @@ import 'twin.macro';
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
-import { XIcon } from '@heroicons/react/solid';
+import { AdjustmentsIcon, XIcon } from '@heroicons/react/solid';
 import useFilters from '../lib/useFilters';
 import { strainList, environmentList, potencyList } from './config/filters';
 import Checkbox from './forms/Checkbox';
@@ -13,7 +13,7 @@ import {
   ActiveFilters,
   ActiveFiltersContainer,
   ActiveFiltersHeader,
-} from './styles/FilterStyles';
+} from '../styles/FilterStyles';
 
 function Filters({ loading, products, setFilteredData }) {
   const [strains, setStrains] = useState([]);
@@ -248,7 +248,9 @@ function Filters({ loading, products, setFilteredData }) {
       </FiltersContainer>
       <ActiveFilters>
         <ActiveFiltersContainer>
-          <ActiveFiltersHeader>Filters:</ActiveFiltersHeader>
+          <ActiveFiltersHeader>
+            <AdjustmentsIcon tw="w-5 h-5 mr-2 text-gray-600" /> Filters:
+          </ActiveFiltersHeader>
           <div tw="flex">
             {strains.map((strain, index) => (
               <button

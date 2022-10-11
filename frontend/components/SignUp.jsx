@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
-import { Form, FormButton, Input, Label, Processing } from './styles/Form';
+import { Form, FormButton, Input, Label, Processing } from '../styles/Form';
 import useForm from '../lib/useForm';
 import Error from './ErrorMessage';
 import LoadingIcon from './icons/LoadingIcon';
@@ -44,81 +44,83 @@ export default function SignUp() {
   }
 
   return (
-    <Form method="POST" onSubmit={handleSubmit}>
-      <h1 tw="text-center">Sign Up For an Account</h1>
-      <Error error={error} />
-      <fieldset>
-        <Processing loading={loading.toString()}>
-          <LoadingIcon tw="animate-spin" />
-          Processing
-        </Processing>
-        {data?.createUser && (
-          <p>
-            Signed up with {data.createUser.email} - Please Go ahead and Sign
-            in!
-          </p>
-        )}
-        {!data?.createUser && (
-          <>
-            <Label htmlFor="email" isStacked>
-              Your Name
-              <Input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                autoComplete="name"
-                value={inputs.name}
-                onChange={handleChange}
-              />
-            </Label>
-            <Label htmlFor="email" isStacked>
-              Email
-              <Input
-                type="email"
-                name="email"
-                placeholder="Your Email Address"
-                autoComplete="email"
-                value={inputs.email}
-                onChange={handleChange}
-              />
-            </Label>
-            <Label htmlFor="phone" isStacked>
-              Phone
-              <Input
-                type="text"
-                name="phone"
-                placeholder="Your Phone Number"
-                autoComplete="phone"
-                value={inputs.phone}
-                onChange={handleChange}
-              />
-            </Label>
-            <Label htmlFor="password" isStacked>
-              Password
-              <Input
-                type="password"
-                name="password"
-                placeholder="Password"
-                autoComplete="password"
-                value={inputs.password}
-                onChange={handleChange}
-              />
-            </Label>
-            <Label htmlFor="password" isStacked>
-              Password
-              <Input
-                type="password"
-                name="password"
-                placeholder="Password"
-                autoComplete="password"
-                value={inputs.password}
-                onChange={handleChange}
-              />
-            </Label>
-            <FormButton type="submit">Sign Up!</FormButton>
-          </>
-        )}
-      </fieldset>
-    </Form>
+    <div tw="py-10 px-6">
+      <Form method="POST" onSubmit={handleSubmit}>
+        <h1 tw="text-center">Sign Up For an Account</h1>
+        <Error error={error} />
+        <fieldset>
+          <Processing loading={loading.toString()}>
+            <LoadingIcon tw="animate-spin" />
+            Processing
+          </Processing>
+          {data?.createUser && (
+            <p>
+              Signed up with {data.createUser.email} - Please Go ahead and Sign
+              in!
+            </p>
+          )}
+          {!data?.createUser && (
+            <>
+              <Label htmlFor="email" isStacked>
+                Your Name
+                <Input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  autoComplete="name"
+                  value={inputs.name}
+                  onChange={handleChange}
+                />
+              </Label>
+              <Label htmlFor="email" isStacked>
+                Email
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email Address"
+                  autoComplete="email"
+                  value={inputs.email}
+                  onChange={handleChange}
+                />
+              </Label>
+              <Label htmlFor="phone" isStacked>
+                Phone
+                <Input
+                  type="text"
+                  name="phone"
+                  placeholder="Your Phone Number"
+                  autoComplete="phone"
+                  value={inputs.phone}
+                  onChange={handleChange}
+                />
+              </Label>
+              <Label htmlFor="password" isStacked>
+                Password
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  autoComplete="password"
+                  value={inputs.password}
+                  onChange={handleChange}
+                />
+              </Label>
+              <Label htmlFor="password" isStacked>
+                Password
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  autoComplete="password"
+                  value={inputs.password}
+                  onChange={handleChange}
+                />
+              </Label>
+              <FormButton type="submit">Sign Up!</FormButton>
+            </>
+          )}
+        </fieldset>
+      </Form>
+    </div>
   );
 }

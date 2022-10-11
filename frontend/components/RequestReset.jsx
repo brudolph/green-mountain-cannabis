@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
-import { Form, FormButton, Input, Label } from './styles/Form';
+import { Form, FormButton, Input, Label } from '../styles/Form';
 import useForm from '../lib/useForm';
 import DisplayError from './ErrorMessage';
 

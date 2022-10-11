@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Product from './Product';
 import { perPage } from '../config';
-import { Processing } from './styles/Form';
+import { Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import Filters from './Filters';
@@ -23,24 +23,18 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
       id
       name
       slug
-      hotdeal
+      hotDeal
       inventory
-      producttype
-      productcategory
-      weight
-      potency
-      strain
+      category {
+        name
+      }
       status
-      price_threshold {
+      priceThreshold {
         name
         price
         amount
-        weight
-        threshold
       }
-      environment
-      description
-      photo {
+      photos {
         id
         image {
           publicUrl
@@ -51,6 +45,7 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
         }
       }
       vendor {
+        id
         name
         vendor_ID
       }
@@ -58,14 +53,13 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
   }
 `;
 
-function ProductType({ page, producttype }) {
+function ProductType({ page }) {
   const [filteredData, setFilteredData] = useState();
 
   const { data, error, loading } = useQuery(ALL_PRODUCTS_FILTERED_QUERY, {
     variables: {
       skip: page * perPage - perPage,
       first: perPage,
-      producttype,
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -115,7 +109,6 @@ function ProductType({ page, producttype }) {
 
 ProductType.propTypes = {
   page: PropTypes.number,
-  producttype: PropTypes.string,
 };
 
 const ProductGrid = tw.div`grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:gap-x-8 max-w-7xl mx-auto px-5 py-6`;

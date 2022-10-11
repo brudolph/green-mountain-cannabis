@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import useForm from '../lib/useForm';
 import DisplayError from './ErrorMessage';
-import { Form, Input, Label } from './styles/Form';
+import { Form, Input, Label } from '../styles/Form';
 
 const SINGLE_PRODUCT_QUERY = gql`
   query SINGLE_PRODUCT_QUERY($id: ID!) {

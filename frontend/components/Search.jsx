@@ -3,7 +3,7 @@ import { resetIdCounter, useCombobox } from 'downshift';
 import gql from 'graphql-tag';
 import debounce from 'lodash.debounce';
 import { useRouter } from 'next/dist/client/router';
-import { DropDown, DropDownItem, SearchStyles } from './styles/DropDown';
+import { DropDown, DropDownItem, SearchStyles } from '../styles/DropDown';
 
 const SEARCH_PRODUCTS_QUERY = gql`
   query SEARCH_PRODUCTS_QUERY($searchTerm: String!) {
@@ -11,15 +11,14 @@ const SEARCH_PRODUCTS_QUERY = gql`
       where: {
         OR: [
           { name: { contains: $searchTerm } }
-          { strain: { contains: $searchTerm } }
-          { potency: { contains: $searchTerm } }
-          { environment: { contains: $searchTerm } }
+          { slug: { contains: $searchTerm } }
+          { category: { name: { contains: $searchTerm } } }
         ]
       }
     ) {
       id
       name
-      photo {
+      photos {
         image {
           publicUrl
         }
@@ -90,7 +89,7 @@ export default function Search() {
               highlighted={index === highlightedIndex}
             >
               <img
-                src={item.photo[0].image.publicUrl}
+                src={item.photos[0]?.image.publicUrl}
                 alt={item.name}
                 width="50"
               />

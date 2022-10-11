@@ -22,7 +22,7 @@ const SINGLE_ITEM_QUERY = gql`
     product(where: { id: $id }) {
       name
       strain
-      price_threshold {
+      priceThreshold {
         weight
         threshold
       }
@@ -52,14 +52,14 @@ function Vendor({ id }) {
     <PleaseSignIn>
       <DisplayError error={error} />
       <Head>
-        <title>`Green Mountain Cannabis | ${product.name}`</title>
+        <title>Green Mountain Cannabis | ${product.name}</title>
       </Head>
       <div tw="grid grid-cols-1 lg:grid-cols-12 lg:gap-10">
         <div tw="col-span-6">
           <h2>{product.name}</h2>
           <p>{product.description}</p>
           <ul>
-            <li>{product?.price_threshold[0]?.threshold}</li>
+            <li>{product?.priceThreshold[0]?.threshold}</li>
             <li>{product?.strain}</li>
             <li>{product?.potency}</li>
             <li>{product?.environment}</li>

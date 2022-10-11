@@ -1,19 +1,10 @@
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/client';
-import { TrashIcon } from '@heroicons/react/outline';
 import gql from 'graphql-tag';
-import { styled, css } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 const DeleteButton = styled.button(() => [
-  css`
-    font-size: 3rem;
-    background: none;
-    border: 0;
-    &:hover {
-      color: var(--red);
-      cursor: pointer;
-    }
-  `,
+  tw`font-medium text-accent-dark hover:text-accent`,
 ]);
 
 const REMOVE_FROM_CART_MUTATION = gql`
@@ -46,7 +37,7 @@ function RemoveFromCart({ id }) {
       type="button"
       title="Remove This Item from Cart"
     >
-      <TrashIcon tw="w-6 h-6 text-accent-dark" />
+      Remove
     </DeleteButton>
   );
 }

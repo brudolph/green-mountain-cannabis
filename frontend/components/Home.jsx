@@ -1,12 +1,15 @@
 import Hero from '../public/rob-warner-unsplash.jpg';
 import 'twin.macro';
 import { MyLink } from './MyLink';
+import { useUser } from './User';
 
 export default function Home() {
+  const user = useUser();
+
   return (
-    <div tw="relative  overflow-hidden">
-      <div tw="relative pt-6 pb-16 sm:pb-24 lg:pb-24">
-        <main tw="mx-auto max-w-7xl px-4 sm:px-6">
+    <div tw="relative overflow-hidden mt-8">
+      <div tw="relative py-16 sm:pb-24">
+        <div tw="mx-auto max-w-7xl px-4 sm:px-6">
           <div tw="lg:grid lg:grid-cols-12 lg:gap-8">
             <div tw="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
               <h1>
@@ -20,16 +23,14 @@ export default function Home() {
                 lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat
                 fugiat aliqua ad ad non deserunt sunt.
               </p>
-              <div tw="flex">
-                <div tw="rounded-md shadow">
-                  <MyLink
-                    href="/signup"
-                    tw="w-full flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark md:py-3 md:text-base md:px-8"
-                  >
-                    Sign Up
-                  </MyLink>
-                </div>
-              </div>
+              {!user && (
+                <MyLink
+                  href="/signup"
+                  tw="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow text-white bg-primary hover:bg-primary-dark md:py-3 md:text-base md:px-8"
+                >
+                  Sign Up
+                </MyLink>
+              )}
             </div>
             <div tw="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
               <div tw="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
@@ -67,7 +68,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );

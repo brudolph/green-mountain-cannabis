@@ -2,10 +2,10 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import Router from 'next/router';
 import useForm from '../lib/useForm';
-import { Form, FormButton, Input, Label, Processing } from './styles/Form';
+import { Form, FormButton, Input, Label, Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
-import { ALL_PRODUCTS_FILTERED_QUERY } from './Products';
+import { ALL_PRODUCTS_FILTERED_QUERY } from './ProductType';
 import Radios from './forms/RadioGroup';
 import {
   strainList,
@@ -39,7 +39,7 @@ const CREATE_PRODUCT_MUTATION = gql`
         strain: $strain
         environment: $environment
         description: $description
-        # price_threshold: {
+        # priceThreshold: {
         #   create: {
         #     name: $threshold $amount $weight $price
         #     price: $price
@@ -61,7 +61,7 @@ const CREATE_PRODUCT_MUTATION = gql`
       strain
       environment
       description
-      # price_threshold {
+      # priceThreshold {
       #   name
       #   price
       #   amount

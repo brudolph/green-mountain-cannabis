@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
-import Link from 'next/link';
+import Router from 'next/router';
 import useForm from '../lib/useForm';
 import DisplayError from './ErrorMessage';
 import LoadingIcon from './icons/LoadingIcon';
-import { Form, FormButton, Input, Label, Processing } from './styles/Form';
+import { Form, FormButton, Input, Label, Processing } from '../styles/Form';
 import { CURRENT_USER_QUERY } from './User';
 import 'twin.macro';
-import Router from 'next/router';
 import { MyLink } from './MyLink';
 
 const SIGNIN_MUTATION = gql`
@@ -85,24 +84,19 @@ export default function SignIn() {
           </Label>
           <FormButton type="submit">Login</FormButton>
         </fieldset>
-        <p tw="mt-8 text-center">
+        <div tw="mt-8 text-center">
           <MyLink href="/reset">
             <span tw="text-sm hover:underline">Forgot password?</span>
           </MyLink>
-        </p>
+        </div>
       </Form>
       <div tw="space-y-4 text-sm text-gray-900 sm:flex sm:items-center sm:justify-center sm:space-y-0 sm:space-x-4 pt-6">
         <p tw="text-center sm:text-left">Don't have an account?</p>
-        <a
-          tw="inline-flex justify-center rounded-lg text-sm font-semibold py-2.5 px-4 text-gray-600 ring-1 ring-gray-600/10 hover:ring-gray-600/20"
-          href="/all-access"
-        >
-          <Link href="/signup">
-            <a>
-              Get access <span aria-hidden="true">→</span>
-            </a>
-          </Link>
-        </a>
+        <MyLink href="/signup">
+          <span>
+            Get access <span aria-hidden="true">→</span>
+          </span>
+        </MyLink>
       </div>
     </div>
   );

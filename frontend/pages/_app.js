@@ -5,10 +5,9 @@ import Router from 'next/router';
 import { cache } from '@emotion/css';
 import { CacheProvider } from '@emotion/react';
 import Page from '../components/Page';
-import '../components/styles/nprogress.css';
+import '../styles/nprogress.css';
 import withData from '../lib/withData';
-import GlobalStyles from '../components/styles/GlobalStyles';
-import { CartStateProvider } from '../context/cartState';
+import GlobalStyles from '../styles/GlobalStyles';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -18,12 +17,10 @@ function App({ Component, pageProps, apollo }) {
   return (
     <ApolloProvider client={apollo}>
       <CacheProvider value={cache}>
-        <CartStateProvider>
-          <Page>
-            <GlobalStyles />
-            <Component {...pageProps} />
-          </Page>
-        </CartStateProvider>
+        <Page>
+          <GlobalStyles />
+          <Component {...pageProps} />
+        </Page>
       </CacheProvider>
     </ApolloProvider>
   );

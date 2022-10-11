@@ -154,17 +154,17 @@ function QuickView({ content, dialogOpen = false, closeDialog }) {
 
                       {/* <PricingStyles>
                         <span tw="sr-only">Pricing</span>{' '}
-                        {content?.price_threshold?.length > 1 ? (
+                        {content?.priceThreshold?.length > 1 ? (
                           <>
                             {formatMoney(
-                              content.price_threshold[
-                                content.price_threshold.length - 1
+                              content.priceThreshold[
+                                content.priceThreshold.length - 1
                               ].price
                             )}{' '}
-                            - {formatMoney(content?.price_threshold?.price)}
+                            - {formatMoney(content?.priceThreshold?.price)}
                           </>
                         ) : (
-                          <>{formatMoney(content?.price_threshold?.price)}</>
+                          <>{formatMoney(content?.priceThreshold?.price)}</>
                         )}
                         <span tw="italic ml-1">
                           {formatWeight(content.weight)}

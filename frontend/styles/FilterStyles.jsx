@@ -10,5 +10,5 @@ export const ActiveFiltersContainer = styled.div(
   tw`w-full max-w-7xl mx-auto py-4 px-5 sm:flex sm:items-center`
 );
 export const ActiveFiltersHeader = styled.h2(
-  tw`text-sm font-normal uppercase tracking-wide py-1 mr-4 text-gray-900`
+  tw`flex items-center text-sm font-normal uppercase tracking-wide py-1 mr-4 text-gray-900`
 );

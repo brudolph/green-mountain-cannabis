@@ -15,7 +15,7 @@ const StyledTransition = styled(Transition)`
     ${tw`opacity-100`}
   }
   &.leave {
-    ${tw`transition ease-in duration-100`}
+    ${tw`transition duration-100 ease-in`}
   }
   &.leaveFrom {
     ${tw`opacity-100`}
@@ -73,7 +73,7 @@ function Selectbox({ options, name, setInputs, inputs }) {
                           active
                             ? tw`text-white bg-accent-light`
                             : tw`text-gray-900`,
-                          tw`cursor-default select-none relative py-2 pl-8 pr-4`,
+                          tw`relative py-2 pl-8 pr-4 cursor-default select-none`,
                         ]}
                       >
                         <span

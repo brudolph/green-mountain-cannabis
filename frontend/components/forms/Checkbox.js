@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import 'twin.macro';
-import { Input, Label } from '../styles/Form';
+import { Input, Label } from '../../styles/Form';
 
 function Checkbox({ name, label, checkHandler, index, value, isChecked }) {
   return (

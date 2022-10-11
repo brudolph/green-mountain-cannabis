@@ -1,5 +1,5 @@
 import Home from '../components/Home';
 
-export default function Example() {
+export default function IndexPage() {
   return <Home />;
 }

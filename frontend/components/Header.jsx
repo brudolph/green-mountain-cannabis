@@ -3,8 +3,7 @@ import Announcement from './Announcement';
 import Nav from './Nav';
 import Logo from '../public/static/gmc-logo.svg';
 import { useUser } from './User';
-import Cart from './Cart';
-import { HeaderStyles } from './styles/HeaderStyles';
+import { HeaderStyles } from '../styles/HeaderStyles';
 import { MyLink } from './MyLink';
 
 export default function Header() {
@@ -19,12 +18,7 @@ export default function Header() {
           <img src={Logo} alt="Green Mountain Cannabis" />
         </a>
       </div>
-      {user && (
-        <>
-          <Nav />
-          <Cart />
-        </>
-      )}
+      {user && <Nav />}
       {!user && (
         <div tw="max-w-7xl mx-auto flex justify-end px-5 py-3">
           <MyLink

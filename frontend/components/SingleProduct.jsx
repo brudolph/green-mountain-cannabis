@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import { gql, useQuery } from '@apollo/client';
 import Head from 'next/head';
-import { css } from 'twin.macro';
+import 'twin.macro';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy, Keyboard, Zoom } from 'swiper';
 import 'swiper/css';
@@ -16,29 +16,26 @@ import { MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import PleaseSignIn from './PleaseSignIn';
 import DisplayError from './ErrorMessage';
 import formatWeight from '../lib/formatWeight';
-import { Processing } from './styles/Form';
+import { Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 
 const SINGLE_ITEM_QUERY = gql`
   query SINGLE_ITEM_QUERY($slug: String) {
     product(where: { slug: $slug }) {
       name
-      strain
       slug
-      price_threshold {
-        weight
-        threshold
+      price
+      priceThreshold {
+        name
+        amount
+        price
       }
-      photo {
+      photos {
         image {
           publicUrl
         }
       }
-      description
-      potency
       inventory
-      weight
-      environment
     }
   }
 `;
@@ -60,13 +57,6 @@ function SingleProduct({ slug }) {
   if (error) return <DisplayError error={error} />;
   const { product } = data;
 
-  const pagination = {
-    clickable: true,
-    renderBullet(index, className) {
-      return `<span class="${className}">${index + 1}</span>`;
-    },
-  };
-
   return (
     <PleaseSignIn>
       <DisplayError error={error} />
@@ -75,7 +65,7 @@ function SingleProduct({ slug }) {
         Loading
       </Processing>
       <Head>
-        <title>Green Mountain Cannabis | ${product.name}</title>
+        <title>{product.name} | Green Mountain Cannabis</title>
       </Head>
       <div tw="bg-primary/20">
         <div tw="max-w-2xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -90,10 +80,10 @@ function SingleProduct({ slug }) {
                 lazy
                 keyboard
                 zoom
-                pagination={pagination}
+                pagination={{ clickable: true }}
                 tw="rounded-md h-[31.25rem] border border-primary-light/40"
               >
-                {product.photo.map((photo) => (
+                {product.photos.map((photo) => (
                   <SwiperSlide key={photo.id}>
                     <div className="swiper-zoom-container">
                       <img

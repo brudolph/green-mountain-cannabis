@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Product from './Product';
 import { perPage } from '../config';
-import { Processing } from './styles/Form';
+import { Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import Filters from './Filters';
@@ -13,59 +13,107 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
   query ALL_PRODUCTS_FILTERED_QUERY(
     $skip: Int = 0
     $first: Int
-    $producttype: String
+    $category: String
+    $recreational: Boolean
+    $medical: Boolean
   ) {
     products(
       take: $first
       skip: $skip
-      where: { producttype: { equals: $producttype } }
+      orderBy: [{ name: asc }]
+      where: {
+        OR: [
+          { recreational: { equals: $recreational } }
+          { medical: { equals: $medical } }
+        ]
+        category: { slug: { equals: $category } }
+      }
     ) {
       id
       name
       slug
-      hotdeal
       inventory
-      producttype
-      productcategory
-      weight
-      potency
-      strain
-      status
-      price_threshold {
+      price
+      priceThreshold {
         name
         price
         amount
-        weight
-        threshold
       }
-      environment
-      description
-      photo {
+      recreational
+      medical
+      hotDeal
+      category {
+        slug
+        name
+      }
+      photos {
         id
         image {
           publicUrl
         }
         altText
-        product {
-          name
-        }
       }
+      description
+      status
       vendor {
+        id
         name
         vendor_ID
+      }
+      flower {
+        label
+        weight
+        potency
+        strain
+        trimMethod
+        environment
+      }
+      oil {
+        label
+        weight
+        potency
+        cbd
+        oilType
+        solventUsed
+      }
+      concentrate {
+        label
+        weight
+        potency
+        strain
+        type
+      }
+      preRoll {
+        label
+        size
+        potency
+        strain
+        type
+        tube
+      }
+      machine {
+        label
+        model
+        modelYear
+        condition
       }
     }
   }
 `;
 
-function ProductCategory({ page, producttype }) {
+function ProductCategory({ page, category, productType }) {
   const [filteredData, setFilteredData] = useState();
+
+  const recreational = productType === 'recreational';
+  const medical = productType === 'medical';
 
   const { data, error, loading } = useQuery(ALL_PRODUCTS_FILTERED_QUERY, {
     variables: {
       skip: page * perPage - perPage,
       first: perPage,
-      producttype,
+      category,
+      recreational,
+      medical,
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -115,7 +163,8 @@ function ProductCategory({ page, producttype }) {
 
 ProductCategory.propTypes = {
   page: PropTypes.number,
-  producttype: PropTypes.string,
+  category: PropTypes.string,
+  productType: PropTypes.string,
 };
 
 const ProductGrid = tw.div`grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:gap-x-8 max-w-7xl mx-auto px-5 py-6`;

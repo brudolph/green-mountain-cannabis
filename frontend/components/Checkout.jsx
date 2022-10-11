@@ -7,22 +7,19 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/dist/client/router';
 import { CURRENT_USER_QUERY, useUser } from './User';
-import formatMoney from '../lib/formatMoney';
-import calcTotalPrice from '../lib/calcTotalPrice';
 import RemoveFromCart from './RemoveFromCart';
 import PleaseSignIn from './PleaseSignIn';
-
-const CheckoutFormStyles = styled.form`
-  max-width: 80rem;
-  background-color: white;
-  margin: 0 auto;
-  box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 5px;
-  padding: 1rem;
-  display: grid;
-  grid-gap: 1rem;
-`;
+import {
+  CartItemStyles,
+  CheckoutFormStyles,
+  ProductImage,
+  ProductTitle,
+} from '../styles/CheckoutStyles';
+import { Input, Label, Processing } from '../styles/Form';
+import LoadingIcon from './icons/LoadingIcon';
+import DisplayError from './ErrorMessage';
+import formatWeight from '../lib/formatWeight';
+import { MyLink } from './MyLink';
 
 const CREATE_ORDER_MUTATION = gql`
   mutation CREATE_ORDER_MUTATION($token: String!) {
@@ -37,50 +34,72 @@ const CREATE_ORDER_MUTATION = gql`
   }
 `;
 
-// const stripeLib = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY || 'avc');
-const CartItemStyles = styled.li(() => [
-  tw`py-4 border-b border-solid border-gray-200 grid grid-cols-[auto 1fr auto] gap-4`,
-]);
-
 function CartItem({ cartItem }) {
-  const { product } = cartItem;
+  const { product, quantity } = cartItem;
   if (!product) return null;
   return (
-    <CartItemStyles>
-      <img
-        width="100"
-        src={product?.photo[0]?.image?.publicUrl}
-        alt={product.name}
-      />
-      <div>
-        <h3>{product.name}</h3>
-        <p>
-          {formatMoney(product.price_threshold[0].price * cartItem.quantity)}
-          <br />
-          <em>
-            {cartItem.quantity} &times;{' '}
-            {formatMoney(product?.price_threshold[1]?.price)} per{' '}
-            {product.weight}
-          </em>
-        </p>
+    <CartItemStyles key={product.id}>
+      <ProductTitle>
+        <MyLink href={`/product/${product.slug}/`}>{product.name}</MyLink>
+      </ProductTitle>
+      <div tw="flex gap-x-5">
+        <ProductImage
+          width={64}
+          height={64}
+          layout="fixed"
+          src={
+            product?.photos[0]
+              ? product?.photos[0]?.image?.publicUrl
+              : '/failed.jpg'
+          }
+        />
       </div>
-      <RemoveFromCart id={cartItem.id} />
+
+      <div tw="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
+        <div tw="relative grid grid-cols-3 gap-5">
+          <div tw="col-span-2">
+            <Label tw="mb-0">
+              Qty:{' '}
+              <Input
+                type="number"
+                name="quantity"
+                min="0.0"
+                max={product.inventory}
+                step="0.01"
+                hasBorder
+                tw="mx-2 w-[5.625rem]"
+                // onInput={(e) => handleQtyChange(e, 0, product.inventory)}
+                value={quantity}
+                required
+              />
+              <span>{formatWeight(product.weight)}s</span>
+            </Label>
+
+            <p tw="mt-1 text-sm font-medium text-gray-900">{quantity}</p>
+          </div>
+
+          <div tw="col-span-1 mt-4 sm:mt-0">
+            <RemoveFromCart id={cartItem.id} />
+          </div>
+        </div>
+      </div>
     </CartItemStyles>
   );
 }
 
-CartItem.propTypes = {
-  cartItem: PropTypes.shape({
-    id: PropTypes.number,
-    product: PropTypes.shape({
-      name: PropTypes.string,
-      photo: PropTypes.object,
-      price_threshold: PropTypes.string,
-      weight: PropTypes.string,
-    }),
-    quantity: PropTypes.number,
-  }),
-};
+function getValue(object, path) {
+  return path.reduce((tmp, key) => tmp[key], object);
+}
+
+function groupCartItems(cartItems) {
+  const path = ['product', 'vendor', 'id'];
+  return cartItems.reduce((groups, item) => {
+    const product = getValue(item, path);
+    const group = groups[product] || (groups[product] = []);
+    group.push(item);
+    return groups;
+  }, {});
+}
 
 function CheckoutForm() {
   const [error, setError] = useState();
@@ -88,12 +107,20 @@ function CheckoutForm() {
   const router = useRouter();
   const checkoutid = useId();
   const user = useUser();
-  const [checkout, { error: graphQLError }] = useMutation(
+  const [checkout, { loading, error: graphQLError }] = useMutation(
     CREATE_ORDER_MUTATION,
     {
       refetchQueries: [{ query: CURRENT_USER_QUERY }],
     }
   );
+
+  if (loading)
+    return (
+      <Processing loading={loading.toString()}>
+        <LoadingIcon tw="animate-spin" />
+        Loading
+      </Processing>
+    );
 
   async function handleSubmit(e) {
     // Stop the form from submitting and turn the loader one
@@ -129,24 +156,60 @@ function CheckoutForm() {
     nProgress.done();
   }
 
+  const groupByVendor = groupCartItems(user.cart);
+
   return (
     <PleaseSignIn>
-      <CheckoutFormStyles onSubmit={handleSubmit}>
-        <header>
-          <div>{user.name}'s Cart</div>
-        </header>
-        <ul>
-          {user.cart.map((cartItem) => (
-            <CartItem key={cartItem.id} cartItem={cartItem} />
-          ))}
-        </ul>
-        <footer>
-          <p>{formatMoney(calcTotalPrice(user.cart))}</p>
-        </footer>
-        {error && <p style={{ fontSize: 12 }}>{error.message}</p>}
-        {graphQLError && <p style={{ fontSize: 12 }}>{graphQLError.message}</p>}
-        <button type="button">Check Out Now</button>
-      </CheckoutFormStyles>
+      <DisplayError error={error} />
+      <DisplayError error={graphQLError && graphQLError.message} />
+      <Processing loading={loading.toString()}>
+        <LoadingIcon tw="animate-spin" />
+        Loading
+      </Processing>
+      <div tw="mx-auto max-w-2xl py-12 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
+        <h1 tw="text-center">Checkout</h1>
+        <CheckoutFormStyles onSubmit={handleSubmit}>
+          <div aria-labelledby="cart-heading" tw="lg:col-span-8">
+            <h2 id="cart-heading" tw="sr-only">
+              Items in your shopping cart
+            </h2>
+            {Object.keys(groupByVendor).map((key) => (
+              <>
+                <h3>{`Vendor: ${key}`}</h3>
+                <ul tw="space-y-6">
+                  {groupByVendor[key].map((item, index) => (
+                    <CartItem key={index} cartItem={item} />
+                  ))}
+                </ul>
+                {groupByVendor[key].reduce(
+                  (previousValue, currentValue) =>
+                    previousValue + parseFloat(currentValue.quantity),
+                  0
+                )}
+              </>
+            ))}
+          </div>
+
+          {/* Order summary */}
+          <div
+            aria-labelledby="summary-heading"
+            tw="mt-16 rounded-lg bg-primary-light/40 px-4 py-6 sm:p-6 lg:col-span-4 lg:mt-0 lg:p-8"
+          >
+            <h2 id="summary-heading" tw="text-lg font-medium text-gray-900">
+              Order summary
+            </h2>
+
+            <div tw="mt-6">
+              <button
+                type="submit"
+                tw="w-full rounded-md border border-transparent bg-primary py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark focus:ring-offset-2 focus:ring-offset-gray-50"
+              >
+                Place Order
+              </button>
+            </div>
+          </div>
+        </CheckoutFormStyles>
+      </div>
     </PleaseSignIn>
   );
 }
@@ -158,5 +221,25 @@ function Checkout() {
     </div>
   );
 }
+
+CartItem.propTypes = {
+  cartItem: PropTypes.shape({
+    id: PropTypes.string,
+    product: PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      slug: PropTypes.string,
+      strain: PropTypes.string,
+      potency: PropTypes.string,
+      environment: PropTypes.string,
+      photo: PropTypes.array,
+      priceThreshold: PropTypes.array,
+      weight: PropTypes.string,
+      status: PropTypes.string,
+      inventory: PropTypes.string,
+    }),
+    quantity: PropTypes.string,
+  }),
+};
 
 export { Checkout };

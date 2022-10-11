@@ -17,14 +17,17 @@ const customStyles = css({
     ...tw`font-headers !font-bold text-accent-dark text-xl uppercase`,
   },
   h3: {
-    ...tw`font-headers !font-bold text-text text-xl`,
+    ...tw`font-sans !font-bold text-text text-xl`,
   },
   '.swiper-pagination-bullet': {
-    ...tw`bg-white/60 w-5 h-5 pt-[1px]  text-xs text-black opacity-100 border border-gray-200`,
+    ...tw`w-3 h-3 text-xs text-black border border-gray-200 opacity-100 bg-white/60`,
   },
   '.swiper-pagination-bullet-active': {
     background: theme`colors.accent`,
     ...tw`font-bold border-accent`,
+  },
+  '::placeholder': {
+    ...tw`text-sm font-normal`,
   },
 });
 
