@@ -1,25 +1,25 @@
 /* eslint-disable react/jsx-no-bind */
-import PropTypes from 'prop-types';
-import tw, { styled } from 'twin.macro';
-import { useId, useState } from 'react';
-import nProgress from 'nprogress';
-import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/dist/client/router';
-import { CURRENT_USER_QUERY, useUser } from './User';
-import RemoveFromCart from './RemoveFromCart';
-import PleaseSignIn from './PleaseSignIn';
+import PropTypes from "prop-types";
+import "twin.macro";
+import { useId, useState } from "react";
+import nProgress from "nprogress";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/client";
+import { useRouter } from "next/dist/client/router";
+import { CURRENT_USER_QUERY, useUser } from "./User";
+import RemoveFromCart from "./RemoveFromCart";
+import PleaseSignIn from "./PleaseSignIn";
 import {
   CartItemStyles,
   CheckoutFormStyles,
   ProductImage,
   ProductTitle,
-} from '../styles/CheckoutStyles';
-import { Input, Label, Processing } from '../styles/Form';
-import LoadingIcon from './icons/LoadingIcon';
-import DisplayError from './ErrorMessage';
-import formatWeight from '../lib/formatWeight';
-import { MyLink } from './MyLink';
+} from "../styles/CheckoutStyles";
+import { Input, Label, Processing } from "../styles/Form";
+import LoadingIcon from "./icons/LoadingIcon";
+import DisplayError from "./ErrorMessage";
+import formatWeight from "../lib/formatWeight";
+import { MyLink } from "./MyLink";
 
 const CREATE_ORDER_MUTATION = gql`
   mutation CREATE_ORDER_MUTATION($token: String!) {
@@ -33,6 +33,20 @@ const CREATE_ORDER_MUTATION = gql`
     }
   }
 `;
+
+function getValue(object, path) {
+  return path.reduce((tmp, key) => tmp[key], object);
+}
+
+function groupCartItems(cartItems) {
+  const path = ["product", "vendor", "id"];
+  return cartItems.reduce((groups, item) => {
+    const product = getValue(item, path);
+    const group = groups[product] || (groups[product] = []);
+    group.push(item);
+    return groups;
+  }, {});
+}
 
 function CartItem({ cartItem }) {
   const { product, quantity } = cartItem;
@@ -50,7 +64,7 @@ function CartItem({ cartItem }) {
           src={
             product?.photos[0]
               ? product?.photos[0]?.image?.publicUrl
-              : '/failed.jpg'
+              : "/failed.jpg"
           }
         />
       </div>
@@ -59,7 +73,7 @@ function CartItem({ cartItem }) {
         <div tw="relative grid grid-cols-3 gap-5">
           <div tw="col-span-2">
             <Label tw="mb-0">
-              Qty:{' '}
+              Qty:{" "}
               <Input
                 type="number"
                 name="quantity"
@@ -85,20 +99,6 @@ function CartItem({ cartItem }) {
       </div>
     </CartItemStyles>
   );
-}
-
-function getValue(object, path) {
-  return path.reduce((tmp, key) => tmp[key], object);
-}
-
-function groupCartItems(cartItems) {
-  const path = ['product', 'vendor', 'id'];
-  return cartItems.reduce((groups, item) => {
-    const product = getValue(item, path);
-    const group = groups[product] || (groups[product] = []);
-    group.push(item);
-    return groups;
-  }, {});
 }
 
 function CheckoutForm() {
