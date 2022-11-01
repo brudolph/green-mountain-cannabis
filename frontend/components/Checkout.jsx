@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 import PropTypes from 'prop-types';
 import tw, { styled } from 'twin.macro';
-import { useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import nProgress from 'nprogress';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
@@ -19,7 +19,9 @@ import { Input, Label, Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import formatWeight from '../lib/formatWeight';
+import formatMoney from '../lib/formatMoney';
 import { MyLink } from './MyLink';
+import AddToCart from './AddToCart';
 
 const CREATE_ORDER_MUTATION = gql`
   mutation CREATE_ORDER_MUTATION($token: String!) {
@@ -34,8 +36,82 @@ const CREATE_ORDER_MUTATION = gql`
   }
 `;
 
+function getValue(object, path) {
+  return path.reduce((tmp, key) => tmp[key], object);
+}
+
+function groupCartItems(cartItems, path) {
+  return cartItems.reduce((groups, item) => {
+    const product = getValue(item, path);
+    const group = groups[product] || (groups[product] = []);
+    group.push(item);
+    return groups;
+  }, {});
+}
+
+function CalculatePrice({ list }) {
+  const categoryGroup = list.reduce((groups, item) => {
+    const product = getValue(item, ['product', 'category', 'name']);
+    const group = groups[product] || (groups[product] = []);
+    group.push(item);
+    return groups;
+  }, {});
+  // console.log(list);
+  // console.log(categoryGroup);
+
+  const categoryPriceTotal = Object.keys(categoryGroup).map((key) => {
+    console.log(categoryGroup[key]);
+
+    const categoryQtyTotal = () =>
+      categoryGroup[key].reduce(
+        (previousQuantity, currentQuantity) =>
+          previousQuantity + parseFloat(currentQuantity.quantity),
+        0
+      );
+    const calculateDiscount = (categoryQtyTotal) => {
+      const highestAmount = Math.max.apply(
+        null,
+        currentQuantity.product.priceThreshold.map((q) => q.amount)
+      );
+      const shit = currentQuantity.product.priceThreshold.find(
+        (item) => item.amount <= highestAmount
+      );
+    };
+
+    const calculatePrice = (price, discount) => {};
+
+    return categoryQtyTotal();
+  });
+  const finalFinalPrice = categoryPriceTotal;
+
+  return finalFinalPrice;
+}
+
 function CartItem({ cartItem }) {
+  const [cartQuantity, setCartQuantity] = useState('');
   const { product, quantity } = cartItem;
+
+  const productInCart = () => true;
+
+  const handleQtyChange = (event, min, max) => {
+    const value = Math.max(min, Math.min(max, Number(event.target.value)));
+    setCartQuantity(value.toString());
+  };
+
+  let productCategory = product.category.name.toLowerCase();
+
+  if (productCategory === 'fresh-frozen') {
+    productCategory = 'flower';
+  }
+
+  if (productCategory === 'trim') {
+    productCategory = 'flower';
+  }
+
+  useEffect(() => {
+    setCartQuantity(quantity);
+  }, [quantity]);
+
   if (!product) return null;
   return (
     <CartItemStyles key={product.id}>
@@ -53,13 +129,31 @@ function CartItem({ cartItem }) {
               : '/failed.jpg'
           }
         />
+        <div>
+          <span style={{ fontWeight: '600' }}>Base Price:</span> $
+          {product.price} / {formatWeight(product?.[productCategory]?.weight)}
+          <ul>
+            {product?.priceThreshold[0]?.name && (
+              <li style={{ margin: '6px 0' }}>
+                {product.priceThreshold[0].name} /{' '}
+                {formatWeight(product?.[productCategory]?.weight)}
+              </li>
+            )}
+            {product?.priceThreshold[1]?.name && (
+              <li>
+                {product.priceThreshold[1].name} /{' '}
+                {formatWeight(product?.[productCategory]?.weight)}
+              </li>
+            )}
+          </ul>
+        </div>
       </div>
 
       <div tw="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
         <div tw="relative grid grid-cols-3 gap-5">
-          <div tw="col-span-2">
+          <div tw="col-span-2 flex items-center">
             <Label tw="mb-0">
-              Qty:{' '}
+              Amount in Cart:{' '}
               <Input
                 type="number"
                 name="quantity"
@@ -68,14 +162,17 @@ function CartItem({ cartItem }) {
                 step="0.01"
                 hasBorder
                 tw="mx-2 w-[5.625rem]"
-                // onInput={(e) => handleQtyChange(e, 0, product.inventory)}
-                value={quantity}
+                onInput={(e) => handleQtyChange(e, 0, product.inventory)}
+                value={cartQuantity}
                 required
               />
-              <span>{formatWeight(product.weight)}s</span>
             </Label>
-
-            <p tw="mt-1 text-sm font-medium text-gray-900">{quantity}</p>
+            <AddToCart
+              id={product.id}
+              quantity={cartQuantity}
+              productInCart={productInCart}
+              inventory={product.inventory}
+            />
           </div>
 
           <div tw="col-span-1 mt-4 sm:mt-0">
@@ -85,20 +182,6 @@ function CartItem({ cartItem }) {
       </div>
     </CartItemStyles>
   );
-}
-
-function getValue(object, path) {
-  return path.reduce((tmp, key) => tmp[key], object);
-}
-
-function groupCartItems(cartItems) {
-  const path = ['product', 'vendor', 'id'];
-  return cartItems.reduce((groups, item) => {
-    const product = getValue(item, path);
-    const group = groups[product] || (groups[product] = []);
-    group.push(item);
-    return groups;
-  }, {});
 }
 
 function CheckoutForm() {
@@ -156,7 +239,7 @@ function CheckoutForm() {
     nProgress.done();
   }
 
-  const groupByVendor = groupCartItems(user.cart);
+  const groupByVend = groupCartItems(user.cart, ['product', 'vendor', 'id']);
 
   return (
     <PleaseSignIn>
@@ -169,36 +252,34 @@ function CheckoutForm() {
       <div tw="mx-auto max-w-2xl py-12 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 tw="text-center">Checkout</h1>
         <CheckoutFormStyles onSubmit={handleSubmit}>
-          <div aria-labelledby="cart-heading" tw="lg:col-span-8">
+          <div aria-labelledby="cart-heading" tw="lg:col-span-8 ">
             <h2 id="cart-heading" tw="sr-only">
               Items in your shopping cart
             </h2>
-            {Object.keys(groupByVendor).map((key) => (
-              <>
-                <h3>{`Vendor: ${key}`}</h3>
+
+            {Object.keys(groupByVend).map((key) => (
+              <div
+                key={`vendor-${key}`}
+                tw="bg-white border rounded-md shadow-md border-primary-light/30 px-5 py-6 mb-4"
+              >
+                <h3 key={`title-${key}`}>{`Vendor: ${key}`}</h3>
                 <ul tw="space-y-6">
-                  {groupByVendor[key].map((item, index) => (
-                    <CartItem key={index} cartItem={item} />
+                  {groupByVend[key].map((item) => (
+                    <CartItem key={item.id} cartItem={item} />
                   ))}
                 </ul>
-                {groupByVendor[key].reduce(
-                  (previousValue, currentValue) =>
-                    previousValue + parseFloat(currentValue.quantity),
-                  0
-                )}
-              </>
+                <CalculatePrice list={groupByVend[key]} />
+              </div>
             ))}
           </div>
-
           {/* Order summary */}
           <div
             aria-labelledby="summary-heading"
-            tw="mt-16 rounded-lg bg-primary-light/40 px-4 py-6 sm:p-6 lg:col-span-4 lg:mt-0 lg:p-8"
+            tw="sticky top-5 mt-16 rounded-lg bg-primary-light/40 px-4 py-6 sm:p-6 lg:col-span-4 lg:mt-0 lg:p-8"
           >
             <h2 id="summary-heading" tw="text-lg font-medium text-gray-900">
               Order summary
             </h2>
-
             <div tw="mt-6">
               <button
                 type="submit"
@@ -232,7 +313,7 @@ CartItem.propTypes = {
       strain: PropTypes.string,
       potency: PropTypes.string,
       environment: PropTypes.string,
-      photo: PropTypes.array,
+      photos: PropTypes.array,
       priceThreshold: PropTypes.array,
       weight: PropTypes.string,
       status: PropTypes.string,
