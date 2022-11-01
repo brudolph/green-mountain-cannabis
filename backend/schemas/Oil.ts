@@ -43,7 +43,6 @@ export const Oil = list({
       },
     }),
     potency: text({
-      defaultValue: '1.0',
       label: 'Potency (%)'
     }),
     cbd: checkbox({ label: 'CBD Product?' }),

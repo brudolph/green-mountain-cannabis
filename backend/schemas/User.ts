@@ -48,9 +48,11 @@ export const User = list({
     })
   },
   hooks: {
-    afterOperation: ({ operation, item }) => {
-      if (operation === 'create') {
-        
+    resolveInput: async ({ resolvedData }) => {
+      const { role } = resolvedData;
+      return {
+        ...resolvedData,
+        set: { role: "cl93neazl15598uwudqxph2a6m" },
       }
     }
   },

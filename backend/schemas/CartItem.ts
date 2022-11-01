@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core';
 export const CartItem = list({
   fields: {
     quantity: decimal({
-      defaultValue: '0.01',
+      defaultValue: '0',
       precision: 12,
       scale: 2,
       validation: { isRequired: true }

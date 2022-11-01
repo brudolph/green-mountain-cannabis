@@ -43,15 +43,14 @@ export const FlowerTrimFreshFrozen = list({
       },
     }),
     potency: text({
-      defaultValue: '1.0',
       label: 'Potency (%)'
     }),
     strain: select({
       options: [
         { label: 'Indica', value: 'Indica' },
-        { label: 'Indica Hybrid', value: 'Indica Hybrid' },
+        { label: 'Hybrid Indica', value: 'Hybrid Indica' },
         { label: 'Sativa', value: 'Sativa' },
-        { label: 'Sativa Hybrid', value: 'Sativa Hybrid' },
+        { label: 'Hybrid Sativa', value: 'Hybrid Sativa' },
         { label: 'Hybrid', value: 'Hybrid' },
       ],
       ui: {

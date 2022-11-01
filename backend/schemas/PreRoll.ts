@@ -43,7 +43,6 @@ export const PreRoll = list({
       },
     }),
     potency: text({
-      defaultValue: '1.0',
       label: 'Potency (%)'
     }),
     strain: select({
