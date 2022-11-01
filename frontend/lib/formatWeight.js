@@ -6,15 +6,9 @@ export default function formatWeight(weight, qty) {
     return 'lb';
   }
   if (weight === 'gram') {
-    if (qty > 1) {
-      return 'grams';
-    }
-    return 'gram';
+    return 'gm';
   }
   if (weight === 'ounce') {
-    if (qty > 1) {
-      return 'ounces';
-    }
-    return 'ounce';
+    return 'oz';
   }
 }

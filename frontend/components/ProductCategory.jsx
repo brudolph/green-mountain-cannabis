@@ -8,6 +8,7 @@ import { Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import Filters from './Filters';
+import { useUser } from './User';
 
 export const ALL_PRODUCTS_FILTERED_QUERY = gql`
   query ALL_PRODUCTS_FILTERED_QUERY(
@@ -107,6 +108,8 @@ function ProductCategory({ page, category, productType }) {
   const recreational = productType === 'recreational';
   const medical = productType === 'medical';
 
+  const user = useUser();
+
   const { data, error, loading } = useQuery(ALL_PRODUCTS_FILTERED_QUERY, {
     variables: {
       skip: page * perPage - perPage,
@@ -132,6 +135,8 @@ function ProductCategory({ page, category, productType }) {
         Loading
       </Processing>
     );
+
+  // console.log(user);
 
   return (
     <>

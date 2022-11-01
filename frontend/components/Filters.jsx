@@ -3,10 +3,21 @@ import 'twin.macro';
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
-import { AdjustmentsIcon, XIcon } from '@heroicons/react/solid';
+import { XIcon } from '@heroicons/react/solid';
 import useFilters from '../lib/useFilters';
-import { strainList, environmentList, potencyList } from './config/filters';
 import Checkbox from './forms/Checkbox';
+import {
+  strainList,
+  environmentList,
+  potencyList,
+  oilTypeList,
+  solventList,
+  trimList,
+  concentrateTypeList,
+  prerollTypeList,
+  tubeList,
+  priceList,
+} from './config/filters';
 import {
   FilterStyles,
   FiltersContainer,
@@ -19,35 +30,45 @@ function Filters({ loading, products, setFilteredData }) {
   const [strains, setStrains] = useState([]);
   const [environments, setEnvironments] = useState([]);
   const [potencies, setPotencies] = useState([]);
+  const [oilTypes, setOilTypes] = useState([]);
+  const [solventTypes, setSolventTypes] = useState([]);
+  const [trimMethods, setTrimMethods] = useState([]);
+  const [concentrateTypes, setConcentrateTypes] = useState([]);
+  const [prerollTypes, setPrerollTypes] = useState([]);
+  const [tube, setTube] = useState([]);
+  const [prices, setPrices] = useState([]);
+  const [category, setCategory] = useState([]);
   const { checkboxfilters, setCheckboxFilters } = useFilters([
-    { name: 'Indica', checked: false },
-    { name: 'Hybrid Indica', checked: false },
-    { name: 'Sativa', checked: false },
-    { name: 'Hybrid Sativa', checked: false },
-    { name: 'Hybrid', checked: false },
-    { name: 'Indoor', checked: false },
-    { name: 'Outdoor', checked: false },
-    { name: 'Greenhouse', checked: false },
-    { name: '< Less than: 25%', checked: false },
-    { name: '> Greater than: 25%', checked: false },
+    ...strainList,
+    ...environmentList,
+    ...potencyList,
+    ...oilTypeList,
+    ...solventList,
+    ...trimList,
+    ...concentrateTypeList,
+    ...prerollTypeList,
+    ...tubeList,
+    ...priceList,
   ]);
 
   const filterStrain = (filteredProducts) => {
     if (strains.length !== 0) {
-      return filteredProducts.filter((product) =>
-        strains.some((strain) => [product.strain].includes(strain))
-      );
+      return filteredProducts.filter((product) => {
+        const productStrain = product?.[category]?.strain;
+        return strains.some((strain) => strain === productStrain);
+      });
     }
     return filteredProducts;
   };
 
   const filterEnvironment = (filteredProducts) => {
     if (environments.length !== 0) {
-      return filteredProducts.filter((product) =>
-        environments.some((environment) =>
-          [product.environment].includes(environment)
-        )
-      );
+      return filteredProducts.filter((product) => {
+        const productEnvironment = product?.[category]?.environment;
+        return environments.some(
+          (environment) => environment === productEnvironment
+        );
+      });
     }
     return filteredProducts;
   };
@@ -56,27 +77,36 @@ function Filters({ loading, products, setFilteredData }) {
     if (potencies.length !== 0) {
       if (potencies[0].slice(0, 1) === '>') {
         return filteredProducts.filter((product) =>
-          potencies.some(() => [product.potency] > 25.0)
+          potencies.some(() => [product?.[category]?.potency] > 25.0)
         );
       }
       if (potencies[0].slice(0, 1) === '<') {
         return filteredProducts.filter((product) =>
-          potencies.some(() => [product.potency] < 25.0)
+          potencies.some(() => [product?.[category]?.potency] < 25.0)
         );
       }
     }
     return filteredProducts;
   };
 
-  const updateCheckboxFilters = (value) => {
-    const filterIndex = checkboxfilters.findIndex(
-      (filter) => filter.name === value
-    );
+  const filterOilType = (filteredProducts) => {
+    if (oilTypes.length !== 0) {
+      return filteredProducts.filter((product) => {
+        const productOilType = product?.[category]?.oilType;
+        return oilTypes.some((oiltype) => oiltype === productOilType);
+      });
+    }
+    return filteredProducts;
+  };
 
+  const updateCheckboxFilters = (index) => {
     setCheckboxFilters(
       checkboxfilters.map((filter, currentIndex) =>
-        currentIndex === filterIndex
-          ? { ...filter, checked: !filter.checked }
+        currentIndex === index
+          ? {
+              ...filter,
+              checked: !filter.checked,
+            }
           : filter
       )
     );
@@ -112,34 +142,48 @@ function Filters({ loading, products, setFilteredData }) {
     );
 
     setPotencies(updatePotencyFilters);
+
+    const updateOilTypeFilters = oilTypes.filter(
+      (oilType) => oilType !== removefilter
+    );
+
+    setOilTypes(updateOilTypeFilters);
   };
 
-  const handleStrainCheck = (e) => {
+  const handleStrainCheck = (e, index) => {
     if (e.target.checked) {
       setStrains([...strains, e.target.value]);
     } else {
       setStrains(strains.filter((id) => id !== e.target.value));
     }
-
-    updateCheckboxFilters(e.target.value, checkboxfilters, setCheckboxFilters);
+    updateCheckboxFilters(index);
   };
 
-  const handleEnvironmentCheck = (e) => {
+  const handleEnvironmentCheck = (e, index) => {
     if (e.target.checked) {
       setEnvironments([...environments, e.target.value]);
     } else {
       setEnvironments(environments.filter((id) => id !== e.target.value));
     }
-    updateCheckboxFilters(e.target.value, checkboxfilters, setCheckboxFilters);
+    updateCheckboxFilters(index);
   };
 
-  const handlePotencyCheck = (e) => {
+  const handlePotencyCheck = (e, index) => {
     if (e.target.checked) {
       setPotencies([...potencies, e.target.value]);
     } else {
       setPotencies(potencies.filter((id) => id !== e.target.value));
     }
-    updateCheckboxFilters(e.target.value, checkboxfilters, setCheckboxFilters);
+    updateCheckboxFilters(index);
+  };
+
+  const handleOilTypeCheck = (e, index) => {
+    if (e.target.checked) {
+      setOilTypes([...oilTypes, e.target.value]);
+    } else {
+      setOilTypes(oilTypes.filter((id) => id !== e.target.value));
+    }
+    updateCheckboxFilters(index);
   };
 
   useEffect(() => {
@@ -148,10 +192,24 @@ function Filters({ loading, products, setFilteredData }) {
     filteredProducts = filterStrain(filteredProducts);
     filteredProducts = filterEnvironment(filteredProducts);
     filteredProducts = filterPotency(filteredProducts);
+    filteredProducts = filterOilType(filteredProducts);
     setFilteredData(filteredProducts);
 
+    if (products[0].category.slug === 'fresh-frozen') {
+      return setCategory('flower');
+    }
+
+    if (products[0].category.slug === 'trim') {
+      return setCategory('flower');
+    }
+
+    if (products[0].category.slug === 'equipment') {
+      return setCategory('machine');
+    }
+
+    setCategory(products[0].category.slug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [strains, environments, potencies]);
+  }, [strains, environments, potencies, oilTypes]);
 
   // eslint-disable-next-line no-unused-vars
   let filterTypes;
@@ -167,18 +225,7 @@ function Filters({ loading, products, setFilteredData }) {
               aria-hidden="true"
             />
           </Popover.Button>
-          <Popover.Panel tw="absolute left-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 p-2 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10">
-            {strainList.map((filter, index) => (
-              <Checkbox
-                key={index}
-                isChecked={checkboxfilters[index].checked}
-                checkHandler={(e) => handleStrainCheck(e, index)}
-                label={filter}
-                value={filter}
-                index={index}
-              />
-            ))}
-          </Popover.Panel>
+          <Popover.Panel tw="absolute left-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 p-2 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10" />
         </Popover>
         <div tw="flex space-x-4">
           <Popover tw="relative">
@@ -190,16 +237,21 @@ function Filters({ loading, products, setFilteredData }) {
               />
             </Popover.Button>
             <Popover.Panel tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 p-2 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10">
-              {strainList.map((filter, index) => (
-                <Checkbox
-                  key={`strain-${index}`}
-                  isChecked={checkboxfilters[index].checked}
-                  checkHandler={(e) => handleStrainCheck(e, index)}
-                  label={filter}
-                  value={filter}
-                  index={index}
-                />
-              ))}
+              {strainList?.map((filter) => {
+                const checkedIndex = checkboxfilters.findIndex(
+                  (check) => check.name === filter.name
+                );
+                return (
+                  <Checkbox
+                    key={`strain-${checkedIndex}`}
+                    isChecked={checkboxfilters[checkedIndex].checked}
+                    checkHandler={(e) => handleStrainCheck(e, checkedIndex)}
+                    label={filter.name}
+                    value={filter.name}
+                    index={checkedIndex}
+                  />
+                );
+              })}
             </Popover.Panel>
           </Popover>
           <Popover tw="relative">
@@ -211,16 +263,23 @@ function Filters({ loading, products, setFilteredData }) {
               />
             </Popover.Button>
             <Popover.Panel tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 p-2 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10">
-              {environmentList.map((filter, index) => (
-                <Checkbox
-                  key={`environment-${index}`}
-                  isChecked={checkboxfilters[index + 5]?.checked}
-                  checkHandler={(e) => handleEnvironmentCheck(e, index)}
-                  label={filter}
-                  value={filter}
-                  index={index}
-                />
-              ))}
+              {environmentList.map((filter) => {
+                const checkedIndex = checkboxfilters.findIndex(
+                  (check) => check.name === filter.name
+                );
+                return (
+                  <Checkbox
+                    key={`environment-${checkedIndex}`}
+                    isChecked={checkboxfilters[checkedIndex].checked}
+                    checkHandler={(e) =>
+                      handleEnvironmentCheck(e, checkedIndex)
+                    }
+                    label={filter.name}
+                    value={filter.name}
+                    index={checkedIndex}
+                  />
+                );
+              })}
             </Popover.Panel>
           </Popover>
           <Popover tw="relative">
@@ -232,25 +291,56 @@ function Filters({ loading, products, setFilteredData }) {
               />
             </Popover.Button>
             <Popover.Panel tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 p-2 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10">
-              {potencyList.map((filter, index) => (
-                <Checkbox
-                  key={`potency-${index}`}
-                  isChecked={checkboxfilters[index + 8]?.checked}
-                  checkHandler={(e) => handlePotencyCheck(e, index)}
-                  label={filter.slice(2)}
-                  value={filter}
-                  index={index}
-                />
-              ))}
+              {potencyList.map((filter) => {
+                const checkedIndex = checkboxfilters.findIndex(
+                  (check) => check.name === filter.name
+                );
+                return (
+                  <Checkbox
+                    key={`potency-${checkedIndex}`}
+                    isChecked={checkboxfilters[checkedIndex].checked}
+                    checkHandler={(e) => handlePotencyCheck(e, checkedIndex)}
+                    label={filter.name.slice(2)}
+                    value={filter.name}
+                    index={checkedIndex}
+                  />
+                );
+              })}
             </Popover.Panel>
           </Popover>
+          {category === 'oil' && (
+            <Popover tw="relative">
+              <Popover.Button tw="text-sm flex">
+                Oil Type{' '}
+                <ChevronDownIcon
+                  tw="ml-2 h-4 w-4  text-accent"
+                  aria-hidden="true"
+                />
+              </Popover.Button>
+              <Popover.Panel tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 p-2 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10">
+                {oilTypeList.map((filter) => {
+                  const checkedIndex = checkboxfilters.findIndex(
+                    (check) => check.name === filter.name
+                  );
+                  return (
+                    <Checkbox
+                      key={`oiltype-${checkedIndex}`}
+                      isChecked={filter.checked}
+                      checkHandler={(e) => handleOilTypeCheck(e, checkedIndex)}
+                      label={filter.name}
+                      value={filter.name}
+                      index={checkedIndex}
+                    />
+                  );
+                })}
+              </Popover.Panel>
+            </Popover>
+          )}
         </div>
       </FiltersContainer>
       <ActiveFilters>
         <ActiveFiltersContainer>
-          <ActiveFiltersHeader>
-            <AdjustmentsIcon tw="w-5 h-5 mr-2 text-gray-600" /> Filters:
-          </ActiveFiltersHeader>
+          <ActiveFiltersHeader>Applied Filters:</ActiveFiltersHeader>
           <div tw="flex">
             {strains.map((strain, index) => (
               <button
@@ -274,6 +364,17 @@ function Filters({ loading, products, setFilteredData }) {
                 <span tw="sr-only">Click to remove</span>
               </button>
             ))}
+            {oilTypes.map((oiltype, index) => (
+              <button
+                key={index}
+                type="button"
+                tw="flex items-center text-sm bg-white rounded-full px-4 py-1 mr-2"
+                onClick={() => handleRemoveFilter(oiltype)}
+              >
+                {oiltype} <XIcon tw="w-4 h-4 ml-2 text-accent" />
+                <span tw="sr-only">Click to remove</span>
+              </button>
+            ))}
             {potencies.map((potency, index) => (
               <button
                 key={index}
@@ -291,11 +392,5 @@ function Filters({ loading, products, setFilteredData }) {
     </FilterStyles>
   );
 }
-
-Filters.propTypes = {
-  loading: PropTypes.bool,
-  products: PropTypes.array,
-  setFilteredData: PropTypes.func,
-};
 
 export default Filters;

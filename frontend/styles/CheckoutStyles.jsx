@@ -5,9 +5,7 @@ export const CheckoutFormStyles = styled.form(() => [
   tw`p-6 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16`,
 ]);
 
-export const CartItemStyles = styled.li(() => [
-  tw`p-6 bg-white border rounded-md shadow-md border-primary-light/30`,
-]);
+export const CartItemStyles = styled.li(() => [tw`p-6`]);
 
 export const ProductImage = tw(
   ImageWithFallback

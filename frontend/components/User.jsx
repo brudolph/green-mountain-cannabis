@@ -20,6 +20,9 @@ const CURRENT_USER_QUERY = gql`
             slug
             inventory
             price
+            category {
+              name
+            }
             priceThreshold {
               amount
               price
@@ -39,6 +42,15 @@ const CURRENT_USER_QUERY = gql`
             vendor {
               id
               name
+            }
+            oil {
+              weight
+            }
+            flower {
+              weight
+            }
+            concentrate {
+              weight
             }
           }
         }

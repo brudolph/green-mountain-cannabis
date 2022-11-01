@@ -22,7 +22,6 @@ export default function useQuantity(initial = {}) {
       value = e.target.files;
     }
     setInputs({
-      // copy the existing state
       ...inputs,
       [name]: value,
     });

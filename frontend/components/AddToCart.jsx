@@ -33,8 +33,8 @@ function AddToCart({ id, quantity, productInCart }) {
         <LoadingIcon tw="animate-spin" />
       ) : (
         <>
-          <span tw="text-sm mr-2">{inCart ? 'Update' : 'Add'}</span>
-          <ShoppingCartIcon tw="w-5 h-5 text-white" />
+          <span tw="text-sm mr-2">{inCart ? 'Update +/-' : 'Add'}</span>
+          {!inCart ? <ShoppingCartIcon tw="w-5 h-5 text-white" /> : null}
         </>
       )}
     </AddToCartStyles>

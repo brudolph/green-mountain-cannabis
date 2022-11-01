@@ -22,7 +22,7 @@ export const PricingStyles = styled.p(() => [
 ]);
 
 export const WeightStyles = styled.p(() => [
-  tw`flex flex-col text-lg font-semibold text-right text-gray-500`,
+  tw`flex flex-col text-lg font-semibold leading-tight text-right text-gray-500`,
 ]);
 
 export const PricingWeightStyles = styled.div(() => [

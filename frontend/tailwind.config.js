@@ -40,7 +40,8 @@ module.exports = {
         transparent: 'transparent',
       },
       aspectRatio: {
-        '1/1': '1',
+        square: '1/1',
+        thumbs: '16/12',
       },
     },
   },

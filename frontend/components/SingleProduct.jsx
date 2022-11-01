@@ -3,16 +3,17 @@
 import PropTypes from 'prop-types';
 import { gql, useQuery } from '@apollo/client';
 import Head from 'next/head';
-import 'twin.macro';
+import { css, theme } from 'twin.macro';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Lazy, Keyboard, Zoom } from 'swiper';
+import { FreeMode, Lazy, Keyboard, Zoom, Thumbs, Navigation } from 'swiper';
 import 'swiper/css';
-import 'swiper/css/pagination';
 import 'swiper/css/lazy';
 import 'swiper/css/keyboard';
 import 'swiper/css/zoom';
+
 import { Disclosure } from '@headlessui/react';
 import { MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { useState } from 'react';
 import PleaseSignIn from './PleaseSignIn';
 import DisplayError from './ErrorMessage';
 import formatWeight from '../lib/formatWeight';
@@ -47,6 +48,8 @@ function SingleProduct({ slug }) {
     },
   });
 
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
   if (loading)
     return (
       <Processing loading={loading.toString()}>
@@ -69,19 +72,18 @@ function SingleProduct({ slug }) {
       </Head>
       <div tw="bg-primary/20">
         <div tw="max-w-2xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
-          <div tw="bg-white rounded-md lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start p-6">
+          <div tw="bg-white rounded-md lg:grid lg:grid-cols-12 lg:gap-x-8 lg:items-start p-6">
             {/* Image gallery */}
-            <div>
+            <div tw="col-span-7">
               <Swiper
-                modules={[Pagination, Zoom, Keyboard, Lazy]}
+                modules={[Zoom, Keyboard, Lazy, Thumbs]}
+                thumbs={{ swiper: thumbsSwiper }}
                 spaceBetween={10}
                 slidesPerView={1}
-                grabCursor
                 lazy
                 keyboard
                 zoom
-                pagination={{ clickable: true }}
-                tw="rounded-md h-[31.25rem] border border-primary-light/40"
+                tw="rounded-md h-[480px] border border-primary-light/40"
               >
                 {product.photos.map((photo) => (
                   <SwiperSlide key={photo.id}>
@@ -89,20 +91,41 @@ function SingleProduct({ slug }) {
                       <img
                         src={photo?.image?.publicUrl}
                         alt={photo?.altText}
-                        tw="h-full object-center object-cover"
+                        tw="w-full h-full object-center !object-cover"
                       />
                     </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <Swiper
+                onSwiper={setThumbsSwiper}
+                spaceBetween={10}
+                slidesPerView={4}
+                watchSlidesProgress
+                modules={[Navigation, Thumbs]}
+                className="mySwiper"
+                tw="mt-4"
+              >
+                {product.photos.map((photo) => (
+                  <SwiperSlide key={photo.id}>
+                    <img
+                      src={photo?.image?.publicUrl}
+                      alt={photo?.altText}
+                      css={css`
+                        aspect-ratio: ${theme`aspectRatio.thumbs`};
+                      `}
+                      tw="h-full object-center object-cover cursor-pointer rounded-md"
+                    />
                   </SwiperSlide>
                 ))}
               </Swiper>
             </div>
 
             {/* Product info */}
-            <div tw="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
+            <div tw="col-span-5 mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
               <h1 tw="text-3xl font-extrabold tracking-tight text-primary">
                 {product.name}
               </h1>
-
               <div tw="mt-3">
                 <h2 tw="sr-only">Product information</h2>
                 <ul tw="flex space-x-4 border-b border-gray-200 pb-3">

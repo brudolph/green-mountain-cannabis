@@ -5,4 +5,5 @@ module.exports = withImages({
     disableStaticImages: true,
     domains: ['res.cloudinary.com'],
   },
+  reactStrictMode: true,
 });

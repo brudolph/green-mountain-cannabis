@@ -28,10 +28,12 @@ import formatWeight from '../lib/formatWeight';
 import 'twin.macro';
 import { useUser } from './User';
 import { MyLink } from './MyLink';
+import formatQuantity from '../lib/formatQuantity';
 
 export default function Product({ product }) {
   const [quantity, setQuantity] = useState('');
   const user = useUser();
+  const { id, name, price, photos } = product;
 
   useEffect(() => {
     const cartItem = user?.cart?.filter(
@@ -53,7 +55,7 @@ export default function Product({ product }) {
 
   let productCategory = product.category.name.toLowerCase();
 
-  if (productCategory === 'fresh-frozen') {
+  if (productCategory === 'fresh frozen') {
     productCategory = 'flower';
   }
 
@@ -65,6 +67,7 @@ export default function Product({ product }) {
     productCategory = 'machine';
   }
 
+  console.log(productCategory);
   return (
     <ProductStyles>
       {product.status === 'DRAFT' && (
@@ -119,7 +122,7 @@ export default function Product({ product }) {
           </PricingStyles>
           <WeightStyles>
             <span tw="block font-bold text-primary-dark">
-              {product.inventory}{' '}
+              {formatQuantity(product.inventory)}{' '}
               <span tw="text-sm">
                 {formatWeight(
                   product?.[productCategory]?.weight,
@@ -149,7 +152,7 @@ export default function Product({ product }) {
               {product?.[productCategory]?.strain}
             </AttributeItemStyles>
           )}
-          {product?.[productCategory]?.potency && (
+          {product?.[productCategory]?.potency > 0 && (
             <AttributeItemStyles>
               <span tw="font-bold mr-1">THC:</span>
               {product?.[productCategory]?.potency}%
