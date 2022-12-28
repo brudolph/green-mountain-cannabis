@@ -1,6 +1,6 @@
 {
   "name": "green-mountain-cannabis",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Source for Green Mountain Cannabis B2B site",
   "main": "index.js",
   "scripts": {
