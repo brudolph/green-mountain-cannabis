@@ -1,18 +1,20 @@
 import { virtual, relationship, select, text, checkbox } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { permissions } from '../access';
+import { allOperations, allowAll } from '@keystone-6/core/access';
+import { permissions, rules, isSignedIn } from '../access';
 import { graphql } from '@graphql-ts/schema';
 
 export const Oil = list({
   access: {
     operation: {
-      create: permissions.canManageProducts,
+      ...allOperations(allowAll),
+      create: isSignedIn,
     },
     filter: {
-      query: permissions.canManageProducts,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-    }
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
   },
   fields: {
     label: virtual({

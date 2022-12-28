@@ -16,6 +16,9 @@ model User {
   id                      String     @id @default(cuid())
   name                    String     @default("")
   email                   String     @unique @default("")
+  phone                   String     @default("")
+  jobTitle                String     @default("")
+  license                 String     @default("")
   password                String
   cart                    CartItem[] @relation("CartItem_user")
   orders                  Order[]    @relation("Order_user")
@@ -33,11 +36,12 @@ model Product {
   name                               String                  @default("")
   slug                               String                  @unique @default("")
   inventory                          Decimal?                @default("1.0") @postgresql.Decimal(18, 2)
-  price                              Decimal?                @default("0.00") @postgresql.Decimal(18, 2)
+  price                              Decimal?                @default("0") @postgresql.Decimal(18, 2)
   priceThreshold                     Pricing[]               @relation("Product_priceThreshold")
   recreational                       Boolean                 @default(false)
   medical                            Boolean                 @default(false)
   hotDeal                            Boolean                 @default(false)
+  topPick                            Boolean                 @default(false)
   category                           Category?               @relation("Product_category", fields: [categoryId], references: [id])
   categoryId                         String?                 @map("category")
   photos                             ProductImage[]          @relation("ProductImage_product")
@@ -76,7 +80,7 @@ model Oil {
   product          Product?  @relation("Oil_product", fields: [productId], references: [id])
   productId        String?   @map("product")
   weight           String?   @default("pound")
-  potency          String    @default("1.0")
+  potency          String    @default("")
   cbd              Boolean   @default(false)
   oilType          String?
   solventUsed      String?
@@ -90,7 +94,7 @@ model FlowerTrimFreshFrozen {
   product             Product?  @relation("FlowerTrimFreshFrozen_product", fields: [productId], references: [id])
   productId           String?   @map("product")
   weight              String?
-  potency             String    @default("1.0")
+  potency             String    @default("")
   strain              String?
   trimMethod          String?
   environment         String?
@@ -103,8 +107,8 @@ model Concentrate {
   id                       String    @id @default(cuid())
   product                  Product?  @relation("Concentrate_product", fields: [productId], references: [id])
   productId                String?   @map("product")
-  weight                   String?   @default("pound")
-  potency                  String    @default("1.0")
+  weight                   String?
+  potency                  String    @default("")
   strain                   String?
   type                     String?
   from_Product_concentrate Product[] @relation("Product_concentrate")
@@ -117,7 +121,7 @@ model PreRoll {
   product              Product?  @relation("PreRoll_product", fields: [productId], references: [id])
   productId            String?   @map("product")
   size                 String?
-  potency              String    @default("1.0")
+  potency              String    @default("")
   strain               String?
   type                 String?
   tube                 String?
@@ -151,14 +155,14 @@ model ProductImage {
 
 model Category {
   id      String    @id @default(cuid())
-  name    String    @default("")
+  name    String    @unique @default("")
   slug    String    @unique @default("")
   product Product[] @relation("Product_category")
 }
 
 model Vendor {
   id           String    @id @default(cuid())
-  name         String    @default("")
+  name         String    @unique @default("")
   email        String    @default("")
   contact_name String    @default("")
   phone        String    @default("")
@@ -171,14 +175,14 @@ model Vendor {
 model Pricing {
   id                          String    @id @default(cuid())
   name                        String    @default("")
-  price                       Decimal   @default("0.00") @postgresql.Decimal(18, 2)
+  price                       Decimal   @default("0") @postgresql.Decimal(18, 2)
   amount                      Int
   from_Product_priceThreshold Product[] @relation("Product_priceThreshold")
 }
 
 model CartItem {
   id        String   @id @default(cuid())
-  quantity  Decimal  @default("0.01") @postgresql.Decimal(12, 2)
+  quantity  Decimal  @default("0") @postgresql.Decimal(18, 2)
   product   Product? @relation("CartItem_product", fields: [productId], references: [id])
   productId String?  @map("product")
   user      User?    @relation("CartItem_user", fields: [userId], references: [id])
@@ -194,7 +198,8 @@ model OrderItem {
   description String        @default("")
   photo       ProductImage? @relation("OrderItem_photo", fields: [photoId], references: [id])
   photoId     String?       @map("photo")
-  price       Int?
+  price       Decimal?      @postgresql.Decimal(18, 4)
+  weight      String        @default("")
   quantity    Decimal?      @postgresql.Decimal(18, 4)
   order       Order?        @relation("OrderItem_order", fields: [orderId], references: [id])
   orderId     String?       @map("order")
@@ -204,22 +209,25 @@ model OrderItem {
 }
 
 model Order {
-  id     String      @id @default(cuid())
-  total  Int?
-  items  OrderItem[] @relation("OrderItem_order")
-  user   User?       @relation("Order_user", fields: [userId], references: [id])
-  userId String?     @map("user")
+  id        String      @id @default(cuid())
+  total     Decimal?    @postgresql.Decimal(18, 4)
+  items     OrderItem[] @relation("OrderItem_order")
+  orderDate String      @default("")
+  user      User?       @relation("Order_user", fields: [userId], references: [id])
+  userId    String?     @map("user")
 
   @@index([userId])
 }
 
 model Role {
   id                String  @id @default(cuid())
-  name              String  @default("")
+  name              String  @unique @default("")
   canManageProducts Boolean @default(false)
+  canReadProducts   Boolean @default(false)
   canSeeOtherUsers  Boolean @default(false)
   canManageUsers    Boolean @default(false)
   canManageRoles    Boolean @default(false)
+  canSeeOwnRole     Boolean @default(false)
   canManageCart     Boolean @default(false)
   canManageOrders   Boolean @default(false)
   assignedTo        User[]  @relation("User_role")

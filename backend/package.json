@@ -7,21 +7,22 @@
     "reset": "keystone --reset-db --create-admin",
     "postinstall": "keystone postinstall",
     "build": "keystone build",
-    "start": "keystone start"
+    "start": "keystone start",
+    "seed-data": "keystone --seed-data"
   },
   "author": "Ben Rudolph",
   "license": "MIT",
   "dependencies": {
-    "@keystone-6/auth": "^4.0.1",
-    "@keystone-6/cloudinary": "^4.0.1",
-    "@keystone-6/core": "^2.3.0",
-    "@keystone-6/fields-document": "^4.1.2",
-    "@types/nodemailer": "^6.4.6",
-    "next": "^12.3.1",
-    "nodemailer": "^6.7.8",
+    "@keystone-6/auth": "^6.0.0",
+    "@keystone-6/cloudinary": "^6.0.0",
+    "@keystone-6/core": "^4.0.1",
+    "@keystone-6/fields-document": "^6.0.0",
+    "@types/nodemailer": "^6.4.7",
+    "next": "^13.1.1",
+    "nodemailer": "^6.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^4.8.3"
+    "typescript": "^4.9.4"
   },
   "engines": {
     "node": "^14.15 || ^16.13"

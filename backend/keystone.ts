@@ -17,22 +17,29 @@ import { FlowerTrimFreshFrozen } from './schemas/FlowerTrimFreshFrozen';
 import { Category } from './schemas/Category';
 import { extendGraphqlSchema } from './mutations';
 import { addCompatibilityForQueries } from './compat';
+import { insertSeedData } from './seed-data';
 
 const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
 
 export default withAuth(
   config({
     server: {
-      cors: {
-        origin: [process.env.FRONTEND_URL!],
-        credentials: true,
-      },
+      // cors: {
+      //   origin: process.env.NODE_ENV === 'production' ? [process.env.FRONTEND_URL!] : undefined,
+      //   credentials: true,
+      // },
+      cors: { origin: true, credentials: true, methods: process.env.CORS_METHODS, },
     },
     db: {
       provider: 'postgresql',
       url: databaseURL,
       // enableLogging: false,
-      // useMigrations: true,
+      useMigrations: true,
+      async onConnect(context) {
+        if (process.argv.includes('--seed-data')) {
+          await insertSeedData(context);
+        }
+      },
     },
     lists: ({
       User,
@@ -51,13 +58,10 @@ export default withAuth(
       Order,
       Role,
     }),
-    extendGraphqlSchema: (schema) =>
-      addCompatibilityForQueries(extendGraphqlSchema(schema)),
+    extendGraphqlSchema,
     ui: {
       // Show the UI only for poeple who pass this test
-      isAccessAllowed: ({ session }) =>
-        // console.log(session);
-        !!session?.data,
+      isAccessAllowed: ({ session }) => !!session,
     },
     session,
     graphql: {

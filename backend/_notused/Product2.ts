@@ -7,6 +7,9 @@ export const Product2 = list({
   access: {
     operation: {
       create: isSignedIn,
+      query: permissions.canManageRoles,
+      update: permissions.canManageRoles,
+      delete: permissions.canManageRoles,
     },
     filter: {
       query: rules.canReadProducts,

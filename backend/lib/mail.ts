@@ -1,22 +1,24 @@
 import { createTransport, getTestMessageUrl } from 'nodemailer';
 
 const transport = createTransport({
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
+  // @ts-ignore
+  host: "localhost",
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    user: "project.1",
+    pass: "secret.1",
   },
 });
 
-function makeANiceEmail(text: string) {
+function makeEmail(text: string) {
   return `
     <div className="email" style="
       border: 1px solid black;
       padding: 20px;
       font-family: sans-serif;
       line-height: 2;
-      font-size: 20px;
+      font-size: 1.25rem;
     ">
       <h2>Hello There!</h2>
       <p>${text}</p>
@@ -47,16 +49,17 @@ export async function sendPasswordResetEmail(
   to: string
 ): Promise<void> {
   // email the user a token
-  const info = (await transport.sendMail({
+  console.log("to", to);
+
+  const info = await transport.sendMail({
     to,
     from: 'momentumdd@me.com',
     subject: 'Your password reset token!',
-    html: makeANiceEmail(`Your Password Reset Token is here!
+    html: makeEmail(`Your Password Reset Token is here!
       <a href="${process.env.FRONTEND_URL}/reset?token=${resetToken}">Click Here to reset</a>
     `),
-  })) as MailResponse;
-  if (process.env.MAIL_USER.includes('ethereal.email')) {
-    console.log(`💌 Message Sent!  Preview it at ${getTestMessageUrl(info)}`);
-
+  });
+  if (process.env.MAIL_USER?.includes('ethereal.email')) {
+    console.log(`� Message Sent!  Preview it at ${getTestMessageUrl(info)}`);
   }
 }

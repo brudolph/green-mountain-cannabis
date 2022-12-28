@@ -26,19 +26,17 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
         id
         quantity
         product {
-          name
-          price_threshold {
-            price
-          }
-          description
           id
-          # photo {
-          #   id
-          #   image {
-          #     id
-          #     publicUrl
-          #   }
-          # }
+          name
+          price
+          description
+          photos {
+            id
+            image {
+              id
+              publicUrl
+            }
+          }
         }
       }
     `
@@ -46,9 +44,13 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
 
   // 2. calc the total price for their order
   const cartItems = user.cart.filter((cartItem: any) => cartItem.product);
-  const amount = cartItems.reduce(function (tally: number, cartItem: any) {
+  const amount = cartItems.reduce(function (tally: string, cartItem: any) {
     return tally + cartItem.quantity * cartItem.product.price;
   }, 0);
+  let current = new Date();
+  let cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
+  let cTime = current.getHours() + ":" + current.getMinutes() + ":" + current.getSeconds();
+  let todaysDate = cDate + ' ' + cTime;
 
 
   // 3. Convert the cartItems to OrderItems
@@ -58,8 +60,8 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
       description: cartItem.product.description,
       price: cartItem.product.price,
       quantity: cartItem.quantity,
-      // weight: cartItem.weight,
-      // photo: { connect: { id: cartItem.product.photo.id } },
+      weight: cartItem.weight,
+      // photo: { connect: { id: cartItem.product.photos[0].id } },
     };
     return orderItem;
   });
@@ -68,7 +70,9 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
   // 5. Create the order and return it
   const order = await context.db.Order.createOne({
     data: {
+      total: amount.toString(),
       items: { create: orderItems },
+      orderDate: todaysDate,
       user: { connect: { id: userId } },
     },
   });

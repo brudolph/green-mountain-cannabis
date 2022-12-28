@@ -5,20 +5,13 @@ type User {
   id: ID!
   name: String
   email: String
+  phone: String
+  jobTitle: String
+  license: String
   password: PasswordState
-  cart(
-    where: CartItemWhereInput! = {}
-    orderBy: [CartItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [CartItem!]
+  cart(where: CartItemWhereInput! = {}, orderBy: [CartItemOrderByInput!]! = [], take: Int, skip: Int! = 0): [CartItem!]
   cartCount(where: CartItemWhereInput! = {}): Int
-  orders(
-    where: OrderWhereInput! = {}
-    orderBy: [OrderOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Order!]
+  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
   role: Role
   passwordResetToken: PasswordState
@@ -30,8 +23,7 @@ type PasswordState {
   isSet: Boolean!
 }
 
-scalar DateTime
-  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input UserWhereUniqueInput {
   id: ID
@@ -45,6 +37,9 @@ input UserWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
+  phone: StringFilter
+  jobTitle: StringFilter
+  license: StringFilter
   cart: CartItemManyRelationFilter
   orders: OrderManyRelationFilter
   role: RoleWhereInput
@@ -129,6 +124,9 @@ input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
+  phone: OrderDirection
+  jobTitle: OrderDirection
+  license: OrderDirection
   passwordResetIssuedAt: OrderDirection
   passwordResetRedeemedAt: OrderDirection
 }
@@ -141,6 +139,9 @@ enum OrderDirection {
 input UserUpdateInput {
   name: String
   email: String
+  phone: String
+  jobTitle: String
+  license: String
   password: String
   cart: CartItemRelateToManyForUpdateInput
   orders: OrderRelateToManyForUpdateInput
@@ -178,6 +179,9 @@ input UserUpdateArgs {
 input UserCreateInput {
   name: String
   email: String
+  phone: String
+  jobTitle: String
+  license: String
   password: String
   cart: CartItemRelateToManyForCreateInput
   orders: OrderRelateToManyForCreateInput
@@ -208,23 +212,14 @@ type Product {
   slug: String
   inventory: Decimal
   price: Decimal
-  priceThreshold(
-    where: PricingWhereInput! = {}
-    orderBy: [PricingOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Pricing!]
+  priceThreshold(where: PricingWhereInput! = {}, orderBy: [PricingOrderByInput!]! = [], take: Int, skip: Int! = 0): [Pricing!]
   priceThresholdCount(where: PricingWhereInput! = {}): Int
   recreational: Boolean
   medical: Boolean
   hotDeal: Boolean
+  topPick: Boolean
   category: Category
-  photos(
-    where: ProductImageWhereInput! = {}
-    orderBy: [ProductImageOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProductImage!]
+  photos(where: ProductImageWhereInput! = {}, orderBy: [ProductImageOrderByInput!]! = [], take: Int, skip: Int! = 0): [ProductImage!]
   photosCount(where: ProductImageWhereInput! = {}): Int
   description: String
   flower: FlowerTrimFreshFrozen
@@ -256,6 +251,7 @@ input ProductWhereInput {
   recreational: BooleanFilter
   medical: BooleanFilter
   hotDeal: BooleanFilter
+  topPick: BooleanFilter
   category: CategoryWhereInput
   photos: ProductImageManyRelationFilter
   description: StringFilter
@@ -334,6 +330,7 @@ input ProductOrderByInput {
   recreational: OrderDirection
   medical: OrderDirection
   hotDeal: OrderDirection
+  topPick: OrderDirection
   description: OrderDirection
   status: OrderDirection
 }
@@ -347,6 +344,7 @@ input ProductUpdateInput {
   recreational: Boolean
   medical: Boolean
   hotDeal: Boolean
+  topPick: Boolean
   category: CategoryRelateToOneForUpdateInput
   photos: ProductImageRelateToManyForUpdateInput
   description: String
@@ -429,6 +427,7 @@ input ProductCreateInput {
   recreational: Boolean
   medical: Boolean
   hotDeal: Boolean
+  topPick: Boolean
   category: CategoryRelateToOneForCreateInput
   photos: ProductImageRelateToManyForCreateInput
   description: String
@@ -804,8 +803,7 @@ Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/docu
 All options are strings as they ultimately end up in a URL.
 """
 input CloudinaryImageFormat {
-  """
-  Rewrites the filename to be this pretty string. Do not include `/` or `.`
+  """ Rewrites the filename to be this pretty string. Do not include `/` or `.`
   """
   prettyName: String
   width: String
@@ -862,9 +860,7 @@ input ProductImageUpdateInput {
   product: ProductRelateToOneForUpdateInput
 }
 
-"""
-The `Upload` scalar type represents a file upload.
-"""
+"""The `Upload` scalar type represents a file upload."""
 scalar Upload
 
 input ProductImageUpdateArgs {
@@ -882,17 +878,13 @@ type Category {
   id: ID!
   name: String
   slug: String
-  product(
-    where: ProductWhereInput! = {}
-    orderBy: [ProductOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Product!]
+  product(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0): [Product!]
   productCount(where: ProductWhereInput! = {}): Int
 }
 
 input CategoryWhereUniqueInput {
   id: ID
+  name: String
   slug: String
 }
 
@@ -956,17 +948,13 @@ type Vendor {
   mobile: String
   vendor_ID: String
   notes: String
-  product(
-    where: ProductWhereInput! = {}
-    orderBy: [ProductOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Product!]
+  product(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0): [Product!]
   productCount(where: ProductWhereInput! = {}): Int
 }
 
 input VendorWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input VendorWhereInput {
@@ -1148,7 +1136,8 @@ type OrderItem {
   name: String
   description: String
   photo: ProductImage
-  price: Int
+  price: Decimal
+  weight: String
   quantity: Decimal
   order: Order
 }
@@ -1165,20 +1154,10 @@ input OrderItemWhereInput {
   name: StringFilter
   description: StringFilter
   photo: ProductImageWhereInput
-  price: IntNullableFilter
+  price: DecimalNullableFilter
+  weight: StringFilter
   quantity: DecimalNullableFilter
   order: OrderWhereInput
-}
-
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
 }
 
 input OrderItemOrderByInput {
@@ -1186,6 +1165,7 @@ input OrderItemOrderByInput {
   name: OrderDirection
   description: OrderDirection
   price: OrderDirection
+  weight: OrderDirection
   quantity: OrderDirection
 }
 
@@ -1193,7 +1173,8 @@ input OrderItemUpdateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneForUpdateInput
-  price: Int
+  price: Decimal
+  weight: String
   quantity: Decimal
   order: OrderRelateToOneForUpdateInput
 }
@@ -1219,7 +1200,8 @@ input OrderItemCreateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneForCreateInput
-  price: Int
+  price: Decimal
+  weight: String
   quantity: Decimal
   order: OrderRelateToOneForCreateInput
 }
@@ -1237,14 +1219,10 @@ input OrderRelateToOneForCreateInput {
 type Order {
   id: ID!
   label: String
-  total: Int
-  items(
-    where: OrderItemWhereInput! = {}
-    orderBy: [OrderItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [OrderItem!]
+  total: Decimal
+  items(where: OrderItemWhereInput! = {}, orderBy: [OrderItemOrderByInput!]! = [], take: Int, skip: Int! = 0): [OrderItem!]
   itemsCount(where: OrderItemWhereInput! = {}): Int
+  orderDate: String
   user: User
 }
 
@@ -1257,8 +1235,9 @@ input OrderWhereInput {
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
   id: IDFilter
-  total: IntNullableFilter
+  total: DecimalNullableFilter
   items: OrderItemManyRelationFilter
+  orderDate: StringFilter
   user: UserWhereInput
 }
 
@@ -1271,11 +1250,13 @@ input OrderItemManyRelationFilter {
 input OrderOrderByInput {
   id: OrderDirection
   total: OrderDirection
+  orderDate: OrderDirection
 }
 
 input OrderUpdateInput {
-  total: Int
+  total: Decimal
   items: OrderItemRelateToManyForUpdateInput
+  orderDate: String
   user: UserRelateToOneForUpdateInput
 }
 
@@ -1292,8 +1273,9 @@ input OrderUpdateArgs {
 }
 
 input OrderCreateInput {
-  total: Int
+  total: Decimal
   items: OrderItemRelateToManyForCreateInput
+  orderDate: String
   user: UserRelateToOneForCreateInput
 }
 
@@ -1306,22 +1288,20 @@ type Role {
   id: ID!
   name: String
   canManageProducts: Boolean
+  canReadProducts: Boolean
   canSeeOtherUsers: Boolean
   canManageUsers: Boolean
   canManageRoles: Boolean
+  canSeeOwnRole: Boolean
   canManageCart: Boolean
   canManageOrders: Boolean
-  assignedTo(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [User!]
+  assignedTo(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User!]
   assignedToCount(where: UserWhereInput! = {}): Int
 }
 
 input RoleWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input RoleWhereInput {
@@ -1331,9 +1311,11 @@ input RoleWhereInput {
   id: IDFilter
   name: StringFilter
   canManageProducts: BooleanFilter
+  canReadProducts: BooleanFilter
   canSeeOtherUsers: BooleanFilter
   canManageUsers: BooleanFilter
   canManageRoles: BooleanFilter
+  canSeeOwnRole: BooleanFilter
   canManageCart: BooleanFilter
   canManageOrders: BooleanFilter
   assignedTo: UserManyRelationFilter
@@ -1349,9 +1331,11 @@ input RoleOrderByInput {
   id: OrderDirection
   name: OrderDirection
   canManageProducts: OrderDirection
+  canReadProducts: OrderDirection
   canSeeOtherUsers: OrderDirection
   canManageUsers: OrderDirection
   canManageRoles: OrderDirection
+  canSeeOwnRole: OrderDirection
   canManageCart: OrderDirection
   canManageOrders: OrderDirection
 }
@@ -1359,9 +1343,11 @@ input RoleOrderByInput {
 input RoleUpdateInput {
   name: String
   canManageProducts: Boolean
+  canReadProducts: Boolean
   canSeeOtherUsers: Boolean
   canManageUsers: Boolean
   canManageRoles: Boolean
+  canSeeOwnRole: Boolean
   canManageCart: Boolean
   canManageOrders: Boolean
   assignedTo: UserRelateToManyForUpdateInput
@@ -1382,9 +1368,11 @@ input RoleUpdateArgs {
 input RoleCreateInput {
   name: String
   canManageProducts: Boolean
+  canReadProducts: Boolean
   canSeeOtherUsers: Boolean
   canManageUsers: Boolean
   canManageRoles: Boolean
+  canSeeOwnRole: Boolean
   canManageCart: Boolean
   canManageOrders: Boolean
   assignedTo: UserRelateToManyForCreateInput
@@ -1398,10 +1386,7 @@ input UserRelateToManyForCreateInput {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
   createUser(data: UserCreateInput!): User
@@ -1412,12 +1397,9 @@ type Mutation {
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   createProduct(data: ProductCreateInput!): Product
   createProducts(data: [ProductCreateInput!]!): [Product]
-  updateProduct(
-    where: ProductWhereUniqueInput!
-    data: ProductUpdateInput!
-  ): Product
+  updateProduct(where: ProductWhereUniqueInput!, data: ProductUpdateInput!): Product
   updateProducts(data: [ProductUpdateArgs!]!): [Product]
-  deleteProduct(id: ID, where: ProductWhereUniqueInput): Product
+  deleteProduct(where: ProductWhereUniqueInput!): Product
   deleteProducts(where: [ProductWhereUniqueInput!]!): [Product]
   createOil(data: OilCreateInput!): Oil
   createOils(data: [OilCreateInput!]!): [Oil]
@@ -1425,67 +1407,39 @@ type Mutation {
   updateOils(data: [OilUpdateArgs!]!): [Oil]
   deleteOil(where: OilWhereUniqueInput!): Oil
   deleteOils(where: [OilWhereUniqueInput!]!): [Oil]
-  createFlowerTrimFreshFrozen(
-    data: FlowerTrimFreshFrozenCreateInput!
-  ): FlowerTrimFreshFrozen
-  createFlowerTrimFreshFrozens(
-    data: [FlowerTrimFreshFrozenCreateInput!]!
-  ): [FlowerTrimFreshFrozen]
-  updateFlowerTrimFreshFrozen(
-    where: FlowerTrimFreshFrozenWhereUniqueInput!
-    data: FlowerTrimFreshFrozenUpdateInput!
-  ): FlowerTrimFreshFrozen
-  updateFlowerTrimFreshFrozens(
-    data: [FlowerTrimFreshFrozenUpdateArgs!]!
-  ): [FlowerTrimFreshFrozen]
-  deleteFlowerTrimFreshFrozen(
-    where: FlowerTrimFreshFrozenWhereUniqueInput!
-  ): FlowerTrimFreshFrozen
-  deleteFlowerTrimFreshFrozens(
-    where: [FlowerTrimFreshFrozenWhereUniqueInput!]!
-  ): [FlowerTrimFreshFrozen]
+  createFlowerTrimFreshFrozen(data: FlowerTrimFreshFrozenCreateInput!): FlowerTrimFreshFrozen
+  createFlowerTrimFreshFrozens(data: [FlowerTrimFreshFrozenCreateInput!]!): [FlowerTrimFreshFrozen]
+  updateFlowerTrimFreshFrozen(where: FlowerTrimFreshFrozenWhereUniqueInput!, data: FlowerTrimFreshFrozenUpdateInput!): FlowerTrimFreshFrozen
+  updateFlowerTrimFreshFrozens(data: [FlowerTrimFreshFrozenUpdateArgs!]!): [FlowerTrimFreshFrozen]
+  deleteFlowerTrimFreshFrozen(where: FlowerTrimFreshFrozenWhereUniqueInput!): FlowerTrimFreshFrozen
+  deleteFlowerTrimFreshFrozens(where: [FlowerTrimFreshFrozenWhereUniqueInput!]!): [FlowerTrimFreshFrozen]
   createConcentrate(data: ConcentrateCreateInput!): Concentrate
   createConcentrates(data: [ConcentrateCreateInput!]!): [Concentrate]
-  updateConcentrate(
-    where: ConcentrateWhereUniqueInput!
-    data: ConcentrateUpdateInput!
-  ): Concentrate
+  updateConcentrate(where: ConcentrateWhereUniqueInput!, data: ConcentrateUpdateInput!): Concentrate
   updateConcentrates(data: [ConcentrateUpdateArgs!]!): [Concentrate]
   deleteConcentrate(where: ConcentrateWhereUniqueInput!): Concentrate
   deleteConcentrates(where: [ConcentrateWhereUniqueInput!]!): [Concentrate]
   createPreRoll(data: PreRollCreateInput!): PreRoll
   createPreRolls(data: [PreRollCreateInput!]!): [PreRoll]
-  updatePreRoll(
-    where: PreRollWhereUniqueInput!
-    data: PreRollUpdateInput!
-  ): PreRoll
+  updatePreRoll(where: PreRollWhereUniqueInput!, data: PreRollUpdateInput!): PreRoll
   updatePreRolls(data: [PreRollUpdateArgs!]!): [PreRoll]
   deletePreRoll(where: PreRollWhereUniqueInput!): PreRoll
   deletePreRolls(where: [PreRollWhereUniqueInput!]!): [PreRoll]
   createMachine(data: MachineCreateInput!): Machine
   createMachines(data: [MachineCreateInput!]!): [Machine]
-  updateMachine(
-    where: MachineWhereUniqueInput!
-    data: MachineUpdateInput!
-  ): Machine
+  updateMachine(where: MachineWhereUniqueInput!, data: MachineUpdateInput!): Machine
   updateMachines(data: [MachineUpdateArgs!]!): [Machine]
   deleteMachine(where: MachineWhereUniqueInput!): Machine
   deleteMachines(where: [MachineWhereUniqueInput!]!): [Machine]
   createProductImage(data: ProductImageCreateInput!): ProductImage
   createProductImages(data: [ProductImageCreateInput!]!): [ProductImage]
-  updateProductImage(
-    where: ProductImageWhereUniqueInput!
-    data: ProductImageUpdateInput!
-  ): ProductImage
+  updateProductImage(where: ProductImageWhereUniqueInput!, data: ProductImageUpdateInput!): ProductImage
   updateProductImages(data: [ProductImageUpdateArgs!]!): [ProductImage]
   deleteProductImage(where: ProductImageWhereUniqueInput!): ProductImage
   deleteProductImages(where: [ProductImageWhereUniqueInput!]!): [ProductImage]
   createCategory(data: CategoryCreateInput!): Category
   createCategories(data: [CategoryCreateInput!]!): [Category]
-  updateCategory(
-    where: CategoryWhereUniqueInput!
-    data: CategoryUpdateInput!
-  ): Category
+  updateCategory(where: CategoryWhereUniqueInput!, data: CategoryUpdateInput!): Category
   updateCategories(data: [CategoryUpdateArgs!]!): [Category]
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteCategories(where: [CategoryWhereUniqueInput!]!): [Category]
@@ -1497,28 +1451,19 @@ type Mutation {
   deleteVendors(where: [VendorWhereUniqueInput!]!): [Vendor]
   createPricing(data: PricingCreateInput!): Pricing
   createPricings(data: [PricingCreateInput!]!): [Pricing]
-  updatePricing(
-    where: PricingWhereUniqueInput!
-    data: PricingUpdateInput!
-  ): Pricing
+  updatePricing(where: PricingWhereUniqueInput!, data: PricingUpdateInput!): Pricing
   updatePricings(data: [PricingUpdateArgs!]!): [Pricing]
   deletePricing(where: PricingWhereUniqueInput!): Pricing
   deletePricings(where: [PricingWhereUniqueInput!]!): [Pricing]
   createCartItem(data: CartItemCreateInput!): CartItem
   createCartItems(data: [CartItemCreateInput!]!): [CartItem]
-  updateCartItem(
-    where: CartItemWhereUniqueInput!
-    data: CartItemUpdateInput!
-  ): CartItem
+  updateCartItem(where: CartItemWhereUniqueInput!, data: CartItemUpdateInput!): CartItem
   updateCartItems(data: [CartItemUpdateArgs!]!): [CartItem]
   deleteCartItem(where: CartItemWhereUniqueInput!): CartItem
   deleteCartItems(where: [CartItemWhereUniqueInput!]!): [CartItem]
   createOrderItem(data: OrderItemCreateInput!): OrderItem
   createOrderItems(data: [OrderItemCreateInput!]!): [OrderItem]
-  updateOrderItem(
-    where: OrderItemWhereUniqueInput!
-    data: OrderItemUpdateInput!
-  ): OrderItem
+  updateOrderItem(where: OrderItemWhereUniqueInput!, data: OrderItemUpdateInput!): OrderItem
   updateOrderItems(data: [OrderItemUpdateArgs!]!): [OrderItem]
   deleteOrderItem(where: OrderItemWhereUniqueInput!): OrderItem
   deleteOrderItems(where: [OrderItemWhereUniqueInput!]!): [OrderItem]
@@ -1535,26 +1480,15 @@ type Mutation {
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   endSession: Boolean!
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
   sendUserPasswordResetLink(email: String!): Boolean!
-  redeemUserPasswordResetToken(
-    email: String!
-    token: String!
-    password: String!
-  ): RedeemUserPasswordResetTokenResult
-  addToCart(productId: ID!, quantity: Decimal): CartItem
+  redeemUserPasswordResetToken(email: String!, token: String!, password: String!): RedeemUserPasswordResetTokenResult
+  addToCart(productId: ID, quantity: Decimal): CartItem
   checkout(token: String!): Order
 }
 
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
 
 type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
@@ -1583,154 +1517,54 @@ enum PasswordResetRedemptionErrorCode {
 }
 
 type Query {
-  users(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [User!]
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  products(
-    where: ProductWhereInput! = {}
-    orderBy: [ProductOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Product!]
+  products(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0): [Product!]
   product(where: ProductWhereUniqueInput!): Product
   productsCount(where: ProductWhereInput! = {}): Int
-  oils(
-    where: OilWhereInput! = {}
-    orderBy: [OilOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Oil!]
+  oils(where: OilWhereInput! = {}, orderBy: [OilOrderByInput!]! = [], take: Int, skip: Int! = 0): [Oil!]
   oil(where: OilWhereUniqueInput!): Oil
   oilsCount(where: OilWhereInput! = {}): Int
-  flowerTrimFreshFrozens(
-    where: FlowerTrimFreshFrozenWhereInput! = {}
-    orderBy: [FlowerTrimFreshFrozenOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FlowerTrimFreshFrozen!]
-  flowerTrimFreshFrozen(
-    where: FlowerTrimFreshFrozenWhereUniqueInput!
-  ): FlowerTrimFreshFrozen
+  flowerTrimFreshFrozens(where: FlowerTrimFreshFrozenWhereInput! = {}, orderBy: [FlowerTrimFreshFrozenOrderByInput!]! = [], take: Int, skip: Int! = 0): [FlowerTrimFreshFrozen!]
+  flowerTrimFreshFrozen(where: FlowerTrimFreshFrozenWhereUniqueInput!): FlowerTrimFreshFrozen
   flowerTrimFreshFrozensCount(where: FlowerTrimFreshFrozenWhereInput! = {}): Int
-  concentrates(
-    where: ConcentrateWhereInput! = {}
-    orderBy: [ConcentrateOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Concentrate!]
+  concentrates(where: ConcentrateWhereInput! = {}, orderBy: [ConcentrateOrderByInput!]! = [], take: Int, skip: Int! = 0): [Concentrate!]
   concentrate(where: ConcentrateWhereUniqueInput!): Concentrate
   concentratesCount(where: ConcentrateWhereInput! = {}): Int
-  preRolls(
-    where: PreRollWhereInput! = {}
-    orderBy: [PreRollOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PreRoll!]
+  preRolls(where: PreRollWhereInput! = {}, orderBy: [PreRollOrderByInput!]! = [], take: Int, skip: Int! = 0): [PreRoll!]
   preRoll(where: PreRollWhereUniqueInput!): PreRoll
   preRollsCount(where: PreRollWhereInput! = {}): Int
-  machines(
-    where: MachineWhereInput! = {}
-    orderBy: [MachineOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Machine!]
+  machines(where: MachineWhereInput! = {}, orderBy: [MachineOrderByInput!]! = [], take: Int, skip: Int! = 0): [Machine!]
   machine(where: MachineWhereUniqueInput!): Machine
   machinesCount(where: MachineWhereInput! = {}): Int
-  productImages(
-    where: ProductImageWhereInput! = {}
-    orderBy: [ProductImageOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProductImage!]
+  productImages(where: ProductImageWhereInput! = {}, orderBy: [ProductImageOrderByInput!]! = [], take: Int, skip: Int! = 0): [ProductImage!]
   productImage(where: ProductImageWhereUniqueInput!): ProductImage
   productImagesCount(where: ProductImageWhereInput! = {}): Int
-  categories(
-    where: CategoryWhereInput! = {}
-    orderBy: [CategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Category!]
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
   categoriesCount(where: CategoryWhereInput! = {}): Int
-  vendors(
-    where: VendorWhereInput! = {}
-    orderBy: [VendorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Vendor!]
+  vendors(where: VendorWhereInput! = {}, orderBy: [VendorOrderByInput!]! = [], take: Int, skip: Int! = 0): [Vendor!]
   vendor(where: VendorWhereUniqueInput!): Vendor
   vendorsCount(where: VendorWhereInput! = {}): Int
-  pricings(
-    where: PricingWhereInput! = {}
-    orderBy: [PricingOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Pricing!]
+  pricings(where: PricingWhereInput! = {}, orderBy: [PricingOrderByInput!]! = [], take: Int, skip: Int! = 0): [Pricing!]
   pricing(where: PricingWhereUniqueInput!): Pricing
   pricingsCount(where: PricingWhereInput! = {}): Int
-  cartItems(
-    where: CartItemWhereInput! = {}
-    orderBy: [CartItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [CartItem!]
+  cartItems(where: CartItemWhereInput! = {}, orderBy: [CartItemOrderByInput!]! = [], take: Int, skip: Int! = 0): [CartItem!]
   cartItem(where: CartItemWhereUniqueInput!): CartItem
   cartItemsCount(where: CartItemWhereInput! = {}): Int
-  orderItems(
-    where: OrderItemWhereInput! = {}
-    orderBy: [OrderItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [OrderItem!]
+  orderItems(where: OrderItemWhereInput! = {}, orderBy: [OrderItemOrderByInput!]! = [], take: Int, skip: Int! = 0): [OrderItem!]
   orderItem(where: OrderItemWhereUniqueInput!): OrderItem
   orderItemsCount(where: OrderItemWhereInput! = {}): Int
-  orders(
-    where: OrderWhereInput! = {}
-    orderBy: [OrderOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Order!]
+  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0): [Order!]
   order(where: OrderWhereUniqueInput!): Order
   ordersCount(where: OrderWhereInput! = {}): Int
-  roles(
-    where: RoleWhereInput! = {}
-    orderBy: [RoleOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Role!]
+  roles(where: RoleWhereInput! = {}, orderBy: [RoleOrderByInput!]! = [], take: Int, skip: Int! = 0): [Role!]
   role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
-  validateUserPasswordResetToken(
-    email: String!
-    token: String!
-  ): ValidateUserPasswordResetTokenResult
-  allOrders(
-    where: OrderWhereInput! = {}
-    orderBy: [OrderOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Order!]
-  Order(where: OrderWhereUniqueInput!): Order
-  Product(where: ProductWhereUniqueInput!): Product
-  _allProductsMeta: _AllProductsMeta
-  allProducts(
-    where: ProductWhereInput! = {}
-    orderBy: [ProductOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-    first: Int
-  ): [Product!]
-}
-
-type _AllProductsMeta {
-  count: Int
+  validateUserPasswordResetToken(email: String!, token: String!): ValidateUserPasswordResetTokenResult
 }
 
 union AuthenticatedItem = User
@@ -1745,8 +1579,6 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
-  enableSignout: Boolean!
-  enableSessionItem: Boolean!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }
@@ -1766,8 +1598,10 @@ type KeystoneAdminUIListMeta {
   pageSize: Int!
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
+  groups: [KeystoneAdminUIFieldGroupMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
+  isSingleton: Boolean!
 }
 
 type KeystoneAdminUIFieldMeta {
@@ -1805,12 +1639,24 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
+  form
+  sidebar
+}
+
+type KeystoneAdminUIFieldGroupMeta {
+  label: String!
+  description: String
+  fields: [KeystoneAdminUIFieldMeta!]!
 }
 
 type KeystoneAdminUISort {

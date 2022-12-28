@@ -1,17 +1,20 @@
-import { checkbox, decimal, relationship, select, multiselect, text } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { permissions } from '../access';
+import { checkbox, decimal, relationship, select, virtual, text } from '@keystone-6/core/fields';
+import { list, group } from '@keystone-6/core';
+import { allOperations, allowAll } from '@keystone-6/core/access';
+import { permissions, rules, isSignedIn } from '../access';
+
 
 export const Product = list({
   access: {
     operation: {
-      create: permissions.canManageProducts,
+      ...allOperations(allowAll),
+      create: isSignedIn,
     },
     filter: {
-      query: permissions.canReadProducts,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-    }
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
   },
   fields: {
     name: text({ validation: { isRequired: true } }),
@@ -23,7 +26,7 @@ export const Product = list({
       label: 'Inventory'
     }),
     price: decimal({
-      defaultValue: '0.00',
+      defaultValue: '0',
       precision: 18,
       scale: 2,
     }),
@@ -38,12 +41,29 @@ export const Product = list({
       label: 'Quantity Discount'
     }),
     recreational: checkbox({
-      label: 'Recreational Product?'
+      label: 'Recreational Product?',
+      ui: {
+        itemView: { fieldPosition: "sidebar" }
+      },
     }),
     medical: checkbox({
-      label: 'Medical Product?'
+      label: 'Medical Product?',
+      ui: {
+        itemView: { fieldPosition: "sidebar" }
+      },
     }),
-    hotDeal: checkbox({ label: 'Hot Deal?' }),
+    hotDeal: checkbox({
+      label: 'Hot Deal?',
+      ui: {
+        itemView: { fieldPosition: "sidebar" }
+      },
+    }),
+    topPick: checkbox({
+      label: 'Top Pick?',
+      ui: {
+        itemView: { fieldPosition: "sidebar" }
+      },
+    }),
     category: relationship({
       ref: 'Category.product',
     }),
@@ -62,29 +82,39 @@ export const Product = list({
         displayMode: 'textarea',
       },
     }),
-    flower: relationship({
-      ref: 'FlowerTrimFreshFrozen',
-      label: 'Flower/Trim/Fresh Frozen - select or create new'
-    }),
-    oil: relationship({
-      ref: 'Oil',
-      label: 'Oil - select or create new'
-    }),
-    concentrate: relationship({
-      ref: 'Concentrate',
-      label: 'Concentrate - select or create new'
-    }),
-    preRoll: relationship({
-      ref: 'PreRoll',
-      label: 'Pre-roll - select or create new'
-    }),
-    machine: relationship({
-      ref: 'Machine',
-      label: 'Equipment - select or create new'
+    // modifiedDate: timestamp({ label: 'Product Modified Date' }),
+    ...group({
+      label: "Product Types",
+      description: "Create only one of the following product types for each product.",
+      fields: {
+        flower: relationship({
+          ref: 'FlowerTrimFreshFrozen',
+          label: 'Flower/Trim/Fresh Frozen - select or create new'
+        }),
+        oil: relationship({
+          ref: 'Oil',
+          label: 'Oil - select or create new'
+        }),
+        concentrate: relationship({
+          ref: 'Concentrate',
+          label: 'Concentrate - select or create new'
+        }),
+        preRoll: relationship({
+          ref: 'PreRoll',
+          label: 'Pre-roll - select or create new'
+        }),
+        machine: relationship({
+          ref: 'Machine',
+          label: 'Equipment - select or create new'
+        }),
+      }
     }),
     vendor: relationship({
       ref: 'Vendor.product',
       many: false,
+      ui: {
+        itemView: { fieldPosition: "sidebar" }
+      },
     }),
     status: select({
       options: [
@@ -94,8 +124,8 @@ export const Product = list({
       ],
       defaultValue: 'DRAFT',
       ui: {
-        displayMode: 'segmented-control',
         createView: { fieldMode: 'hidden' },
+        itemView: { fieldPosition: "sidebar" }
       },
     }),
   },
@@ -103,11 +133,14 @@ export const Product = list({
     listView: {
       initialColumns: ['name', 'hotDeal', 'category', 'status', 'inventory'],
     },
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args),
+    isHidden: (args) => !permissions.canManageProducts(args),
   },
   hooks: {
     resolveInput: ({ resolvedData }) => {
-      const { name, slug } = resolvedData;
-      if (name) {
+      const { name, slug, createdDate } = resolvedData;
+      if (name && !slug) {
         return {
           ...resolvedData,
           slug: name.toLowerCase()
@@ -117,6 +150,17 @@ export const Product = list({
         }
       }
       // We always return resolvedData from the resolveInput hook
+      return resolvedData;
+    },
+    afterOperation: ({ resolvedData, item }) => {
+      const { price } = resolvedData;
+
+      if (price) {
+        return {
+          ...resolvedData,
+          price: Math.round(100 * parseFloat(typeof price === 'string' ? price.replace(/[$,]/g, '') : price))
+        }
+      }
       return resolvedData;
     }
   },

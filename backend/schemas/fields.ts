@@ -5,6 +5,10 @@ export const permissionFields = {
     defaultValue: false,
     label: 'User can Update and delete any product',
   }),
+  canReadProducts: checkbox({
+    defaultValue: false,
+    label: 'User can read any product',
+  }),
   canSeeOtherUsers: checkbox({
     defaultValue: false,
     label: 'User can query other users',
@@ -16,6 +20,10 @@ export const permissionFields = {
   canManageRoles: checkbox({
     defaultValue: false,
     label: 'User can Create/Read/Update/Delete roles',
+  }),
+  canSeeOwnRole: checkbox({
+    defaultValue: false,
+    label: 'User can see own role',
   }),
   canManageCart: checkbox({
     defaultValue: false,

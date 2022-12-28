@@ -1,19 +1,20 @@
 import { virtual, relationship, select, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { isSignedIn, rules } from '../access';
 import { graphql } from '@graphql-ts/schema';
-import { permissions } from '../access';
+import { allOperations, allowAll } from '@keystone-6/core/access';
+import { permissions, rules, isSignedIn } from '../access';
 
 export const PreRoll = list({
   access: {
     operation: {
-      create: permissions.canManageProducts,
+      ...allOperations(allowAll),
+      create: isSignedIn,
     },
     filter: {
-      query: permissions.canReadProducts,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-    }
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
   },
   fields: {
     label: virtual({

@@ -1,19 +1,20 @@
 import { virtual, relationship, select, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { isSignedIn, rules } from '../access';
 import { graphql } from '@graphql-ts/schema';
-import { permissions } from '../access';
+import { allOperations, allowAll } from '@keystone-6/core/access';
+import { permissions, rules, isSignedIn } from '../access';
 
 export const Concentrate = list({
   access: {
     operation: {
-      create: permissions.canManageProducts,
+      ...allOperations(allowAll),
+      create: isSignedIn,
     },
     filter: {
-      query: permissions.canManageProducts,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-    }
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
   },
   fields: {
     label: virtual({
@@ -37,8 +38,8 @@ export const Concentrate = list({
         { label: 'Gram', value: 'gram' },
         { label: 'Ounce', value: 'ounce' },
         { label: 'Pound', value: 'pound' },
+        { label: 'Unit', value: 'unit' },
       ],
-      defaultValue: 'pound',
       ui: {
         displayMode: 'segmented-control',
       },
@@ -60,6 +61,7 @@ export const Concentrate = list({
     }),
     type: select({
       options: [
+        { label: 'Glass Syringe', value: 'Glass Syringe' },
         { label: 'Wax', value: 'Wax' },
         { label: 'Shatter', value: 'Shatter' },
         { label: 'Live Resin', value: 'Live Resin' },

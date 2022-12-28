@@ -9,3 +9,4 @@ frontend/.next
 frontend/.next/*
 backend/.env
 ca-certificate.crt
+frontend/.env.local

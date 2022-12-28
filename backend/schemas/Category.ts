@@ -1,9 +1,22 @@
-import { decimal, relationship, text } from '@keystone-6/core/fields';
+import { relationship, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
+import { allOperations, allowAll } from '@keystone-6/core/access';
+import { rules, isSignedIn } from '../access';
 
 export const Category = list({
+  access: {
+    operation: {
+      ...allOperations(allowAll),
+      create: isSignedIn,
+    },
+    filter: {
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
+  },
   fields: {
-    name: text({ validation: { isRequired: true } }),
+    name: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     slug: text({
       isIndexed: 'unique',
       label: 'Pretty URL (created automatically on save)',

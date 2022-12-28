@@ -1,11 +1,23 @@
 import { relationship, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
+import { allOperations, allowAll } from '@keystone-6/core/access';
+import { permissions, rules, isSignedIn } from '../access';
+
 
 export const Vendor = list({
-  // access
-  // ui
+  access: {
+    operation: {
+      ...allOperations(allowAll),
+      create: isSignedIn,
+    },
+    filter: {
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
+  },
   fields: {
-    name: text({ validation: { isRequired: true } }),
+    name: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     email: text(),
     contact_name: text(),
     phone: text(),

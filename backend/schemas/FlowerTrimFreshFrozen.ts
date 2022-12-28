@@ -1,19 +1,20 @@
 import { virtual, relationship, select, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { isSignedIn, rules } from '../access';
 import { graphql } from '@graphql-ts/schema';
-import { permissions } from '../access';
+import { allOperations, allowAll } from '@keystone-6/core/access';
+import { rules, isSignedIn } from '../access';
 
 export const FlowerTrimFreshFrozen = list({
   access: {
     operation: {
-      create: permissions.canManageProducts,
+      ...allOperations(allowAll),
+      create: isSignedIn,
     },
     filter: {
-      query: permissions.canManageProducts,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-    }
+      query: rules.canReadProducts,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
   },
   fields: {
     label: virtual({
@@ -48,9 +49,9 @@ export const FlowerTrimFreshFrozen = list({
     strain: select({
       options: [
         { label: 'Indica', value: 'Indica' },
-        { label: 'Hybrid Indica', value: 'Hybrid Indica' },
+        { label: 'Indica Hybrid', value: 'Indica Hybrid' },
         { label: 'Sativa', value: 'Sativa' },
-        { label: 'Hybrid Sativa', value: 'Hybrid Sativa' },
+        { label: 'Sativa Hybrid', value: 'Sativa Hybrid' },
         { label: 'Hybrid', value: 'Hybrid' },
       ],
       ui: {
