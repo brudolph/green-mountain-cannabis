@@ -19,16 +19,17 @@ import { extendGraphqlSchema } from './mutations';
 import { addCompatibilityForQueries } from './compat';
 import { insertSeedData } from './seed-data';
 
-const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
+const databaseURL = process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL_PROD || 'file:./keystone.db' : process.env.DATABASE_URL;
 
 export default withAuth(
   config({
     server: {
-      // cors: {
-      //   origin: process.env.NODE_ENV === 'production' ? [process.env.FRONTEND_URL!] : undefined,
-      //   credentials: true,
-      // },
-      cors: { origin: true, credentials: true, methods: process.env.CORS_METHODS, },
+      cors: {
+        origin: process.env.NODE_ENV === 'production' ? [process.env.FRONTEND_URL_PROD!] : undefined,
+        credentials: true,
+        methods: process.env.CORS_METHODS
+      },
+      // cors: { origin: true, credentials: true, methods: process.env.CORS_METHODS, },
     },
     db: {
       provider: 'postgresql',
