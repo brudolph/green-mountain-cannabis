@@ -1,15 +1,9 @@
-import { styled } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import React from 'react';
 
 import PropTypes from 'prop-types';
 
-const ErrorStyles = styled.div`
-  padding: 2rem;
-  background: white;
-  margin: 2rem 0;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-left: 6px solid red;
-`;
+const ErrorStyles = styled.div(tw`p-8 my-8 bg-white border-l-8 border-red-500`);
 
 const DisplayError = ({ error }) => {
   if (!error || !error.message) return null;
@@ -20,7 +14,7 @@ const DisplayError = ({ error }) => {
   ) {
     return error.networkError.result.errors.map((error, i) => (
       <ErrorStyles key={i}>
-        <p data-test="graphql-error">
+        <p data-test="graphql-error" tw="mb-0">
           <strong tw="font-bold mr-4">Oh No!</strong>
           {error.message.replace('GraphQL error: ', '')}
         </p>
@@ -29,7 +23,7 @@ const DisplayError = ({ error }) => {
   }
   return (
     <ErrorStyles>
-      <p data-test="graphql-error">
+      <p data-test="graphql-error" tw="mb-0">
         <strong tw="font-bold mr-4">Oh No!</strong>
         {error.message.replace('GraphQL error: ', '')}
       </p>

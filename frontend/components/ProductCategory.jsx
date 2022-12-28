@@ -1,5 +1,5 @@
 import { useQuery, gql } from '@apollo/client';
-import tw from 'twin.macro';
+import 'twin.macro';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Product from './Product';
@@ -8,7 +8,11 @@ import { Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
 import DisplayError from './ErrorMessage';
 import Filters from './Filters';
-import { useUser } from './User';
+// import { useUser } from './User';
+import {
+  ContainerStyles,
+  ProductGridStyles,
+} from '../styles/ProductCategoryStyles';
 
 export const ALL_PRODUCTS_FILTERED_QUERY = gql`
   query ALL_PRODUCTS_FILTERED_QUERY(
@@ -43,6 +47,7 @@ export const ALL_PRODUCTS_FILTERED_QUERY = gql`
       recreational
       medical
       hotDeal
+      topPick
       category {
         slug
         name
@@ -108,7 +113,7 @@ function ProductCategory({ page, category, productType }) {
   const recreational = productType === 'recreational';
   const medical = productType === 'medical';
 
-  const user = useUser();
+  // const user = useUser();
 
   const { data, error, loading } = useQuery(ALL_PRODUCTS_FILTERED_QUERY, {
     variables: {
@@ -136,11 +141,10 @@ function ProductCategory({ page, category, productType }) {
       </Processing>
     );
 
-  // console.log(user);
+  if (error) return <DisplayError error={error} />;
 
   return (
     <>
-      <DisplayError error={error} />
       <Processing loading={loading.toString()}>
         <LoadingIcon tw="animate-spin" />
         Loading
@@ -152,16 +156,18 @@ function ProductCategory({ page, category, productType }) {
           setFilteredData={setFilteredData}
         />
       )}
-      <ProductGrid>
-        {/* {data &&
-          data?.products.map((product) => (
-            <Product key={product.id} product={product} />
-          ))} */}
-        {filteredData &&
-          filteredData?.map((product) => (
-            <Product key={product.id} product={product} />
-          ))}
-      </ProductGrid>
+      <ContainerStyles hasBgPrimaryLight20>
+        <ProductGridStyles>
+          {/* {data &&
+            data?.products.map((product) => (
+              <Product key={product.id} product={product} />
+            ))} */}
+          {filteredData &&
+            filteredData?.map((product) => (
+              <Product key={product.id} product={product} />
+            ))}
+        </ProductGridStyles>
+      </ContainerStyles>
     </>
   );
 }
@@ -171,7 +177,5 @@ ProductCategory.propTypes = {
   category: PropTypes.string,
   productType: PropTypes.string,
 };
-
-const ProductGrid = tw.div`grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:gap-x-8 max-w-7xl mx-auto px-5 py-6`;
 
 export default ProductCategory;

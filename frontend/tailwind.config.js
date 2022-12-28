@@ -15,9 +15,21 @@ module.exports = {
     'ease-out',
   ],
   theme: {
+    cursor: {
+      auto: 'auto',
+      default: 'default',
+      pointer: 'pointer',
+      wait: 'wait',
+      text: 'text',
+      move: 'move',
+      'not-allowed': 'not-allowed',
+      crosshair: 'crosshair',
+      'zoom-in': 'zoom-in',
+    },
     extend: {
       fontFamily: {
-        headers: ['Oswald', 'Arial', 'sans-serif'],
+        headers: ['Signika', 'Arial', 'sans-serif'],
+        altHeaders: ['"Asap Condensed"', 'Arial', 'sans-serif'],
         sans: ['"Open Sans"', 'Arial', 'sans-serif'],
       },
       colors: {

@@ -1,11 +1,5 @@
 export default function formatQuantity(amount = 0) {
-  const options = {
-    style: 'unit',
-    unit: 'mass-pound',
-    unitDisplay: 'long',
-  };
-
-  const formatter = amount.toLocaleString('en-US', options);
+  const formatter = Number.parseFloat(amount).toFixed(2);
 
   return formatter;
 }

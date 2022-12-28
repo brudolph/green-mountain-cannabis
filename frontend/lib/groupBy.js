@@ -3,9 +3,10 @@ export default function groupBy(array, keys, variable) {
   let key;
   let temp;
   let split;
+
   const data = array.reduce((result, currentValue) => {
     key = '';
-    for (i = 0; i < keys.length; i++) {
+    for (i = 0; i < keys.length; i += 1) {
       key = `${key + currentValue[keys[i]]}_`;
     }
     if (!result[key]) {
@@ -15,15 +16,16 @@ export default function groupBy(array, keys, variable) {
 
     return result;
   }, {});
-  console.log(data);
+
   const grouped = [];
-  Object.keys(data).forEach((key) => {
+
+  Object.keys(data).forEach((keyed) => {
     temp = {};
-    split = key.split('_');
-    for (i = 0; i < split.length - 1; i++) {
+    split = keyed.split('_');
+    for (i = 0; i < split.length - 1; i += 1) {
       temp[keys[i]] = split[i];
     }
-    temp[variable] = data[key];
+    temp[variable] = data[keyed];
     grouped.push(temp);
   });
   return grouped;

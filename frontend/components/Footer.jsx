@@ -1,11 +1,10 @@
 import 'twin.macro';
-import { useUser } from './User';
+// import { useUser } from './User';
 import { FooterStyles } from '../styles/FooterStyles';
 import { footerNav } from './config/footerNav';
 import Logo from '../public/static/logo-icon.svg';
 
 export default function Footer() {
-  const user = useUser();
   return (
     <FooterStyles>
       <div tw="px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:py-16 lg:px-8">

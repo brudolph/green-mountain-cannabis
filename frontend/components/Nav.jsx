@@ -1,18 +1,29 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import PropTypes from 'prop-types';
 import { gql, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
-import { Popover, Menu, Transition } from '@headlessui/react';
+import { Popover, Transition } from '@headlessui/react';
 import {
   SearchIcon,
   UserIcon,
   ChevronDownIcon,
 } from '@heroicons/react/outline';
 import { Fragment } from 'react';
-import Link from 'next/link';
-import { NavStyles } from '../styles/NavStyles';
+import {
+  MainNavItemsStyles,
+  MainNavItemStyles,
+  MainNavLinkStyles,
+  MenuButtonStyles,
+  MenuItemsStyles,
+  MenuItemStyles,
+  MenuLinkStyles,
+  MenuStyles,
+  NavStyles,
+  PopOverButtonStyles,
+  PopOverGroupStyles,
+  PopOverPanelStyles,
+  PopOverWrapperStyles,
+} from '../styles/NavStyles';
 import SignOut from './SignOut';
 import { useUser } from './User';
 import { mainNav } from './config/mainNav';
@@ -31,9 +42,16 @@ const CATEGORY_QUERY = gql`
   }
 `;
 
+const ChevronDownStyles = {
+  // Move long class sets out of jsx to keep it scannable
+  icon: ({ open }) => [
+    tw`w-5 h-5 ml-2 transition duration-150 ease-in-out text-accent group-hover:text-opacity-80`,
+    open ? '' : 'text-opacity-70',
+  ],
+};
+
 export default function Nav() {
   const user = useUser();
-  const router = useRouter();
 
   const { data, loading, error } = useQuery(CATEGORY_QUERY);
 
@@ -48,29 +66,21 @@ export default function Nav() {
   const { categories } = data;
 
   return (
-    <NavStyles tw="z-50">
-      <Popover.Group tw="hidden lg:block lg:self-stretch">
-        <div tw="flex h-full space-x-8">
+    <NavStyles>
+      <PopOverGroupStyles>
+        <div tw="flex h-full space-x-8 pb-3">
           {mainNav.map((link) => (
             <Popover tw="flex" key={link.title}>
               {({ open }) => (
                 <>
                   <div tw="flex">
-                    <Popover.Button
-                      className="group"
-                      css={[
-                        tw`flex items-center -mb-px text-xl font-medium uppercase border-b-2 border-transparent font-headers text-primary hover:text-primary-dark hover:border-primary`,
-                      ]}
-                    >
-                      <span>{link.title}</span>
+                    <PopOverButtonStyles className="group">
+                      {link.title}
                       <ChevronDownIcon
-                        css={[
-                          tw`w-5 h-5 ml-2 transition duration-150 ease-in-out text-accent group-hover:text-opacity-80`,
-                          open ? '' : 'text-opacity-70',
-                        ]}
+                        css={ChevronDownStyles.icon({ open })}
                         aria-hidden="true"
                       />
-                    </Popover.Button>
+                    </PopOverButtonStyles>
                   </div>
                   <PopOverStyledTransition
                     as={Fragment}
@@ -81,79 +91,40 @@ export default function Nav() {
                     leaveFrom="leaveFrom"
                     leaveTo="leaveTo"
                   >
-                    <Popover.Panel tw="absolute inset-x-0 top-full text-sm text-gray-500">
-                      <div
-                        tw="absolute inset-0 bg-white shadow top-1/2"
-                        aria-hidden="true"
-                      />
-                      <div tw="relative bg-white">
-                        <div tw="px-8 mx-auto max-w-7xl">
-                          <div tw="grid grid-cols-2 py-16 gap-y-10 gap-x-8">
-                            <div tw="grid grid-cols-2 col-start-2 gap-x-8">
-                              <div
-                                className="group"
-                                tw="relative text-base sm:text-sm"
+                    <PopOverPanelStyles>
+                      <PopOverWrapperStyles>
+                        <MainNavItemsStyles>
+                          {categories.map((category) => (
+                            <MainNavItemStyles key={category.name}>
+                              <MainNavLinkStyles
+                                href={`${link.path}/${category.slug}`}
                               >
-                                <div tw="overflow-hidden bg-gray-100 rounded-lg group-hover:opacity-75">
-                                  <img
-                                    src=""
-                                    alt=""
-                                    tw="object-cover object-center"
-                                  />
-                                </div>
-                                <a
-                                  href="/"
-                                  tw="block mt-6 font-medium text-gray-900"
-                                >
-                                  <span
-                                    tw="absolute inset-0 z-10"
-                                    aria-hidden="true"
-                                  />
-                                </a>
-                                <p aria-hidden="true" tw="mt-1">
-                                  Shop now
-                                </p>
-                              </div>
-                            </div>
-                            <div tw="grid grid-cols-3 row-start-1 text-sm gap-y-10 gap-x-8">
-                              <ul
-                                className="columns-2"
-                                tw="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
-                              >
-                                {categories.map((category) => (
-                                  <li tw="flex" key={category.name}>
-                                    <a
-                                      href={`${link.path}/${category.slug}`}
-                                      tw="hover:text-gray-800"
-                                    >
-                                      {category.name}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Popover.Panel>
+                                {category.name}
+                              </MainNavLinkStyles>
+                            </MainNavItemStyles>
+                          ))}
+                        </MainNavItemsStyles>
+                        <div tw="grid grid-cols-2 gap-x-8" />
+                      </PopOverWrapperStyles>
+                    </PopOverPanelStyles>
                   </PopOverStyledTransition>
                 </>
               )}
             </Popover>
           ))}
         </div>
-      </Popover.Group>
-      <div tw="flex items-center pb-5 space-x-8">
+      </PopOverGroupStyles>
+      <div tw="flex items-center pb-3 space-x-8">
         <MyLink href="/search">
           <span tw="sr-only">Search</span>
           <SearchIcon tw="w-6 h-6 text-accent" aria-hidden="true" />
         </MyLink>
 
-        <Menu as="div" tw="relative z-[100] h-6">
-          <Menu.Button tw="inline-flex justify-center">
+        <MenuStyles as="div" tw="">
+          <MenuButtonStyles>
             <span tw="sr-only">More user options</span>
             <UserIcon tw="w-6 h-6 text-accent" />
-          </Menu.Button>
+          </MenuButtonStyles>
           <StyledTransition
             enter="enter"
             enterFrom="enterFrom"
@@ -162,25 +133,21 @@ export default function Nav() {
             leaveFrom="leaveFrom"
             leaveTo="leaveTo"
           >
-            <Menu.Items
-              as="ul"
-              static
-              tw="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md p-2 shadow-lg outline-none z-[99]"
-            >
-              <Menu.Item as="li">
-                <Link href="/account">Account</Link>
-              </Menu.Item>
-              <Menu.Item as="li">
-                <Link href="/orders">Orders</Link>
-              </Menu.Item>
+            <MenuItemsStyles as="ul" static>
+              <MenuItemStyles as="li">
+                <MenuLinkStyles href="/account">Account</MenuLinkStyles>
+              </MenuItemStyles>
+              <MenuItemStyles as="li">
+                <MenuLinkStyles href="/orders">Orders</MenuLinkStyles>
+              </MenuItemStyles>
               {user && (
-                <Menu.Item as="li">
+                <MenuItemStyles as="li">
                   <SignOut />
-                </Menu.Item>
+                </MenuItemStyles>
               )}
-            </Menu.Items>
+            </MenuItemsStyles>
           </StyledTransition>
-        </Menu>
+        </MenuStyles>
         <Cart />
       </div>
     </NavStyles>

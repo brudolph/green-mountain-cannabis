@@ -9,7 +9,7 @@ export default function Page({ children }) {
     <>
       <GlobalStyles />
       <Header />
-      <div tw="bg-primary-light/20">{children}</div>
+      {children}
       <Footer />
     </>
   );

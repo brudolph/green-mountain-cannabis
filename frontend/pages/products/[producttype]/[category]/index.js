@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/dist/client/router';
 import Pagination from '../../../../components/Pagination';
 import PleaseSignIn from '../../../../components/PleaseSignIn';

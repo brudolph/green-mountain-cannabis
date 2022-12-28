@@ -79,9 +79,10 @@ function ProductType({ page }) {
       </Processing>
     );
 
+  if (error) return <DisplayError error={error} />;
+
   return (
     <>
-      <DisplayError error={error} />
       <Processing loading={loading.toString()}>
         <LoadingIcon tw="animate-spin" />
         Loading

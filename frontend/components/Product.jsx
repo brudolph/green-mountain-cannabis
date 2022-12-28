@@ -14,6 +14,8 @@ import ProductStyles, {
   AttributeItemStyles,
   WeightStyles,
   PricingWeightStyles,
+  HotDealTagStyles,
+  TopPickTagStyles,
 } from '../styles/ProductStyles';
 import AddToCart from './AddToCart';
 import formatMoney from '../lib/formatMoney';
@@ -29,11 +31,12 @@ import 'twin.macro';
 import { useUser } from './User';
 import { MyLink } from './MyLink';
 import formatQuantity from '../lib/formatQuantity';
+import getObjPropTarget from '../lib/getObjPropTarget';
 
 export default function Product({ product }) {
   const [quantity, setQuantity] = useState('');
   const user = useUser();
-  const { id, name, price, photos } = product;
+  // const { id, name, price, photos } = product;
 
   useEffect(() => {
     const cartItem = user?.cart?.filter(
@@ -50,6 +53,7 @@ export default function Product({ product }) {
     setQuantity(value.toString());
   };
 
+  // Checks to see if product is already in cart so we can display the correct button
   const productInCart = () =>
     user.cart.some((cartItem) => cartItem.product.id === product.id);
 
@@ -67,14 +71,13 @@ export default function Product({ product }) {
     productCategory = 'machine';
   }
 
-  console.log(productCategory);
   return (
     <ProductStyles>
-      {product.status === 'DRAFT' && (
-        <DraftTagStyles>
-          <p tw="font-bold text-2xl">Draft</p>
-        </DraftTagStyles>
-      )}
+      {product.status === 'DRAFT' && <DraftTagStyles>Draft</DraftTagStyles>}
+      <ul tw="absolute top-0 flex flex-col items-end space-y-2 inset-x-0 p-4 z-10">
+        {product.topPick && <TopPickTagStyles>Top Pick</TopPickTagStyles>}
+        {product.hotDeal && <HotDealTagStyles>Hot Deal</HotDealTagStyles>}
+      </ul>
       <ImageContainerStyles>
         <Swiper
           modules={[Pagination]}
@@ -92,7 +95,7 @@ export default function Product({ product }) {
                 width={395}
                 height={230}
                 layout="fixed"
-                src={photo ? photo?.image?.publicUrl : '/failed.jpg'}
+                src={photo ? photo?.image?.publicUrl : '/fallback.jpg'}
               />
             </SwiperSlide>
           ))}
@@ -100,7 +103,7 @@ export default function Product({ product }) {
       </ImageContainerStyles>
       <div tw="flex-1 p-4 space-y-2 relative">
         <ProductTitleStyles>
-          <MyLink href={`/product/${product.slug}/`}>{product?.name}</MyLink>
+          <MyLink href={`/product/${product.slug}`}>{product?.name}</MyLink>
         </ProductTitleStyles>
         <PricingWeightStyles>
           <PricingStyles>
@@ -108,17 +111,16 @@ export default function Product({ product }) {
             <span tw="font-bold text-primary-dark">
               {product.priceThreshold.length > 1 ? (
                 <>
-                  {formatMoney(
-                    product.priceThreshold[product.priceThreshold.length - 1]
-                      .price
-                  )}{' '}
-                  - {formatMoney(product?.priceThreshold[0]?.price)}
+                  {formatMoney(product.price)} -{' '}
+                  {formatMoney(product.priceThreshold[0]?.price)}
                 </>
               ) : (
                 <>{formatMoney(product.price)}</>
               )}
             </span>{' '}
-            <span tw="text-sm">{product?.[productCategory]?.weight}</span>
+            <span tw="text-sm">
+              {getObjPropTarget(product, `${productCategory}.weight`)}
+            </span>
           </PricingStyles>
           <WeightStyles>
             <span tw="block font-bold text-primary-dark">
@@ -135,37 +137,37 @@ export default function Product({ product }) {
         </PricingWeightStyles>
         <AttributesListStyles>
           {product?.[productCategory]?.solventUsed && (
-            <AttributeItemStyles>
+            <AttributeItemStyles isSmall>
               <span tw="sr-only">Oil Type:</span>
               {product?.[productCategory]?.solventUsed}
             </AttributeItemStyles>
           )}
           {product?.[productCategory]?.oilType && (
-            <AttributeItemStyles>
+            <AttributeItemStyles isSmall>
               <span tw="sr-only">Oil Type:</span>
               {product?.[productCategory]?.oilType}
             </AttributeItemStyles>
           )}
           {product?.[productCategory]?.strain && (
-            <AttributeItemStyles>
+            <AttributeItemStyles isSmall>
               <span tw="sr-only">Strain:</span>
               {product?.[productCategory]?.strain}
             </AttributeItemStyles>
           )}
           {product?.[productCategory]?.potency > 0 && (
-            <AttributeItemStyles>
+            <AttributeItemStyles isSmall>
               <span tw="font-bold mr-1">THC:</span>
               {product?.[productCategory]?.potency}%
             </AttributeItemStyles>
           )}
           {product?.[productCategory]?.model && (
-            <AttributeItemStyles>
+            <AttributeItemStyles isSmall>
               <span tw="font-bold mr-1">Model:</span>
               {product?.[productCategory]?.model}
             </AttributeItemStyles>
           )}
           {product?.[productCategory]?.modelYear && (
-            <AttributeItemStyles>
+            <AttributeItemStyles isSmall>
               <span tw="font-bold mr-1">
                 <span tw="sr-only">Model</span> Year:
               </span>
@@ -174,7 +176,7 @@ export default function Product({ product }) {
           )}
         </AttributesListStyles>
 
-        {user.__typename !== 'NeedsApproved' && (
+        {user.role.name !== 'NeedsApproved' && (
           <ButtonTrayStyles>
             <Label tw="mb-0">
               Qty:{' '}

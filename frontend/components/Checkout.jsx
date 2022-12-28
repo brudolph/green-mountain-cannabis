@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 import PropTypes from 'prop-types';
-import tw, { styled } from 'twin.macro';
-import { useEffect, useId, useState } from 'react';
+import 'twin.macro';
+import { useEffect, useState } from 'react';
 import nProgress from 'nprogress';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
@@ -12,8 +12,10 @@ import PleaseSignIn from './PleaseSignIn';
 import {
   CartItemStyles,
   CheckoutFormStyles,
-  ProductImage,
-  ProductTitle,
+  ContainerStyles,
+  PageContainerStyles,
+  ProductImageStyles,
+  ProductTitleStyles,
 } from '../styles/CheckoutStyles';
 import { Input, Label, Processing } from '../styles/Form';
 import LoadingIcon from './icons/LoadingIcon';
@@ -22,6 +24,7 @@ import formatWeight from '../lib/formatWeight';
 import formatMoney from '../lib/formatMoney';
 import { MyLink } from './MyLink';
 import AddToCart from './AddToCart';
+import randomId from '../lib/randomId';
 
 const CREATE_ORDER_MUTATION = gql`
   mutation CREATE_ORDER_MUTATION($token: String!) {
@@ -50,46 +53,62 @@ function groupCartItems(cartItems, path) {
 }
 
 function CalculatePrice({ list }) {
-  const categoryGroup = list.reduce((groups, item) => {
-    const product = getValue(item, ['product', 'category', 'name']);
-    const group = groups[product] || (groups[product] = []);
-    group.push(item);
-    return groups;
-  }, {});
-  // console.log(list);
-  // console.log(categoryGroup);
+  // const categoryGroup = list.reduce((groups, item) => {
+  //   const product = getValue(item, ['product', 'category', 'name']);
+  //   const group = groups[product] || (groups[product] = []);
+  //   group.push(item);
+  //   return groups;
+  // }, {});
+  // // console.log(list[0].quantity);
+  // // console.log(categoryGroup.Flower[0]);
 
-  const categoryPriceTotal = Object.keys(categoryGroup).map((key) => {
-    console.log(categoryGroup[key]);
+  // const categoryPriceTotal = Object.keys(categoryGroup).map((key) => {
+  //   const categoryQtyTotal = () =>
+  //     categoryGroup[key].reduce(
+  //       (previousQuantity, currentQuantity) =>
+  //         previousQuantity + parseFloat(currentQuantity.quantity),
+  //       0
+  //     );
+  //   const calculateDiscount = (categoryQtyTotal) => {
+  //     const highestAmount = Math.max.apply(
+  //       null,
+  //       categoryGroup[key][0].product.priceThreshold.map((q) => q.amount)
+  //     );
+  //     const shit = categoryGroup[key][0].product.priceThreshold.find(
+  //       (item) => item.amount <= highestAmount
+  //     );
+  //   };
 
-    const categoryQtyTotal = () =>
-      categoryGroup[key].reduce(
-        (previousQuantity, currentQuantity) =>
-          previousQuantity + parseFloat(currentQuantity.quantity),
-        0
-      );
-    const calculateDiscount = (categoryQtyTotal) => {
-      const highestAmount = Math.max.apply(
-        null,
-        currentQuantity.product.priceThreshold.map((q) => q.amount)
-      );
-      const shit = currentQuantity.product.priceThreshold.find(
-        (item) => item.amount <= highestAmount
-      );
-    };
+  //   const calculatePrice = (price, discount) => {};
 
-    const calculatePrice = (price, discount) => {};
+  //   return calculateDiscount();
+  // });
+  // const finalFinalPrice = categoryPriceTotal;
 
-    return categoryQtyTotal();
-  });
-  const finalFinalPrice = categoryPriceTotal;
+  // return formatMoney(finalFinalPrice);
 
-  return finalFinalPrice;
+  const total = list.reduce(
+    (previousQuantity, currentQuantity) =>
+      previousQuantity +
+      parseFloat(currentQuantity.quantity) * currentQuantity.product.price,
+    0
+  );
+
+  return formatMoney(total);
 }
+
+const current = new Date();
+const cDate = `${current.getFullYear()}-${
+  current.getMonth() + 1
+}-${current.getDate()}`;
+const cTime = `${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
+const todaysDate = `${cDate} ${cTime}`;
 
 function CartItem({ cartItem }) {
   const [cartQuantity, setCartQuantity] = useState('');
   const { product, quantity } = cartItem;
+
+  console.log(todaysDate);
 
   const productInCart = () => true;
 
@@ -115,18 +134,18 @@ function CartItem({ cartItem }) {
   if (!product) return null;
   return (
     <CartItemStyles key={product.id}>
-      <ProductTitle>
+      <ProductTitleStyles>
         <MyLink href={`/product/${product.slug}/`}>{product.name}</MyLink>
-      </ProductTitle>
+      </ProductTitleStyles>
       <div tw="flex gap-x-5">
-        <ProductImage
+        <ProductImageStyles
           width={64}
           height={64}
           layout="fixed"
           src={
             product?.photos[0]
               ? product?.photos[0]?.image?.publicUrl
-              : '/failed.jpg'
+              : '/fallback.jpg'
           }
         />
         <div>
@@ -186,11 +205,11 @@ function CartItem({ cartItem }) {
 
 function CheckoutForm() {
   const [error, setError] = useState();
-  const [setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const checkoutid = useId();
+  const checkoutid = randomId(16);
   const user = useUser();
-  const [checkout, { loading, error: graphQLError }] = useMutation(
+  const [checkout, { error: graphQLError }] = useMutation(
     CREATE_ORDER_MUTATION,
     {
       refetchQueries: [{ query: CURRENT_USER_QUERY }],
@@ -249,48 +268,69 @@ function CheckoutForm() {
         <LoadingIcon tw="animate-spin" />
         Loading
       </Processing>
-      <div tw="mx-auto max-w-2xl py-12 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h1 tw="text-center">Checkout</h1>
-        <CheckoutFormStyles onSubmit={handleSubmit}>
-          <div aria-labelledby="cart-heading" tw="lg:col-span-8 ">
-            <h2 id="cart-heading" tw="sr-only">
-              Items in your shopping cart
-            </h2>
+      <ContainerStyles hasBgPrimaryLight20>
+        <PageContainerStyles>
+          <h1 tw="text-center">Checkout</h1>
+          <CheckoutFormStyles onSubmit={handleSubmit}>
+            <div aria-labelledby="cart-heading" tw="lg:col-span-8 ">
+              <h2 id="cart-heading" tw="sr-only">
+                Items in your shopping cart
+              </h2>
 
-            {Object.keys(groupByVend).map((key) => (
-              <div
-                key={`vendor-${key}`}
-                tw="bg-white border rounded-md shadow-md border-primary-light/30 px-5 py-6 mb-4"
-              >
-                <h3 key={`title-${key}`}>{`Vendor: ${key}`}</h3>
-                <ul tw="space-y-6">
-                  {groupByVend[key].map((item) => (
-                    <CartItem key={item.id} cartItem={item} />
-                  ))}
-                </ul>
-                <CalculatePrice list={groupByVend[key]} />
-              </div>
-            ))}
-          </div>
-          {/* Order summary */}
-          <div
-            aria-labelledby="summary-heading"
-            tw="sticky top-5 mt-16 rounded-lg bg-primary-light/40 px-4 py-6 sm:p-6 lg:col-span-4 lg:mt-0 lg:p-8"
-          >
-            <h2 id="summary-heading" tw="text-lg font-medium text-gray-900">
-              Order summary
-            </h2>
-            <div tw="mt-6">
-              <button
-                type="submit"
-                tw="w-full rounded-md border border-transparent bg-primary py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark focus:ring-offset-2 focus:ring-offset-gray-50"
-              >
-                Place Order
-              </button>
+              {Object.keys(groupByVend).map((key) => (
+                <div
+                  key={`vendor-${key}`}
+                  tw="bg-white border rounded-md shadow-md border-primary-light/30 px-5 py-6 mb-4"
+                >
+                  <h3
+                    tw="text-lg text-right text-gray-600 font-medium"
+                    key={`title-${key}`}
+                  >{`Vendor: ${key}`}</h3>
+                  <ul tw="space-y-6">
+                    {groupByVend[key].map((item) => (
+                      <CartItem key={item.id} cartItem={item} />
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          </div>
-        </CheckoutFormStyles>
-      </div>
+            {/* Order summary */}
+            <div
+              aria-labelledby="summary-heading"
+              tw="sticky top-5 mt-16 rounded-lg bg-primary-light/40 px-4 py-6 sm:p-6 lg:col-span-4 lg:mt-0 lg:p-8"
+            >
+              <h2 id="summary-heading" tw="text-lg font-medium text-gray-900">
+                Order summary
+              </h2>
+              {/* {Object.keys(groupByVend).map((key) => (
+                <div
+                  key={`vendor-${key}`}
+                  tw="bg-white border rounded-md shadow-md border-primary-light/30 px-5 py-6 mb-4"
+                >
+                  <h3 tw="text-sm mb-3" key={`title-${key}`}>
+                    <span tw="sr-only">Vendor:</span> {`${key}`}
+                  </h3>
+                  <CalculatePrice list={groupByVend[key]} />
+                </div>
+              ))} */}
+              <div tw="bg-white border rounded-md shadow-md border-primary-light/30 px-5 py-6 mb-4">
+                <p>
+                  <span tw="font-bold">Subtotal:</span>{' '}
+                  <CalculatePrice list={user.cart} />
+                </p>
+              </div>
+              <div tw="mt-6">
+                <button
+                  type="submit"
+                  tw="w-full rounded-md border border-transparent bg-primary py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark focus:ring-offset-2 focus:ring-offset-gray-50"
+                >
+                  Place Order
+                </button>
+              </div>
+            </div>
+          </CheckoutFormStyles>
+        </PageContainerStyles>
+      </ContainerStyles>
     </PleaseSignIn>
   );
 }
@@ -309,6 +349,12 @@ CartItem.propTypes = {
     product: PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
+      category: PropTypes.shape({
+        name: PropTypes.shape({
+          toLowerCase: PropTypes.func,
+        }),
+      }),
+      price: PropTypes.string,
       slug: PropTypes.string,
       strain: PropTypes.string,
       potency: PropTypes.string,

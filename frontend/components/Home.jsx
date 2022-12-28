@@ -1,15 +1,83 @@
+import { useQuery, gql } from '@apollo/client';
 import Hero from '../public/rob-warner-unsplash.jpg';
 import 'twin.macro';
 import { MyLink } from './MyLink';
 import { useUser } from './User';
+import { ContainerStyles, PageContainerStyles } from '../styles/HomeStyles';
+import { Processing } from '../styles/Form';
+import DisplayError from './ErrorMessage';
+import LoadingIcon from './icons/LoadingIcon';
+
+export const TOP_PRODUCTS_QUERY = gql`
+  query TOP_HOT_PRODUCTS_QUERY {
+    products(
+      take: 4
+      orderBy: [{ name: asc }]
+      where: { topPick: { equals: true } }
+    ) {
+      id
+      name
+      slug
+      photos {
+        id
+        image {
+          publicUrl
+          publicUrlTransformed(transformation: { width: "550", quality: "90" })
+        }
+        altText
+      }
+      price
+      topPick
+    }
+  }
+`;
+
+export const HOT_PRODUCTS_QUERY = gql`
+  query HOT_PRODUCTS_QUERY {
+    products(
+      take: 8
+      orderBy: [{ name: asc }]
+      where: { hotDeal: { equals: true } }
+    ) {
+      id
+      name
+      slug
+      photos {
+        id
+        image {
+          publicUrl
+          publicUrlTransformed(transformation: { width: "550", quality: "90" })
+        }
+        altText
+      }
+      price
+      hotDeal
+    }
+  }
+`;
 
 export default function Home() {
   const user = useUser();
 
+  const { data: topProducts, error, loading } = useQuery(TOP_PRODUCTS_QUERY);
+  const { data: hotDeals } = useQuery(HOT_PRODUCTS_QUERY);
+
+  console.log(hotDeals);
+
+  if (loading)
+    return (
+      <Processing loading={loading.toString()}>
+        <LoadingIcon tw="animate-spin" />
+        Loading
+      </Processing>
+    );
+
+  if (user && error) return <DisplayError error={error} />;
+
   return (
-    <div tw="relative overflow-hidden mt-8">
-      <div tw="relative py-16 sm:pb-24">
-        <div tw="mx-auto max-w-7xl px-4 sm:px-6">
+    <PageContainerStyles>
+      <ContainerStyles hasBgPrimaryLight20>
+        <div tw="mx-auto max-w-7xl">
           <div tw="lg:grid lg:grid-cols-12 lg:gap-8">
             <div tw="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
               <h1>
@@ -69,7 +137,77 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </ContainerStyles>
+      {user && topProducts && (
+        <ContainerStyles>
+          <div tw="mx-auto max-w-7xl">
+            <h2 className="h1" tw="text-center">
+              You might like
+            </h2>
+            <div tw="grid grid-flow-col auto-cols-fr gap-x-8 gap-y-8 sm:gap-y-10">
+              {topProducts.products.map((product) => (
+                <div key={product.id} className="group" tw="relative">
+                  <div tw="overflow-hidden bg-gray-100 rounded-lg w-full h-60">
+                    <img
+                      src={product.photos[0]?.image.publicUrlTransformed}
+                      alt={product.photos[0]?.altText}
+                      tw="w-full h-full object-cover object-center"
+                    />
+                    <div
+                      tw="flex items-end p-4 opacity-0 group-hover:opacity-100"
+                      aria-hidden="true"
+                    >
+                      <div tw="w-full px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white bg-opacity-75 rounded-md backdrop-blur backdrop-filter">
+                        View Product
+                      </div>
+                    </div>
+                  </div>
+                  <div tw="flex items-center justify-between mt-4 space-x-8 text-base font-medium text-gray-900">
+                    <MyLink href={`/product/${product.slug}`}>
+                      {product.name}
+                    </MyLink>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </ContainerStyles>
+      )}
+      {user && hotDeals && (
+        <ContainerStyles>
+          <div tw="mx-auto max-w-7xl">
+            <h2 className="h1" tw="text-center">
+              Current Deals
+            </h2>
+            <div tw="grid grid-flow-col auto-cols-fr gap-x-10 gap-y-8 sm:gap-y-10">
+              {hotDeals.products.map((product) => (
+                <div key={product.id} className="group" tw="relative">
+                  <div tw="overflow-hidden bg-gray-100 rounded-lg w-full h-32">
+                    <img
+                      src={product.photos[0]?.image.publicUrlTransformed}
+                      alt={product.photos[0]?.altText}
+                      tw="w-full h-full object-cover object-center"
+                    />
+                    <div
+                      tw="flex items-end p-4 opacity-0 group-hover:opacity-100"
+                      aria-hidden="true"
+                    >
+                      <div tw="w-full px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white bg-opacity-75 rounded-md backdrop-blur backdrop-filter">
+                        View Product
+                      </div>
+                    </div>
+                  </div>
+                  <div tw="flex items-center justify-between mt-4 space-x-8 text-base font-medium text-gray-900">
+                    <MyLink href={`/product/${product.slug}`}>
+                      {product.name}
+                    </MyLink>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </ContainerStyles>
+      )}
+    </PageContainerStyles>
   );
 }

@@ -1,22 +1,25 @@
 import PropTypes from 'prop-types';
 import RequestReset from '../components/RequestReset';
+import 'twin.macro';
 import Reset from '../components/Reset';
 
-function ResetPage({ query }) {
+export default function ResetPage({ query }) {
   if (!query?.token) {
     return (
       <div>
-        <p>Sorry you must supply a token</p>
+        <div tw="bg-primary-light/20 pt-8 overflow-auto">
+          <p tw="text-center font-bold text-xl">
+            Sorry, you'll need a token to reset your password.
+          </p>
+          <p tw="text-center mt-2">
+            Fill out the form below to request a password reset.
+          </p>
+        </div>
         <RequestReset />
       </div>
     );
   }
-  return (
-    <div>
-      <p>RESET YOUR PASSWORD</p>
-      <Reset token={query.token} />
-    </div>
-  );
+  return <Reset token={query.token} />;
 }
 
 ResetPage.propTypes = {
@@ -24,5 +27,3 @@ ResetPage.propTypes = {
     token: PropTypes.string,
   }),
 };
-
-export default ResetPage;

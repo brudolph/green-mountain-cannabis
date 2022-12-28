@@ -14,9 +14,13 @@ export const environmentList = [
 export const weights = ['Pound', 'Ounce', 'Gram'];
 
 export const potencyList = [
-  { name: '< Less than: 25%', checked: false },
-  { name: '> Greater than: 25%', checked: false },
-  { name: '> Greater than: 35%', checked: false },
+  { name: '< Less than: 25%', value: '25', checked: false },
+  { name: '> Greater than: 25%', value: '25', checked: false },
+  { name: '> Greater than: 35%', value: '35', checked: false },
+  { name: '> Greater than: 45%', value: '45', checked: false },
+  { name: '> Greater than: 50%', value: '55', checked: false },
+  { name: '> Greater than: 75%', value: '65', checked: false },
+  { name: '> Greater than: 85%', value: '75', checked: false },
 ];
 
 export const oilTypeList = [

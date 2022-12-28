@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import Image, { ImageProps } from 'next/image'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import fallbackImage from '../public/static/fallback_small.jpg'
+import fallbackImage from '../public/static/fallback.jpg'
 
 interface ImageWithFallbackProps extends ImageProps {
   fallback?: ImageProps['src']

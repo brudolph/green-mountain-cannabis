@@ -13,6 +13,7 @@ function SingleProductPage({ query }) {
 SingleProductPage.propTypes = {
   query: PropTypes.shape({
     slug: PropTypes.string,
+    vendorid: PropTypes.string,
   }),
 };
 
