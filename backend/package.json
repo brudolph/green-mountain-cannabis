@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "keystone dev",
     "reset": "keystone --reset-db --create-admin",
-    "postinstall": "keystone postinstall",
-    "build": "keystone build",
+    "build": "keystone build && keystone prisma migrate deploy",
     "start": "keystone start",
     "seed-data": "keystone --seed-data"
   },
