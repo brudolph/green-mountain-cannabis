@@ -85,6 +85,10 @@
       "react/jsx-props-no-spreading": 0
     }
   },
+  "engines": {
+    "node": "^16.*",
+    "npm": "^8.5.*"
+  },
   "jest": {
     "setupFilesAfterEnv": [
       "./jest.setup.js"
